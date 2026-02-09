@@ -1,0 +1,275 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 19,
+  "summary": "Expand the Mobile Health Care App scope to include a voice assistance feature with an AI chatbot and full in-app navigation control, alongside the existing Design B UI work (excluding appointment booking/scheduling and doctor/provider flows), and add new Sign In/Sign Up screens using full name + phone number + password credentials.",
+  "architectural_notes": [
+    "Consider using the Faker (\"flaker\") library for generating mock/sample data in the app where needed."
+  ],
+  "known_issues": [
+    "Sign out is currently not working (user cannot successfully sign out / session not cleared)."
+  ],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-implement-a-complete-alternative-visual-design-design-b-for-the-mobile-health-care-app-inspired-by-the-provided-figma-link-including-a-coherent-color-palette-avoid-blue-purple-typography-spacing-system-component-styling-and-layout-rules-applied-consistently-across-the-app-ui",
+      "title": "Implement a complete alternative visual design (Design B) for the Mobile Health Care App inspired by the provided Figma link, including a coherent color palette (avoid blue/purple), typography, spacing system, component styling, and layout rules applied consistently across the app UI.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-design-b-ui-screen-set-for-a-mobile-health-care-app-with-at-least-these-routes-pages-welcome-onboarding-sign-in-home-dashboard-doctor-provider-list-appointment-details-and-profile-each-page-should-be-navigable-via-in-app-navigation-tabs-and-or-header-navigation-and-should-demonstrate-the-design-b-component-system",
+      "title": "Create a Design B UI screen set for a Mobile Health Care App with at least these routes/pages: Welcome/Onboarding, Sign In, Home/Dashboard, Doctor/Provider List, Appointment Details, and Profile; each page should be navigable via in-app navigation (tabs and/or header navigation) and should demonstrate the Design B component system.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-simple-in-app-toggle-or-switcher-that-allows-viewing-the-alternative-design-b-ui-and-if-an-existing-design-is-present-switching-between-the-default-design-and-design-b-without-editing-any-immutable-template-files",
+      "title": "Add a simple in-app toggle or switcher that allows viewing the alternative Design B UI (and, if an existing design is present, switching between the default design and Design B) without editing any immutable template files.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-and-add-the-required-static-images-for-the-design-b-theme-under-frontend-public-assets-generated-and-use-them-in-the-design-b-ui",
+      "title": "Generate and add the required static images for the Design B theme under frontend/public/assets/generated and use them in the Design B UI.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-doctor-provider-related-navigation-and-routes-from-the-app-so-there-is-no-doctors-screen-and-no-doctor-provider-bottom-tab-entry",
+      "title": "Remove doctor/provider-related navigation and routes from the app so there is no Doctors screen and no doctor/provider bottom-tab entry.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-appointment-booking-and-appointment-scheduling-flows-screens-so-there-is-no-appointment-details-screen-and-no-booking-actions-in-the-ui",
+      "title": "Remove appointment booking and appointment scheduling flows/screens so there is no appointment details screen and no booking actions in the UI.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-home-dashboard-content-to-remove-appointment-schedule-related-sections-e-g-next-appointment-appointment-scheduled-activity-and-ensure-the-page-remains-coherent-without-appointment-data",
+      "title": "Update the Home/Dashboard content to remove appointment schedule-related sections (e.g., \"Next Appointment\", \"Appointment Scheduled\" activity) and ensure the page remains coherent without appointment data.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-or-refactor-mock-data-and-imports-so-the-frontend-builds-cleanly-without-doctor-provider-and-appointment-scheduling-mock-data-being-required-by-any-remaining-pages",
+      "title": "Remove or refactor mock data and imports so the frontend builds cleanly without doctor/provider and appointment scheduling mock data being required by any remaining pages.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-home-dashboard-screen-frontend-src-pages-homedashboard-tsx-to-use-a-special-custom-layout-design-in-the-existing-design-b-style-centered-around-these-sections-today-s-metrics-quick-log-water-steps-sleep-calories-and-ml-prediction-categories-6-categories-the-layout-should-be-visually-distinct-from-the-current-grid-of-cards-structure-e-g-mixed-card-sizes-staggered-grid-section-based-composition-while-remaining-responsive-for-mobile-and-desktop",
+      "title": "Update the Home/Dashboard screen (frontend/src/pages/HomeDashboard.tsx) to use a special/custom layout design in the existing Design B style, centered around these sections: \"Today's Metrics\", \"Quick Log\" (Water, Steps, Sleep, Calories), and \"ML Prediction Categories\" (6 categories). The layout should be visually distinct from the current grid-of-cards structure (e.g., mixed card sizes, staggered grid, section-based composition) while remaining responsive for mobile and desktop.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-dynamic-icon-behavior-to-the-home-dashboard-section-items-cards-today-s-metrics-quick-log-items-and-ml-prediction-categories-icons-should-have-noticeable-interactive-animated-states-e-g-hover-focus-press-animations-subtle-pulsing-for-today-status-or-progress-driven-motion-implemented-with-tailwind-css-no-external-animation-libraries-ml-prediction-categories-must-include-these-labeled-items-with-the-specified-icon-concepts-and-color-accents-ai-predictions-brain-icon-purple-weight-loss-scale-icon-green-pcod-pcos-heart-icon-pink-pregnancy-life-cycle-baby-icon-amber-yoga-exercise-dumbbell-icon-blue-stress-management-sparkles-icon-indigo",
+      "title": "Add dynamic icon behavior to the Home dashboard section items/cards (Today's Metrics, Quick Log items, and ML Prediction Categories). Icons should have noticeable interactive/animated states (e.g., hover/focus/press animations, subtle pulsing for \"today\" status, or progress-driven motion) implemented with Tailwind/CSS (no external animation libraries). ML Prediction Categories must include these labeled items with the specified icon concepts and color accents: AI Predictions (Brain icon - purple), Weight Loss (Scale icon - green), PCOD/PCOS (Heart icon - pink), Pregnancy Life Cycle (Baby icon - amber), Yoga & Exercise (Dumbbell icon - blue), Stress Management (Sparkles icon - indigo).",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-voice-assistant-entry-point-that-is-accessible-throughout-the-app-except-where-navigation-is-currently-hidden-and-opens-a-chat-style-assistant-ui-where-users-can-speak-or-type-commands",
+      "title": "Add a voice assistant entry point that is accessible throughout the app (except where navigation is currently hidden) and opens a chat-style assistant UI where users can speak or type commands.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-on-device-speech-features-for-the-assistant-speech-to-text-for-capturing-user-commands-and-optional-text-to-speech-for-reading-assistant-responses-without-using-external-ai-llm-services",
+      "title": "Implement on-device speech features for the assistant: speech-to-text for capturing user commands and optional text-to-speech for reading assistant responses, without using external AI/LLM services.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-ai-chatbot-behavior-for-the-assistant-that-interprets-user-messages-produces-helpful-english-responses-and-supports-full-navigation-by-executing-in-app-navigation-commands-for-the-existing-routes",
+      "title": "Add an 'AI chatbot' behavior for the assistant that interprets user messages, produces helpful English responses, and supports 'full navigation' by executing in-app navigation commands for the existing routes.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-persist-assistant-conversation-state-locally-so-users-can-close-and-reopen-the-assistant-without-losing-the-current-transcript-during-typical-usage-sessions",
+      "title": "Persist assistant conversation state locally so users can close and reopen the assistant without losing the current transcript during typical usage sessions.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-starting-welcome-page-to-remove-doctor-related-and-scheduling-related-feature-highlights-including-the-expert-doctors-and-easy-scheduling-tiles-and-revise-the-welcome-description-copy-so-it-no-longer-references-connecting-with-doctors-healthcare-professionals-or-managing-booking-appointments",
+      "title": "Update the starting (Welcome) page to remove doctor-related and scheduling-related feature highlights, including the \"Expert Doctors\" and \"Easy Scheduling\" tiles, and revise the welcome description copy so it no longer references connecting with doctors/healthcare professionals or managing/booking appointments.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-sign-in-screen-frontend-src-pages-signin-tsx-to-support-authentication-via-mobile-number-and-one-time-password-otp-instead-of-the-current-email-password-form",
+      "title": "Update the Sign In screen (frontend/src/pages/SignIn.tsx) to support authentication via mobile number and one-time password (OTP) instead of the current email/password form.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-self-contained-otp-generation-verification-experience-in-the-frontend-that-works-without-any-external-sms-otp-provider-integration",
+      "title": "Implement a self-contained OTP generation/verification experience in the frontend that works without any external SMS/OTP provider integration.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-keep-existing-alternate-sign-in-options-available-on-the-sign-in-screen-internet-identity-and-continue-as-guest-alongside-the-new-phone-otp-flow",
+      "title": "Keep existing alternate sign-in options available on the Sign In screen (Internet Identity and Continue as Guest) alongside the new phone + OTP flow.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-small-in-repo-utility-named-flaker-that-can-generate-realistic-looking-demo-user-profile-data-name-email-phone-date-of-birth-blood-type-allergies-and-emergency-contact-without-adding-any-external-dependencies",
+      "title": "Add a small in-repo utility named \"flaker\" that can generate realistic-looking demo user profile data (name, email, phone, date of birth, blood type, allergies, and emergency contact) without adding any external dependencies.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-hard-coded-mock-user-in-frontend-src-designb-data-placeholders-ts-with-a-flaker-generated-demo-profile-while-keeping-the-exported-types-compatible-with-existing-consumers-e-g-profile-page",
+      "title": "Replace the hard-coded MOCK_USER in frontend/src/designB/data/placeholders.ts with a flaker-generated demo profile, while keeping the exported types compatible with existing consumers (e.g., Profile page).",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-sign-out-action-on-the-profile-page-actually-sign-the-user-out-by-clearing-any-active-authentication-session-state-and-then-navigating-the-user-to-the-sign-in-route",
+      "title": "Make the \"Sign Out\" action on the Profile page actually sign the user out by clearing any active authentication/session state and then navigating the user to the Sign In route.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-internet-identity-logout-is-reliable-by-making-the-logout-clear-flow-resilient-to-timing-and-state-issues-and-by-not-leaving-the-app-in-a-partially-authenticated-state-after-sign-out",
+      "title": "Ensure Internet Identity logout is reliable by making the logout/clear flow resilient to timing and state issues, and by not leaving the app in a partially-authenticated state after sign out.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-self-contained-demo-credential-store-in-the-frontend-to-support-creating-and-verifying-accounts-using-full-name-phone-number-password-without-any-external-auth-providers",
+      "title": "Implement a self-contained demo credential store in the frontend to support creating and verifying accounts using Full Name + Phone Number + Password, without any external auth providers.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-sign-up-page-that-collects-full-name-phone-number-and-password-validates-inputs-creates-the-local-account-and-then-signs-the-user-in-and-navigates-to-home",
+      "title": "Create a new Sign Up page that collects Full Name, Phone Number, and Password, validates inputs, creates the local account, and then signs the user in and navigates to /home.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-existing-sign-in-page-frontend-src-pages-signin-tsx-to-include-a-phone-password-sign-in-option-and-navigation-to-the-new-sign-up-route-while-keeping-existing-alternate-sign-in-options-internet-identity-and-continue-as-guest",
+      "title": "Update the existing Sign In page (frontend/src/pages/SignIn.tsx) to include a phone + password sign-in option and navigation to the new Sign Up route, while keeping existing alternate sign-in options (Internet Identity and Continue as Guest).",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-extend-local-auth-session-handling-to-support-the-new-password-based-session-type-ensure-route-guarding-recognizes-it-and-ensure-the-app-shell-hides-navigation-on-the-sign-up-route-similarly-to-sign-in",
+      "title": "Extend local auth session handling to support the new password-based session type, ensure route guarding recognizes it, and ensure the app shell hides navigation on the Sign Up route similarly to Sign In.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create another design variation for the Mobile Health Care App (based on provided Figma file)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Remove appointment booking/appointment schedule and doctor/provider-related screens/flows from the Design B scope",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add dynamic icons for Home dashboard sections/cards (Today's Metrics, Quick Log, ML Prediction Categories)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Create a special/custom layout design for the Home dashboard (Today's Metrics, Quick Log, ML Prediction Categories) in Design B style",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add voice assistance with an AI chatbot that supports full in-app navigation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Remove Doctors and Easy Scheduling entries/CTA from the starting (landing/onboarding) page",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Update authentication to support login with mobile number using OTP (one-time password)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Create Sign In and Sign Up flows using full name, phone number, and password (instead of the current auth form)",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Create an alternative UI design for the Mobile Health Care App (Design B)",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

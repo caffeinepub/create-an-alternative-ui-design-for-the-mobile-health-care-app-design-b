@@ -1,0 +1,108 @@
+{
+  "kind": "build_request",
+  "title": "Add phone + password Sign In and Sign Up (full name, phone number, password)",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-23",
+      "text": "Implement a self-contained demo credential store in the frontend to support creating and verifying accounts using Full Name + Phone Number + Password, without any external auth providers.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "can you create sign in, sign up with full name, phone number, password"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A user account record can be created and persisted locally (e.g., localStorage) with fields: fullName, phoneNumber, password (or password-derived value).",
+        "Phone number uniqueness is enforced; attempting to sign up with an existing phone number shows an English error message and does not overwrite the existing account.",
+        "Sign-in verification checks the submitted phone number + password against the locally stored account data and returns a success/failure result that the UI can display.",
+        "No backend changes or external network calls are required for this credential flow."
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "text": "Create a new Sign Up page that collects Full Name, Phone Number, and Password, validates inputs, creates the local account, and then signs the user in and navigates to /home.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "can you create sign in, sign up with full name, phone number, password"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A new route exists for Sign Up (e.g., /signup) and renders a Sign Up form with the fields: Full Name, Phone Number, Password.",
+        "Form validation is present with English user-facing messages (e.g., missing name, invalid phone number, too-short password).",
+        "On successful sign up, an authenticated local session is created and the user is redirected to /home.",
+        "The page uses the existing component system (Shadcn UI + existing Design B layout/typography components where appropriate)."
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "text": "Update the existing Sign In page (frontend/src/pages/SignIn.tsx) to include a phone + password sign-in option and navigation to the new Sign Up route, while keeping existing alternate sign-in options (Internet Identity and Continue as Guest).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "can you create sign in, sign up with full name, phone number, password"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Sign In supports logging in with Phone Number + Password and, on success, creates an authenticated local session and navigates to /home.",
+        "If credentials are incorrect, Sign In displays a clear English error message and does not navigate.",
+        "A visible link/button on Sign In navigates to the Sign Up page.",
+        "Internet Identity and Continue as Guest options remain available on Sign In and continue to function."
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "text": "Extend local auth session handling to support the new password-based session type, ensure route guarding recognizes it, and ensure the app shell hides navigation on the Sign Up route similarly to Sign In.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "can you create sign in, sign up with full name, phone number, password"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Local session utilities (frontend/src/auth/session.ts and frontend/src/hooks/useAuthSession.ts) support a new session type for password-based sign-in and treat it as authenticated in hasValidSession()/hasSession().",
+        "Protected routes that rely on useRequireAuth consider a password-based local session as authenticated (no redirect to /signin when the session is present).",
+        "Signing out clears password-based local sessions the same way as existing local sessions.",
+        "DesignBAppShell hides bottom navigation/assistant widget on /signup (in addition to existing hidden routes).",
+        "The app builds cleanly with no TypeScript errors."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not edit any files under frontend/src/components/ui (Shadcn components are read-only).",
+    "Do not edit any paths listed as immutable in SYSTEM_CONTEXT (compose around them instead).",
+    "Keep all user-facing text in English."
+  ],
+  "nonGoals": [
+    "Implementing real SMS delivery, real password reset, or production-grade authentication/security hardening.",
+    "Integrating third-party authentication providers beyond existing Internet Identity support.",
+    "Adding or changing backend persistence for user accounts (this request should remain self-contained in the frontend demo auth model unless separately requested)."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

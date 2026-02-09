@@ -1,0 +1,91 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-09T04:50:52.381Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 4,
+    "implemented": 4,
+    "items": [
+      {
+        "id": "REQ-23",
+        "summary": "Implement a self-contained demo credential store in the frontend to support creating and verifying accounts using Full Name + Phone Number + Password, without any external auth providers.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/auth/demoCredentialStore.ts",
+          "frontend/src/auth/demoCredentialTypes.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/auth/demoCredentialStore.ts",
+          "frontend/src/auth/demoCredentialTypes.ts"
+        ]
+      },
+      {
+        "id": "REQ-24",
+        "summary": "Create a new Sign Up page that collects Full Name, Phone Number, and Password, validates inputs, creates the local account, and then signs the user in and navigates to /home.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/SignUp.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/SignUp.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-25",
+        "summary": "Update the existing Sign In page (frontend/src/pages/SignIn.tsx) to include a phone + password sign-in option and navigation to the new Sign Up route, while keeping existing alternate sign-in options (Internet Identity and Continue as Guest).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/SignIn.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/SignIn.tsx"
+        ]
+      },
+      {
+        "id": "REQ-26",
+        "summary": "Extend local auth session handling to support the new password-based session type, ensure route guarding recognizes it, and ensure the app shell hides navigation on the Sign Up route similarly to Sign In.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/auth/session.ts",
+          "frontend/src/hooks/useAuthSession.ts",
+          "frontend/src/hooks/useRequireAuth.ts",
+          "frontend/src/designB/layout/DesignBAppShell.tsx",
+          "frontend/src/pages/Profile.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/auth/session.ts",
+          "frontend/src/hooks/useAuthSession.ts",
+          "frontend/src/hooks/useRequireAuth.ts",
+          "frontend/src/designB/layout/DesignBAppShell.tsx",
+          "frontend/src/pages/Profile.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/auth/demoCredentialStore.ts",
+    "frontend/src/auth/demoCredentialTypes.ts",
+    "frontend/src/auth/session.ts",
+    "frontend/src/designB/layout/DesignBAppShell.tsx",
+    "frontend/src/hooks/useAuthSession.ts",
+    "frontend/src/hooks/useRequireAuth.ts",
+    "frontend/src/pages/Profile.tsx",
+    "frontend/src/pages/SignIn.tsx",
+    "frontend/src/pages/SignUp.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
