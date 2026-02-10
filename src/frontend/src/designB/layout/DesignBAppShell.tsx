@@ -2,11 +2,23 @@ import { Outlet, useLocation } from '@tanstack/react-router';
 import { DesignBBottomTabs } from './DesignBBottomTabs';
 import { ThemeSwitcher } from '../components/ThemeSwitcher';
 import { AssistantWidget } from '../../components/assistant/AssistantWidget';
-import { Heart } from 'lucide-react';
+import { Heart, User } from 'lucide-react';
+import { useUserDisplayName } from '../../hooks/useUserDisplayName';
+import { useInternetIdentity } from '../../hooks/useInternetIdentity';
+import { hasValidSession } from '../../auth/session';
 
 export function DesignBAppShell() {
   const location = useLocation();
   const hideNavigation = location.pathname === '/' || location.pathname === '/signin' || location.pathname === '/signup';
+  const displayName = useUserDisplayName();
+  const { identity, isInitializing } = useInternetIdentity();
+  
+  // Show user name only on authenticated routes (not on welcome/signin/signup)
+  // Use validated session check to ensure stale sessions don't show authenticated UI
+  const showUserName = !hideNavigation && (
+    (!isInitializing && identity && !identity.getPrincipal().isAnonymous()) ||
+    hasValidSession()
+  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -21,7 +33,15 @@ export function DesignBAppShell() {
             />
             <span className="font-bold text-lg">HealthCare</span>
           </div>
-          <ThemeSwitcher />
+          <div className="flex items-center gap-3">
+            {showUserName && (
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span>{displayName}</span>
+              </div>
+            )}
+            <ThemeSwitcher />
+          </div>
         </div>
       </header>
 
@@ -39,9 +59,9 @@ export function DesignBAppShell() {
       {/* Footer */}
       <footer className="border-t border-border bg-card py-6 text-center text-sm text-muted-foreground">
         <p>
-          © 2026. Built with <Heart className="inline h-4 w-4 text-destructive fill-destructive" /> using{' '}
+          © {new Date().getFullYear()}. Built with <Heart className="inline h-4 w-4 text-destructive fill-destructive" /> using{' '}
           <a 
-            href="https://caffeine.ai" 
+            href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
             target="_blank" 
             rel="noopener noreferrer"
             className="font-medium text-foreground hover:underline"

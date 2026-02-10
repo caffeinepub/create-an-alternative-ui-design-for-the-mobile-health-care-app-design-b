@@ -1,69 +1,58 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-09T04:50:52.381Z",
+  "generatedAt": "2026-02-10T19:23:49.418Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-23",
-        "summary": "Implement a self-contained demo credential store in the frontend to support creating and verifying accounts using Full Name + Phone Number + Password, without any external auth providers.",
+        "id": "REQ-1",
+        "summary": "Ensure non-Internet-Identity sign-ins (OTP, password, guest) persist a login session so that refreshing the page keeps the user authenticated and protected routes do not redirect to /signin while the saved session is valid.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/auth/demoCredentialStore.ts",
-          "frontend/src/auth/demoCredentialTypes.ts"
+          "frontend/src/pages/Welcome.tsx",
+          "frontend/src/hooks/useRequireAuth.ts",
+          "frontend/src/pages/Profile.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/auth/demoCredentialStore.ts",
-          "frontend/src/auth/demoCredentialTypes.ts"
+          "frontend/src/pages/Welcome.tsx",
+          "frontend/src/pages/Profile.tsx"
         ]
       },
       {
-        "id": "REQ-24",
-        "summary": "Create a new Sign Up page that collects Full Name, Phone Number, and Password, validates inputs, creates the local account, and then signs the user in and navigates to /home.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/SignUp.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/SignUp.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-25",
-        "summary": "Update the existing Sign In page (frontend/src/pages/SignIn.tsx) to include a phone + password sign-in option and navigation to the new Sign Up route, while keeping existing alternate sign-in options (Internet Identity and Continue as Guest).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/SignIn.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/SignIn.tsx"
-        ]
-      },
-      {
-        "id": "REQ-26",
-        "summary": "Extend local auth session handling to support the new password-based session type, ensure route guarding recognizes it, and ensure the app shell hides navigation on the Sign Up route similarly to Sign In.",
+        "id": "REQ-2",
+        "summary": "Add validity checks for saved local login sessions so stale/invalid session data does not keep the user signed in indefinitely.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/auth/session.ts",
           "frontend/src/hooks/useAuthSession.ts",
-          "frontend/src/hooks/useRequireAuth.ts",
-          "frontend/src/designB/layout/DesignBAppShell.tsx",
-          "frontend/src/pages/Profile.tsx"
+          "frontend/src/hooks/useUserDisplayName.ts",
+          "frontend/src/designB/layout/DesignBAppShell.tsx"
         ],
         "matchedFiles": [
           "frontend/src/auth/session.ts",
-          "frontend/src/hooks/useAuthSession.ts",
-          "frontend/src/hooks/useRequireAuth.ts",
-          "frontend/src/designB/layout/DesignBAppShell.tsx",
-          "frontend/src/pages/Profile.tsx"
+          "frontend/src/hooks/useUserDisplayName.ts",
+          "frontend/src/designB/layout/DesignBAppShell.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "When a user is already authenticated (Internet Identity identity present or a valid local session exists), automatically redirect away from the /signin and / routes to the authenticated landing page (/home).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useRedirectIfAuthenticated.ts",
+          "frontend/src/pages/SignIn.tsx",
+          "frontend/src/pages/Welcome.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useRedirectIfAuthenticated.ts",
+          "frontend/src/pages/SignIn.tsx",
+          "frontend/src/pages/Welcome.tsx"
         ]
       }
     ]
@@ -73,16 +62,13 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/auth/demoCredentialStore.ts",
-    "frontend/src/auth/demoCredentialTypes.ts",
     "frontend/src/auth/session.ts",
     "frontend/src/designB/layout/DesignBAppShell.tsx",
-    "frontend/src/hooks/useAuthSession.ts",
-    "frontend/src/hooks/useRequireAuth.ts",
+    "frontend/src/hooks/useRedirectIfAuthenticated.ts",
+    "frontend/src/hooks/useUserDisplayName.ts",
     "frontend/src/pages/Profile.tsx",
     "frontend/src/pages/SignIn.tsx",
-    "frontend/src/pages/SignUp.tsx",
+    "frontend/src/pages/Welcome.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

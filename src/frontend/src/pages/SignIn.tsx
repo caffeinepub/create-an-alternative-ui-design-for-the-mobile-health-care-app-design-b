@@ -12,6 +12,7 @@ import { PageTitle } from '../designB/components/DesignBTypography';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useDemoOtp } from '../hooks/useDemoOtp';
 import { useAuthSession } from '../hooks/useAuthSession';
+import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated';
 import { verifyCredentials } from '../auth/demoCredentialStore';
 import { Loader2, Phone, AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 import { useEffect } from 'react';
@@ -23,6 +24,9 @@ export default function SignIn() {
   const { login, isLoggingIn, identity, loginStatus } = useInternetIdentity();
   const { generateOtp, verifyOtp, currentOtp, canResend, resendCooldown, resetSession } = useDemoOtp();
   const { signInAsOtp, signInAsPassword, continueAsGuest } = useAuthSession();
+
+  // Redirect if already authenticated
+  useRedirectIfAuthenticated();
 
   // OTP flow state
   const [step, setStep] = useState<SignInStep>('phone');
@@ -308,7 +312,7 @@ export default function SignIn() {
                       {isOtpProcessing ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Sending...
+                          Sending Code...
                         </>
                       ) : (
                         <>
@@ -321,35 +325,32 @@ export default function SignIn() {
                 ) : (
                   <form onSubmit={handleVerifyOtp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="otp">Verification Code</Label>
-                      <div className="flex justify-center">
-                        <InputOTP
-                          maxLength={6}
-                          value={otpCode}
-                          onChange={setOtpCode}
-                        >
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-center">
-                        Code sent to {countryCode} {phoneNumber}
+                      <Label>Enter Verification Code</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Code sent to {countryCode}{phoneNumber}
                       </p>
+                      {currentOtp && (
+                        <Alert>
+                          <AlertDescription>
+                            Demo code: <strong>{currentOtp}</strong>
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                      <InputOTP
+                        maxLength={6}
+                        value={otpCode}
+                        onChange={setOtpCode}
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
                     </div>
-
-                    {currentOtp && (
-                      <Alert>
-                        <AlertDescription className="text-center">
-                          <strong>Demo Mode:</strong> Your code is <span className="font-mono font-bold text-lg">{currentOtp}</span>
-                        </AlertDescription>
-                      </Alert>
-                    )}
 
                     {otpError && (
                       <Alert variant="destructive">
@@ -358,85 +359,95 @@ export default function SignIn() {
                       </Alert>
                     )}
 
-                    <Button type="submit" className="w-full" disabled={isOtpProcessing}>
-                      {isOtpProcessing ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Verifying...
-                        </>
-                      ) : (
-                        'Verify and Continue'
-                      )}
-                    </Button>
-
-                    <div className="flex items-center justify-between text-sm">
-                      <button
+                    <div className="flex gap-2">
+                      <Button
                         type="button"
-                        className="text-primary hover:underline"
+                        variant="outline"
                         onClick={handleBackToPhone}
+                        disabled={isOtpProcessing}
+                        className="flex-1"
                       >
-                        Change number
-                      </button>
-                      <button
-                        type="button"
-                        className="text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                        onClick={handleResendOtp}
-                        disabled={!canResend}
+                        Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={isOtpProcessing || otpCode.length !== 6}
+                        className="flex-1"
                       >
-                        {canResend ? 'Resend code' : `Resend in ${resendCooldown}s`}
-                      </button>
+                        {isOtpProcessing ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Verifying...
+                          </>
+                        ) : (
+                          'Verify'
+                        )}
+                      </Button>
                     </div>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleResendOtp}
+                      disabled={!canResend}
+                      className="w-full"
+                    >
+                      {canResend ? 'Resend Code' : `Resend in ${resendCooldown}s`}
+                    </Button>
                   </form>
                 )}
               </TabsContent>
             </Tabs>
 
+            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
+                <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
               </div>
             </div>
 
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleInternetIdentityLogin}
-              disabled={isLoggingIn}
-            >
-              {isLoggingIn ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Connecting...
-                </>
-              ) : (
-                'Internet Identity'
-              )}
-            </Button>
+            {/* Alternative Sign In Methods */}
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={handleInternetIdentityLogin}
+                disabled={isLoggingIn}
+              >
+                {isLoggingIn ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  'Internet Identity'
+                )}
+              </Button>
 
-            <div className="space-y-2 text-center text-sm">
-              <button
-                type="button"
-                className="text-primary hover:underline"
+              <Button
+                variant="ghost"
+                className="w-full"
                 onClick={handleContinueAsGuest}
               >
                 Continue as Guest
-              </button>
-              <div>
-                <span className="text-muted-foreground">Don't have an account? </span>
-                <button
-                  type="button"
-                  className="text-primary hover:underline font-medium"
-                  onClick={() => navigate({ to: '/signup' })}
-                >
-                  Sign Up
-                </button>
-              </div>
+              </Button>
             </div>
           </CardContent>
         </Card>
+
+        {/* Sign Up Link */}
+        <div className="text-center text-sm">
+          <span className="text-muted-foreground">Don't have an account? </span>
+          <button
+            onClick={() => navigate({ to: '/signup' })}
+            className="text-primary hover:underline font-medium"
+          >
+            Sign Up
+          </button>
+        </div>
       </div>
     </div>
   );

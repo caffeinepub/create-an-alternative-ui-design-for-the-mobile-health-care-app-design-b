@@ -1,18 +1,35 @@
-import { RouterProvider, createRouter, createRootRoute, createRoute } from '@tanstack/react-router';
+import { StrictMode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider, createRouter, createRoute, createRootRoute } from '@tanstack/react-router';
+import { InternetIdentityProvider } from './hooks/useInternetIdentity';
 import { ThemeProvider } from 'next-themes';
-import { Toaster } from '@/components/ui/sonner';
 import { DesignBProvider } from './designB/themeContext';
 import { DesignBAppShell } from './designB/layout/DesignBAppShell';
+import { Toaster } from './components/ui/sonner';
+
+// Pages
 import Welcome from './pages/Welcome';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import HomeDashboard from './pages/HomeDashboard';
 import Profile from './pages/Profile';
 
-const rootRoute = createRootRoute({
-  component: () => <DesignBAppShell />,
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
 });
 
+// Create root route with layout
+const rootRoute = createRootRoute({
+  component: DesignBAppShell,
+});
+
+// Create routes
 const welcomeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -43,6 +60,7 @@ const profileRoute = createRoute({
   component: Profile,
 });
 
+// Create the route tree
 const routeTree = rootRoute.addChildren([
   welcomeRoute,
   signInRoute,
@@ -51,21 +69,31 @@ const routeTree = rootRoute.addChildren([
   profileRoute,
 ]);
 
+// Create the router
 const router = createRouter({ routeTree });
 
+// Register the router for type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
   }
 }
 
-export default function App() {
+function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-      <DesignBProvider>
-        <RouterProvider router={router} />
-        <Toaster />
-      </DesignBProvider>
-    </ThemeProvider>
+    <StrictMode>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <DesignBProvider>
+          <InternetIdentityProvider>
+            <QueryClientProvider client={queryClient}>
+              <RouterProvider router={router} />
+              <Toaster />
+            </QueryClientProvider>
+          </InternetIdentityProvider>
+        </DesignBProvider>
+      </ThemeProvider>
+    </StrictMode>
   );
 }
+
+export default App;

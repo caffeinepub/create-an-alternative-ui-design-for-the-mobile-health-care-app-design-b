@@ -1,104 +1,85 @@
 {
   "kind": "build_request",
-  "title": "Add phone + password Sign In and Sign Up (full name, phone number, password)",
+  "title": "Persist login session so users stay signed in after reload",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-23",
-      "text": "Implement a self-contained demo credential store in the frontend to support creating and verifying accounts using Full Name + Phone Number + Password, without any external auth providers.",
+      "id": "REQ-1",
+      "text": "Ensure non-Internet-Identity sign-ins (OTP, password, guest) persist a login session so that refreshing the page keeps the user authenticated and protected routes do not redirect to /signin while the saved session is valid.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "user-1"
         ],
         "quotes": [
-          "can you create sign in, sign up with full name, phone number, password"
+          "Can you make save the login data"
         ]
       },
       "acceptanceCriteria": [
-        "A user account record can be created and persisted locally (e.g., localStorage) with fields: fullName, phoneNumber, password (or password-derived value).",
-        "Phone number uniqueness is enforced; attempting to sign up with an existing phone number shows an English error message and does not overwrite the existing account.",
-        "Sign-in verification checks the submitted phone number + password against the locally stored account data and returns a success/failure result that the UI can display.",
-        "No backend changes or external network calls are required for this credential flow."
+        "After completing OTP sign-in, password sign-in, or Continue as guest, reloading the browser keeps the user authenticated (the app does not redirect to /signin when navigating to protected routes).",
+        "Protected routes that use the existing route guard continue to consider a stored local session as authenticated via localStorage (using the existing healthcare_local_session key).",
+        "Signing out clears the local session so that a page reload no longer treats the user as authenticated."
       ]
     },
     {
-      "id": "REQ-24",
-      "text": "Create a new Sign Up page that collects Full Name, Phone Number, and Password, validates inputs, creates the local account, and then signs the user in and navigates to /home.",
+      "id": "REQ-2",
+      "text": "Add validity checks for saved local login sessions so stale/invalid session data does not keep the user signed in indefinitely.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "user-1"
         ],
         "quotes": [
-          "can you create sign in, sign up with full name, phone number, password"
+          "Can you make save the login data"
         ]
       },
       "acceptanceCriteria": [
-        "A new route exists for Sign Up (e.g., /signup) and renders a Sign Up form with the fields: Full Name, Phone Number, Password.",
-        "Form validation is present with English user-facing messages (e.g., missing name, invalid phone number, too-short password).",
-        "On successful sign up, an authenticated local session is created and the user is redirected to /home.",
-        "The page uses the existing component system (Shadcn UI + existing Design B layout/typography components where appropriate)."
+        "Local session validation checks both shape/type (otp|password|guest) and a reasonable expiration window based on the stored timestamp.",
+        "If the stored local session is expired or malformed, it is treated as unauthenticated and the app redirects to /signin for protected routes.",
+        "Valid sessions continue to work without requiring the user to re-enter credentials on refresh."
       ]
     },
     {
-      "id": "REQ-25",
-      "text": "Update the existing Sign In page (frontend/src/pages/SignIn.tsx) to include a phone + password sign-in option and navigation to the new Sign Up route, while keeping existing alternate sign-in options (Internet Identity and Continue as Guest).",
+      "id": "REQ-3",
+      "text": "When a user is already authenticated (Internet Identity identity present or a valid local session exists), automatically redirect away from the /signin and / routes to the authenticated landing page (/home).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "user-1"
         ],
         "quotes": [
-          "can you create sign in, sign up with full name, phone number, password"
+          "Can you make save the login data"
         ]
       },
       "acceptanceCriteria": [
-        "Sign In supports logging in with Phone Number + Password and, on success, creates an authenticated local session and navigates to /home.",
-        "If credentials are incorrect, Sign In displays a clear English error message and does not navigate.",
-        "A visible link/button on Sign In navigates to the Sign Up page.",
-        "Internet Identity and Continue as Guest options remain available on Sign In and continue to function."
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "text": "Extend local auth session handling to support the new password-based session type, ensure route guarding recognizes it, and ensure the app shell hides navigation on the Sign Up route similarly to Sign In.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "can you create sign in, sign up with full name, phone number, password"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Local session utilities (frontend/src/auth/session.ts and frontend/src/hooks/useAuthSession.ts) support a new session type for password-based sign-in and treat it as authenticated in hasValidSession()/hasSession().",
-        "Protected routes that rely on useRequireAuth consider a password-based local session as authenticated (no redirect to /signin when the session is present).",
-        "Signing out clears password-based local sessions the same way as existing local sessions.",
-        "DesignBAppShell hides bottom navigation/assistant widget on /signup (in addition to existing hidden routes).",
-        "The app builds cleanly with no TypeScript errors."
+        "Visiting /signin while already authenticated automatically navigates to /home without requiring user interaction.",
+        "Visiting / (welcome page) while already authenticated automatically navigates to /home.",
+        "If no valid authentication exists, / and /signin continue to behave as they do now."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/components/ui (Shadcn components are read-only).",
-    "Do not edit any paths listed as immutable in SYSTEM_CONTEXT (compose around them instead).",
-    "Keep all user-facing text in English."
+    "Do not edit files in frontend immutablePaths (including frontend/src/hooks/useInternetIdentity.ts and frontend/src/hooks/useActor.ts). Compose around them instead.",
+    "Do not introduce third-party authentication providers; only existing Internet Identity + local demo session mechanisms are allowed.",
+    "Keep backend as a single Motoko actor; no additional backend services."
   ],
   "nonGoals": [
-    "Implementing real SMS delivery, real password reset, or production-grade authentication/security hardening.",
-    "Integrating third-party authentication providers beyond existing Internet Identity support.",
-    "Adding or changing backend persistence for user accounts (this request should remain self-contained in the frontend demo auth model unless separately requested)."
+    "Implementing a real backend username/password authentication system.",
+    "Storing user passwords or OTP codes persistently beyond the existing demo behavior.",
+    "Adding new sign-in methods beyond OTP, password, guest, and Internet Identity."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
   },
   "userProfileUpdate": {
-    "goalsToAdd": [],
+    "goalsToAdd": [
+      "Persist login session so users remain signed in after refresh for non-Internet-Identity flows."
+    ],
     "goalsToRemove": [],
-    "preferencesToAdd": [],
+    "preferencesToAdd": [
+      "User-facing auth-related text must be in English."
+    ],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],

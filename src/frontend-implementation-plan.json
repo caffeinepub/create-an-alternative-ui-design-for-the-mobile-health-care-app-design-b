@@ -1,104 +1,88 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Phone + Password Sign In/Sign Up with local demo credential store",
+  "title": "Persist and validate local demo auth sessions + authenticated redirects",
   "requirements": [
     {
-      "id": "REQ-23",
-      "summary": "Add a self-contained local credential store for Full Name + Phone Number + Password sign-up and verification (no backend/external auth).",
+      "id": "REQ-1",
+      "summary": "Persist OTP/password/guest sign-ins via the existing healthcare_local_session localStorage key so refresh keeps users authenticated and protected routes remain accessible until sign-out.",
       "acceptanceCriteria": [
-        "A user account record can be created and persisted locally (e.g., localStorage) with fields: fullName, phoneNumber, password (or password-derived value).",
-        "Phone number uniqueness is enforced; attempting to sign up with an existing phone number shows an English error message and does not overwrite the existing account.",
-        "Sign-in verification checks the submitted phone number + password against the locally stored account data and returns a success/failure result that the UI can display.",
-        "No backend changes or external network calls are required for this credential flow."
+        "After completing OTP sign-in, password sign-in, or Continue as guest, reloading the browser keeps the user authenticated (the app does not redirect to /signin when navigating to protected routes).",
+        "Protected routes that use the existing route guard continue to consider a stored local session as authenticated via localStorage (using the existing healthcare_local_session key).",
+        "Signing out clears the local session so that a page reload no longer treats the user as authenticated."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/auth/demoCredentialStore.ts",
-          "operation": "create",
-          "description": "Implement local demo account persistence and verification using localStorage (create account with fullName + phoneNumber + password-derived value; enforce phone-number uniqueness; provide verifyCredentials result for UI)."
+          "path": "frontend/src/pages/Welcome.tsx",
+          "operation": "modify",
+          "description": "Update the \"Explore as Guest\" action to call the existing local session helper (via useAuthSession().continueAsGuest()) before navigating to /home, ensuring guest auth persists across reloads."
         },
         {
-          "path": "frontend/src/auth/demoCredentialTypes.ts",
-          "operation": "create",
-          "description": "Define TypeScript types for locally persisted demo accounts and verification results used by Sign In/Sign Up."
-        }
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "summary": "Create a new /signup page for Full Name + Phone Number + Password with validation and automatic sign-in redirect to /home.",
-      "acceptanceCriteria": [
-        "A new route exists for Sign Up (e.g., /signup) and renders a Sign Up form with the fields: Full Name, Phone Number, Password.",
-        "Form validation is present with English user-facing messages (e.g., missing name, invalid phone number, too-short password).",
-        "On successful sign up, an authenticated local session is created and the user is redirected to /home.",
-        "The page uses the existing component system (Shadcn UI + existing Design B layout/typography components where appropriate)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/SignUp.tsx",
-          "operation": "create",
-          "description": "Create the Sign Up page UI and logic: collect full name, phone number, and password; validate inputs; create local account via the demo credential store; create a password-based local session; navigate to /home. Use shadcn-ui form primitives (e.g., Button/Input/Label/Card/Alert) and DesignB typography components for consistent layout/typography. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/hooks/useRequireAuth.ts",
+          "operation": "modify",
+          "description": "Ensure the route guard continues to rely on the local session validity signal (via useAuthSession().hasSession()) so protected routes do not redirect to /signin when a saved local session is valid."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/pages/Profile.tsx",
           "operation": "modify",
-          "description": "Register the new /signup route in the TanStack Router route tree and wire it to the new SignUp page so it is navigable."
+          "description": "Confirm sign-out clears both Internet Identity state and the saved local session (healthcare_local_session) and navigates to /signin with replace, so a reload is no longer authenticated."
         }
       ]
     },
     {
-      "id": "REQ-25",
-      "summary": "Update Sign In to support phone + password sign-in and link to /signup while preserving Internet Identity and guest flows.",
+      "id": "REQ-2",
+      "summary": "Validate saved local sessions (shape + expiration window) so malformed or stale localStorage data does not keep users signed in indefinitely.",
       "acceptanceCriteria": [
-        "Sign In supports logging in with Phone Number + Password and, on success, creates an authenticated local session and navigates to /home.",
-        "If credentials are incorrect, Sign In displays a clear English error message and does not navigate.",
-        "A visible link/button on Sign In navigates to the Sign Up page.",
-        "Internet Identity and Continue as Guest options remain available on Sign In and continue to function."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/SignIn.tsx",
-          "operation": "modify",
-          "description": "Add a phone + password sign-in option that verifies credentials against the local demo credential store, creates a password-based local session on success, and navigates to /home; show clear English errors on failure; add a visible control linking to /signup; keep existing OTP flow, Internet Identity button, and Continue as Guest functionality. Use shadcn-ui components (e.g., Button/Input/Label/Card/Alert) and existing DesignB typography as appropriate. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "summary": "Extend local session handling and route guarding for password-based sessions; hide app shell navigation/widgets on /signup like /signin.",
-      "acceptanceCriteria": [
-        "Local session utilities (frontend/src/auth/session.ts and frontend/src/hooks/useAuthSession.ts) support a new session type for password-based sign-in and treat it as authenticated in hasValidSession()/hasSession().",
-        "Protected routes that rely on useRequireAuth consider a password-based local session as authenticated (no redirect to /signin when the session is present).",
-        "Signing out clears password-based local sessions the same way as existing local sessions.",
-        "DesignBAppShell hides bottom navigation/assistant widget on /signup (in addition to existing hidden routes).",
-        "The app builds cleanly with no TypeScript errors."
+        "Local session validation checks both shape/type (otp|password|guest) and a reasonable expiration window based on the stored timestamp.",
+        "If the stored local session is expired or malformed, it is treated as unauthenticated and the app redirects to /signin for protected routes.",
+        "Valid sessions continue to work without requiring the user to re-enter credentials on refresh."
       ],
       "file_operations": [
         {
           "path": "frontend/src/auth/session.ts",
           "operation": "modify",
-          "description": "Add a new local session type for password-based sign-in and ensure hasValidSession treats it as authenticated; keep localStorage behavior consistent with existing sessions."
+          "description": "Add a strict local session validator that (1) verifies required fields by session type, (2) enforces an expiration window derived from the stored timestamp, and (3) clears healthcare_local_session when invalid/expired. Update hasValidSession() (and optionally loadSession()) to use this validation so all callers consistently treat stale/malformed sessions as unauthenticated."
         },
         {
           "path": "frontend/src/hooks/useAuthSession.ts",
           "operation": "modify",
-          "description": "Expose a sign-in helper for password-based sessions (in addition to OTP/guest) and ensure hasSession reflects the updated session validation."
+          "description": "Align hasSession() with the updated validated hasValidSession() behavior so the route guard and other callers automatically benefit from expiration/shape checks."
         },
         {
-          "path": "frontend/src/hooks/useRequireAuth.ts",
+          "path": "frontend/src/hooks/useUserDisplayName.ts",
           "operation": "modify",
-          "description": "Ensure route guarding recognizes the updated local session types as authenticated via useAuthSession().hasSession()."
+          "description": "Switch display-name resolution to only use a validated local session (and fall back when session is invalid/expired) so the UI does not show authenticated/session-derived identity for stale localStorage."
         },
         {
           "path": "frontend/src/designB/layout/DesignBAppShell.tsx",
           "operation": "modify",
-          "description": "Update the hidden-routes logic so bottom navigation and the assistant widget are also hidden on /signup (matching the behavior for / and /signin)."
+          "description": "Ensure the header’s authenticated-user display logic uses the validated local session check so stale/malformed sessions do not show the signed-in UI state."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Auto-redirect authenticated users away from / and /signin to /home when Internet Identity is present or a valid local session exists.",
+      "acceptanceCriteria": [
+        "Visiting /signin while already authenticated automatically navigates to /home without requiring user interaction.",
+        "Visiting / (welcome page) while already authenticated automatically navigates to /home.",
+        "If no valid authentication exists, / and /signin continue to behave as they do now."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useRedirectIfAuthenticated.ts",
+          "operation": "create",
+          "description": "Create a small hook that checks authentication status using Internet Identity (respecting its initialization state) OR a validated local session, and performs a replace navigation to /home when authenticated. This should be usable from / and /signin without modifying immutable auth hooks."
         },
         {
-          "path": "frontend/src/pages/Profile.tsx",
+          "path": "frontend/src/pages/SignIn.tsx",
           "operation": "modify",
-          "description": "Confirm sign-out behavior clears password-based local sessions using existing clearLocalSession() and that navigation returns to /signin without regressions."
+          "description": "Invoke the new useRedirectIfAuthenticated hook so users who already have Internet Identity or a valid local session are automatically redirected to /home when visiting /signin."
+        },
+        {
+          "path": "frontend/src/pages/Welcome.tsx",
+          "operation": "modify",
+          "description": "Invoke the new useRedirectIfAuthenticated hook so users who already have Internet Identity or a valid local session are automatically redirected to /home when visiting /."
         }
       ]
     }

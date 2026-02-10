@@ -2,9 +2,20 @@ import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { PageTitle, BodyText } from '../designB/components/DesignBTypography';
 import { ArrowRight } from 'lucide-react';
+import { useAuthSession } from '../hooks/useAuthSession';
+import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated';
 
 export default function Welcome() {
   const navigate = useNavigate();
+  const { continueAsGuest } = useAuthSession();
+
+  // Redirect if already authenticated
+  useRedirectIfAuthenticated();
+
+  const handleExploreAsGuest = () => {
+    continueAsGuest();
+    navigate({ to: '/home' });
+  };
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-12">
@@ -58,7 +69,7 @@ export default function Welcome() {
           <Button 
             size="lg" 
             variant="outline"
-            onClick={() => navigate({ to: '/home' })}
+            onClick={handleExploreAsGuest}
           >
             Explore as Guest
           </Button>

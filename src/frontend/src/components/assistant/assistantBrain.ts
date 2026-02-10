@@ -4,6 +4,22 @@ import { CommandResult } from './assistantTypes';
 export function interpretCommand(userInput: string): CommandResult {
   const normalized = userInput.toLowerCase().trim();
 
+  // Flutter/.dart detection pattern (high priority - check first)
+  const flutterPatterns = [
+    /\b(flutter|flitter)\b/i,
+    /\.dart\b/i,
+    /\bdart\s+(file|extension|code)\b/i,
+  ];
+
+  for (const pattern of flutterPatterns) {
+    if (pattern.test(normalized)) {
+      return {
+        type: 'help',
+        message: `Flutter/.dart conversion is not supported in this project.\n\nThis application uses:\n• React + TypeScript for the frontend\n• Motoko for the backend (Internet Computer)\n• Tailwind CSS for styling\n\nI can help you:\n1. Build the requested feature in the existing React + TypeScript app\n2. Recreate specific functionality within the current stack\n\nWhat feature or process would you like to implement? I'm here to help you build it in React!`,
+      };
+    }
+  }
+
   // Navigation patterns
   const navigationPatterns = [
     { pattern: /\b(go to|open|navigate to|take me to|show|visit)\s+(home|dashboard)\b/i, target: '/home', name: 'Home' },

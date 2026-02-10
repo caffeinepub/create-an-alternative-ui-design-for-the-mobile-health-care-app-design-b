@@ -1,47 +1,73 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-09T04:50:52.377Z",
-  "summary": "Diff implements a local demo credential store (phone+password), adds a new /signup route and SignUp page, extends session handling with a password session type, updates route guarding to accept local sessions, and updates DesignBAppShell to hide navigation on /signup. SignIn is updated to include password sign-in while retaining existing options per file summary, but some UI details are truncated so a few AC items cannot be fully verified from shown code.",
-  "missing_requirements": [],
-  "hallucinated_features": [
+  "generatedAt": "2026-02-10T19:23:49.415Z",
+  "summary": "Diff adds local session validation with expiry, plus a new hook to redirect authenticated users away from / and /signin to /home. However, based on the provided diff summary, it’s not verifiable that the existing protected-route guard now treats a stored local session as authenticated, nor that OTP/password/guest sign-in and sign-out paths definitively persist/clear the session via the required localStorage key.",
+  "missing_requirements": [
     {
-      "description": "Added an account lookup helper (getAccount) in the demo credential store, which was not explicitly requested.",
-      "reason": "BuildRequest only requires create/persist + uniqueness + verify; it does not request an API to fetch an account record by phone number.",
+      "id": "REQ-1",
+      "requirement": "Ensure non-Internet-Identity sign-ins (OTP, password, guest) persist a login session so refreshing the page keeps the user authenticated and protected routes do not redirect to /signin while the saved session is valid.",
+      "reason": "The diff shows session utilities (save/load/validate) and SignIn/Welcome calling useAuthSession methods, but it does not show (or modify) the actual implementations that would guarantee OTP/password/guest sign-ins write the required healthcare_local_session localStorage entry and that protected routes use that stored session to allow access after reload.",
       "evidence": [
-        "frontend/src/auth/demoCredentialStore.ts"
+        "frontend/src/auth/session.ts",
+        "frontend/src/pages/SignIn.tsx",
+        "frontend/src/pages/Welcome.tsx"
       ]
     },
     {
-      "description": "Added simulated network delays (setTimeout) around Sign Up (and likely Sign In flows), which was not requested.",
-      "reason": "BuildRequest does not mention adding artificial delays; it is extra behavior beyond required validation and navigation.",
+      "id": "REQ-1",
+      "requirement": "Protected routes that use the existing route guard continue to consider a stored local session as authenticated via localStorage (using the existing healthcare_local_session key).",
+      "reason": "No changes to the route guard (e.g., useRequireAuth or router protection logic) are shown in the diff summary, so it is not verifiable that protected routes now consult hasValidSession()/healthcare_local_session during authorization checks.",
       "evidence": [
-        "frontend/src/pages/SignUp.tsx",
-        "frontend/src/pages/SignIn.tsx"
+        "frontend/src/pages/Profile.tsx",
+        "frontend/src/pages/HomeDashboard.tsx (mentioned in frontend-file-summaries.txt only; no diff shown for route guard)",
+        "frontend/src/auth/session.ts"
       ]
     },
     {
-      "description": "Added country code selection UI for phone numbers on Sign Up/Sign In.",
-      "reason": "BuildRequest requires collecting a Phone Number but does not request a country code selector; this expands the UX surface area.",
+      "id": "REQ-1",
+      "requirement": "Signing out clears the local session so that a page reload no longer treats the user as authenticated.",
+      "reason": "Profile sign-out calls clearLocalSession from useAuthSession, but the diff does not include useAuthSession implementation, so it cannot be confirmed that it clears the healthcare_local_session key (e.g., via clearSession()).",
       "evidence": [
-        "frontend/src/pages/SignUp.tsx",
-        "frontend/src/pages/SignIn.tsx"
+        "frontend/src/pages/Profile.tsx",
+        "frontend/src/auth/session.ts"
       ]
     }
   ],
-  "confidence": 0.74,
+  "hallucinated_features": [
+    {
+      "description": "Display-name resolution logic combining profile fullName, local session data (phone/fullName), and shortened Internet Identity principal.",
+      "reason": "The BuildRequest focuses on session persistence/validation and redirect behavior; it does not request changes to how user display names are computed or displayed.",
+      "evidence": [
+        "frontend/src/hooks/useUserDisplayName.ts",
+        "frontend/src/designB/layout/DesignBAppShell.tsx"
+      ]
+    },
+    {
+      "description": "UI behavior to show/hide the header user name based on validated session/Internet Identity state.",
+      "reason": "Not requested as part of session persistence, validity checks, or redirect requirements.",
+      "evidence": [
+        "frontend/src/designB/layout/DesignBAppShell.tsx"
+      ]
+    },
+    {
+      "description": "Profile sign-out also clears the React Query cache (queryClient.clear()).",
+      "reason": "Not requested; BuildRequest only specifies clearing local session on sign-out.",
+      "evidence": [
+        "frontend/src/pages/Profile.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.62,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
-    "frontend/src/auth/demoCredentialStore.ts",
-    "frontend/src/auth/demoCredentialTypes.ts",
     "frontend/src/auth/session.ts",
     "frontend/src/designB/layout/DesignBAppShell.tsx",
-    "frontend/src/hooks/useAuthSession.ts",
-    "frontend/src/hooks/useRequireAuth.ts",
+    "frontend/src/hooks/useRedirectIfAuthenticated.ts",
+    "frontend/src/hooks/useUserDisplayName.ts",
     "frontend/src/pages/Profile.tsx",
     "frontend/src/pages/SignIn.tsx",
-    "frontend/src/pages/SignUp.tsx",
+    "frontend/src/pages/Welcome.tsx",
     "project_state.json"
   ]
 }

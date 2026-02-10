@@ -5,6 +5,9 @@
 
 const SESSION_KEY = 'healthcare_local_session';
 
+// Session expires after 30 days
+const SESSION_EXPIRY_MS = 30 * 24 * 60 * 60 * 1000;
+
 export type SessionType = 'otp' | 'password' | 'guest' | null;
 
 export interface LocalSession {
@@ -65,9 +68,57 @@ export function clearSession(): void {
 }
 
 /**
+ * Validate a session object for shape and expiration
+ */
+function validateSession(session: LocalSession | null): boolean {
+  if (!session) return false;
+
+  // Check type is valid
+  if (!session.type || !['otp', 'password', 'guest'].includes(session.type)) {
+    return false;
+  }
+
+  // Check timestamp exists and is a number
+  if (typeof session.timestamp !== 'number' || isNaN(session.timestamp)) {
+    return false;
+  }
+
+  // Check expiration
+  const now = Date.now();
+  const age = now - session.timestamp;
+  if (age > SESSION_EXPIRY_MS || age < 0) {
+    return false;
+  }
+
+  // Type-specific validation
+  if (session.type === 'otp' || session.type === 'password') {
+    // OTP and password sessions must have a phone number
+    if (!session.phone || typeof session.phone !== 'string') {
+      return false;
+    }
+  }
+
+  if (session.type === 'password') {
+    // Password sessions should have a full name
+    if (!session.fullName || typeof session.fullName !== 'string') {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
  * Check if a valid local session exists
  */
 export function hasValidSession(): boolean {
   const session = loadSession();
-  return session !== null && (session.type === 'otp' || session.type === 'password' || session.type === 'guest');
+  const isValid = validateSession(session);
+  
+  // Clear invalid or expired sessions
+  if (!isValid && session) {
+    clearSession();
+  }
+  
+  return isValid;
 }
