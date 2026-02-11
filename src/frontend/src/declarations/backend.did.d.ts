@@ -28,6 +28,7 @@ export interface EmergencyContact {
   'name' : string,
   'phone' : string,
 }
+export type ExternalBlob = Uint8Array;
 export interface MLInput {
   'age' : number,
   'bmi' : number,
@@ -66,19 +67,51 @@ export interface UserProfile {
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
+export interface _CaffeineStorageCreateCertificateResult {
+  'method' : string,
+  'blob_hash' : string,
+}
+export interface _CaffeineStorageRefillInformation {
+  'proposed_top_up_amount' : [] | [bigint],
+}
+export interface _CaffeineStorageRefillResult {
+  'success' : [] | [boolean],
+  'topped_up_amount' : [] | [bigint],
+}
 export interface _SERVICE {
+  '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
+  '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
+  '_caffeineStorageConfirmBlobDeletion' : ActorMethod<
+    [Array<Uint8Array>],
+    undefined
+  >,
+  '_caffeineStorageCreateCertificate' : ActorMethod<
+    [string],
+    _CaffeineStorageCreateCertificateResult
+  >,
+  '_caffeineStorageRefillCashier' : ActorMethod<
+    [[] | [_CaffeineStorageRefillInformation]],
+    _CaffeineStorageRefillResult
+  >,
+  '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'deleteMedicalFile' : ActorMethod<[string], boolean>,
   'getAllPredictions' : ActorMethod<[], Array<[Principal, MLPrediction]>>,
   'getCallerMLPrediction' : ActorMethod<[], [] | [MLPrediction]>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getFeatureImportance' : ActorMethod<[], Array<[string, number]>>,
+  'getLocation' : ActorMethod<[], [] | [string]>,
+  'getMedicalFile' : ActorMethod<[string], [] | [ExternalBlob]>,
   'getUserMLPrediction' : ActorMethod<[Principal], [] | [MLPrediction]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'listMedicalFiles' : ActorMethod<[], Array<[string, ExternalBlob]>>,
   'runMLPrediction' : ActorMethod<[MLInput], MLPrediction>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'updateLocation' : ActorMethod<[string], undefined>,
+  'uploadMedicalFile' : ActorMethod<[string, ExternalBlob], string>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

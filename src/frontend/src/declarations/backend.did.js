@@ -8,6 +8,17 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const _CaffeineStorageCreateCertificateResult = IDL.Record({
+  'method' : IDL.Text,
+  'blob_hash' : IDL.Text,
+});
+export const _CaffeineStorageRefillInformation = IDL.Record({
+  'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+});
+export const _CaffeineStorageRefillResult = IDL.Record({
+  'success' : IDL.Opt(IDL.Bool),
+  'topped_up_amount' : IDL.Opt(IDL.Nat),
+});
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
@@ -53,6 +64,7 @@ export const UserProfile = IDL.Record({
   'allergies' : IDL.Vec(Allergy),
   'location' : IDL.Opt(IDL.Text),
 });
+export const ExternalBlob = IDL.Vec(IDL.Nat8);
 export const MLInput = IDL.Record({
   'age' : IDL.Nat8,
   'bmi' : IDL.Nat8,
@@ -70,8 +82,35 @@ export const MLInput = IDL.Record({
 });
 
 export const idlService = IDL.Service({
+  '_caffeineStorageBlobIsLive' : IDL.Func(
+      [IDL.Vec(IDL.Nat8)],
+      [IDL.Bool],
+      ['query'],
+    ),
+  '_caffeineStorageBlobsToDelete' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      ['query'],
+    ),
+  '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      [],
+      [],
+    ),
+  '_caffeineStorageCreateCertificate' : IDL.Func(
+      [IDL.Text],
+      [_CaffeineStorageCreateCertificateResult],
+      [],
+    ),
+  '_caffeineStorageRefillCashier' : IDL.Func(
+      [IDL.Opt(_CaffeineStorageRefillInformation)],
+      [_CaffeineStorageRefillResult],
+      [],
+    ),
+  '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'deleteMedicalFile' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'getAllPredictions' : IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Principal, MLPrediction))],
@@ -85,6 +124,8 @@ export const idlService = IDL.Service({
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat8))],
       ['query'],
     ),
+  'getLocation' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
+  'getMedicalFile' : IDL.Func([IDL.Text], [IDL.Opt(ExternalBlob)], ['query']),
   'getUserMLPrediction' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(MLPrediction)],
@@ -96,13 +137,31 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'listMedicalFiles' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, ExternalBlob))],
+      ['query'],
+    ),
   'runMLPrediction' : IDL.Func([MLInput], [MLPrediction], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'updateLocation' : IDL.Func([IDL.Text], [], []),
+  'uploadMedicalFile' : IDL.Func([IDL.Text, ExternalBlob], [IDL.Text], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const _CaffeineStorageCreateCertificateResult = IDL.Record({
+    'method' : IDL.Text,
+    'blob_hash' : IDL.Text,
+  });
+  const _CaffeineStorageRefillInformation = IDL.Record({
+    'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+  });
+  const _CaffeineStorageRefillResult = IDL.Record({
+    'success' : IDL.Opt(IDL.Bool),
+    'topped_up_amount' : IDL.Opt(IDL.Nat),
+  });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
@@ -148,6 +207,7 @@ export const idlFactory = ({ IDL }) => {
     'allergies' : IDL.Vec(Allergy),
     'location' : IDL.Opt(IDL.Text),
   });
+  const ExternalBlob = IDL.Vec(IDL.Nat8);
   const MLInput = IDL.Record({
     'age' : IDL.Nat8,
     'bmi' : IDL.Nat8,
@@ -165,8 +225,35 @@ export const idlFactory = ({ IDL }) => {
   });
   
   return IDL.Service({
+    '_caffeineStorageBlobIsLive' : IDL.Func(
+        [IDL.Vec(IDL.Nat8)],
+        [IDL.Bool],
+        ['query'],
+      ),
+    '_caffeineStorageBlobsToDelete' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        ['query'],
+      ),
+    '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        [],
+        [],
+      ),
+    '_caffeineStorageCreateCertificate' : IDL.Func(
+        [IDL.Text],
+        [_CaffeineStorageCreateCertificateResult],
+        [],
+      ),
+    '_caffeineStorageRefillCashier' : IDL.Func(
+        [IDL.Opt(_CaffeineStorageRefillInformation)],
+        [_CaffeineStorageRefillResult],
+        [],
+      ),
+    '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'deleteMedicalFile' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'getAllPredictions' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(IDL.Principal, MLPrediction))],
@@ -180,6 +267,8 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat8))],
         ['query'],
       ),
+    'getLocation' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
+    'getMedicalFile' : IDL.Func([IDL.Text], [IDL.Opt(ExternalBlob)], ['query']),
     'getUserMLPrediction' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(MLPrediction)],
@@ -191,8 +280,15 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'listMedicalFiles' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, ExternalBlob))],
+        ['query'],
+      ),
     'runMLPrediction' : IDL.Func([MLInput], [MLPrediction], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'updateLocation' : IDL.Func([IDL.Text], [], []),
+    'uploadMedicalFile' : IDL.Func([IDL.Text, ExternalBlob], [IDL.Text], []),
   });
 };
 

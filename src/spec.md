@@ -1,11 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Fix chat transcript scrolling on the /chat page so it’s smooth, reliably scrollable within the viewport, and auto-scroll-to-bottom works consistently when new messages arrive.
+**Goal:** Update the Home Dashboard Quick Actions to replace “Book Appointment” with a “Log Avoid” action without introducing new navigation.
 
 **Planned changes:**
-- Update the /chat layout so the transcript area correctly takes the remaining available height and becomes a reliably scrollable region (avoiding common flex/min-height/overflow issues that can make it feel “stuck”).
-- Adjust scroll handling so auto-scroll-to-bottom targets the actual scrollable transcript viewport (not a non-scrollable wrapper), and behaves sensibly when the user has scrolled up.
-- Implement the above without modifying any files under frontend/src/components/ui, composing around existing UI components instead.
+- Remove the “Book Appointment” tile from the /home Quick Actions grid and replace it with a tile labeled exactly “Log Avoid”, keeping the same grid position.
+- Wire the “Log Avoid” tile click to a safe placeholder action (e.g., console logging) that does not navigate to any route and does not throw errors.
 
-**User-visible outcome:** On /chat, long conversations scroll naturally without getting stuck; the header and input stay usable while the transcript scrolls independently; and new messages reliably appear at the bottom without janky jumps.
+**User-visible outcome:** On /home, users see “Log Avoid” instead of “Book Appointment” in Quick Actions, and clicking it safely performs a placeholder action while staying on the same page.

@@ -15,7 +15,9 @@ import {
   Stethoscope,
   Brain,
   AlertCircle,
-  MessageSquare
+  MessageSquare,
+  FileText,
+  XCircle
 } from 'lucide-react';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useNavigate } from '@tanstack/react-router';
@@ -113,6 +115,12 @@ export default function HomeDashboard() {
             onClick={() => navigate({ to: '/chat' })}
           />
           <DashboardTile
+            icon={FileText}
+            label="Medical Reports"
+            colorAccent="blue"
+            onClick={() => navigate({ to: '/report' })}
+          />
+          <DashboardTile
             icon={Pill}
             label="Log Medication"
             colorAccent="pink"
@@ -131,16 +139,10 @@ export default function HomeDashboard() {
             onClick={() => console.log('Log exercise')}
           />
           <DashboardTile
-            icon={Moon}
-            label="Log Sleep"
-            colorAccent="indigo"
-            onClick={() => console.log('Log sleep')}
-          />
-          <DashboardTile
-            icon={Stethoscope}
-            label="Book Appointment"
+            icon={XCircle}
+            label="Log Avoid"
             colorAccent="amber"
-            onClick={() => console.log('Book appointment')}
+            onClick={() => console.log('Log avoid')}
           />
         </div>
       </section>

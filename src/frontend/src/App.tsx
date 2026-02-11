@@ -14,6 +14,8 @@ import SignUp from './pages/SignUp';
 import HomeDashboard from './pages/HomeDashboard';
 import Profile from './pages/Profile';
 import Chatbot from './pages/Chatbot';
+import Report from './pages/Report';
+import NotFoundRedirect from './pages/NotFoundRedirect';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -67,6 +69,18 @@ const chatbotRoute = createRoute({
   component: Chatbot,
 });
 
+const reportRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/report',
+  component: Report,
+});
+
+const notFoundRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '*',
+  component: NotFoundRedirect,
+});
+
 // Create the route tree
 const routeTree = rootRoute.addChildren([
   welcomeRoute,
@@ -75,6 +89,8 @@ const routeTree = rootRoute.addChildren([
   homeRoute,
   profileRoute,
   chatbotRoute,
+  reportRoute,
+  notFoundRoute,
 ]);
 
 // Create the router

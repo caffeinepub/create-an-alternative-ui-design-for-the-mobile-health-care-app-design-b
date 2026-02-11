@@ -1,10 +1,11 @@
 import { useNavigate, useLocation } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Home, User } from 'lucide-react';
+import { Home, User, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const tabs = [
   { path: '/home', label: 'Home', icon: Home },
+  { path: '/report', label: 'Reports', icon: FileText },
   { path: '/profile', label: 'Profile', icon: User },
 ];
 

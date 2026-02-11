@@ -18,6 +18,7 @@ export function backendToFrontend(backendProfile: UserProfile): ProfileDetails {
       phone: backendProfile.emergencyContact?.phone || '',
       relationship: backendProfile.emergencyContact?.relationship || '',
     },
+    location: backendProfile.location || '',
   };
 }
 
@@ -28,7 +29,7 @@ export function frontendToBackend(profile: ProfileDetails): UserProfile {
   return {
     name: profile.fullName,
     email: profile.email || undefined,
-    location: undefined,
+    location: profile.location || undefined,
     company: undefined,
     website: undefined,
     bio: undefined,

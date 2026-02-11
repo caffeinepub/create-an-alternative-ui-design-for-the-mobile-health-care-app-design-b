@@ -1,47 +1,21 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Smooth, reliable chat transcript scrolling on /chat",
+  "title": "Home Dashboard Quick Actions: replace “Book Appointment” with “Log Avoid”",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Make the /chat transcript region reliably scrollable within the available height and prevent “stuck” scrolling by fixing flex/height constraints.",
+      "summary": "Update the Home Dashboard Quick Actions grid to replace the “Book Appointment” tile with a “Log Avoid” tile that performs a safe placeholder action without navigation.",
       "acceptanceCriteria": [
-        "On /chat, when the transcript grows beyond the visible area, the message list can be scrolled naturally (wheel/touch/trackpad) and does not get stuck.",
-        "The transcript region properly takes remaining height in the chat layout (no collapsed or non-scrollable flex child behavior).",
-        "No new layout regressions: header and input controls remain visible and usable while the transcript scrolls independently."
+        "On /home, the Quick Actions grid no longer shows a tile labeled \"Book Appointment\".",
+        "On /home, the Quick Actions grid shows a tile labeled exactly \"Log Avoid\".",
+        "Clicking \"Log Avoid\" does not throw errors and does not navigate away from the page unless a valid route is implemented."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Chatbot.tsx",
+          "path": "frontend/src/pages/HomeDashboard.tsx",
           "operation": "modify",
-          "description": "Adjust the /chat page layout to use a stable flex-based height model (avoid fragile viewport calc stacking) so the AssistantPanel can occupy remaining space reliably; ensure the panel wrapper uses flex + min-h-0 patterns so the transcript can scroll while the page header remains visible."
-        },
-        {
-          "path": "frontend/src/components/assistant/AssistantPanel.tsx",
-          "operation": "modify",
-          "description": "Replace the current transcript wrapper with an explicitly scrollable element (e.g., a div with overflow-y-auto, flex-1, min-h-0, and overscroll containment) so the transcript never gets stuck due to non-scrollable wrappers; keep header and controls outside the scroll container. Continue using shadcn-ui components (Button/Input/Card/etc.) without modifying any files under frontend/src/components/ui. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Implement reliable, non-jumpy auto-scroll-to-bottom by targeting the real scroll container and respecting user scroll position, without editing shadcn/ui source files.",
-      "acceptanceCriteria": [
-        "When a new message is appended, the transcript scroll position updates to show the newest message at the bottom (unless the user has manually scrolled up, in which case behavior should not feel jumpy).",
-        "Auto-scroll works consistently on initial load (when transcript is restored) and during ongoing conversation.",
-        "No edits are made to shadcn/ui component source files under frontend/src/components/ui (compose around them instead)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/assistant/useTranscriptAutoScroll.ts",
-          "operation": "create",
-          "description": "Create a small hook that manages (1) a scroll container ref, (2) a bottom sentinel ref, (3) an isNearBottom state derived from onScroll, and (4) a safe scrollToBottom function supporting smooth scrolling; default to scrolling on initial load and only auto-scroll on new messages when the user is already near the bottom."
-        },
-        {
-          "path": "frontend/src/components/assistant/AssistantPanel.tsx",
-          "operation": "modify",
-          "description": "Wire the new auto-scroll hook to the transcript list: attach refs/scroll handlers to the actual scrollable element (not a non-scrollable wrapper), add a bottom sentinel element, and trigger smooth scroll on transcript changes only when appropriate. Ensure this composes around shadcn-ui components (do not edit frontend/src/components/ui). Verify the component's usage instructions before implementing."
+          "description": "In the \"Quick Actions\" section, replace the existing DashboardTile labeled \"Book Appointment\" with a tile labeled exactly \"Log Avoid\" in the same position in the grid. Ensure the tile's onClick runs a safe placeholder action (e.g., console.log('Log avoid')) and does not navigate to any route."
         }
       ]
     }

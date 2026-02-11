@@ -1,52 +1,34 @@
 {
   "kind": "build_request",
-  "title": "Fix chat transcript scrolling so it no longer sticks and feels smooth",
+  "title": "Update Quick Actions: replace “Book Appointment” with “Log Avoid”",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the chat transcript area so it scrolls smoothly and never appears “stuck in one place” on the /chat page, including ensuring the transcript region reliably becomes scrollable within the available viewport height.",
+      "text": "In the Home Dashboard \"Quick Actions\" section, remove the \"Book Appointment\" tile and replace it with a tile labeled \"Log Avoid\" (English text). Keep the tile in the same grid position and ensure clicking it performs a safe placeholder action (e.g., a console log) without navigating to a non-existent route.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "can you make the chat section run smoothly it will stick at one place"
+          "In Quick action can you remove book appointment & replace to log Avoid"
         ]
       },
       "acceptanceCriteria": [
-        "On /chat, when the transcript grows beyond the visible area, the message list can be scrolled naturally (wheel/touch/trackpad) and does not get stuck.",
-        "The transcript region properly takes remaining height in the chat layout (no collapsed or non-scrollable flex child behavior).",
-        "No new layout regressions: header and input controls remain visible and usable while the transcript scrolls independently."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Make auto-scroll-to-bottom behavior reliable when new chat messages are added, using a scroll target that actually controls the scrollable viewport (avoid attaching scroll logic to a non-scrollable wrapper), without modifying any files under frontend/src/components/ui.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "can you make the chat section run smoothly it will stick at one place"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When a new message is appended, the transcript scroll position updates to show the newest message at the bottom (unless the user has manually scrolled up, in which case behavior should not feel jumpy).",
-        "Auto-scroll works consistently on initial load (when transcript is restored) and during ongoing conversation.",
-        "No edits are made to shadcn/ui component source files under frontend/src/components/ui (compose around them instead)."
+        "On /home, the Quick Actions grid no longer shows a tile labeled \"Book Appointment\".",
+        "On /home, the Quick Actions grid shows a tile labeled exactly \"Log Avoid\".",
+        "Clicking \"Log Avoid\" does not throw errors and does not navigate away from the page unless a valid route is implemented."
       ]
     }
   ],
   "constraints": [
-    "Frontend files in frontend/src/components/ui are read-only and must not be edited.",
-    "Do not change the authentication/session behavior; only address chat scrolling/smoothness."
+    "Use English for any user-facing text.",
+    "Do not edit any files under frontend/src/components/ui or any other frontend immutablePaths."
   ],
   "nonGoals": [
-    "Adding new chatbot capabilities, medical categories, or backend AI/ML changes.",
-    "Introducing real-time messaging or websockets."
+    "Implementing an appointment booking flow or appointment-related pages/routes.",
+    "Implementing persistence or backend support for the new \"Log Avoid\" action."
   ],
   "imageRequirements": {
     "required": [],

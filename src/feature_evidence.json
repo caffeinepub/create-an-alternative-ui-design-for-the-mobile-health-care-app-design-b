@@ -2,11 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-fix-the-chat-transcript-area-so-it-scrolls-smoothly-and-never-appears-stuck-in-one-place-on-the-chat-page-including-ensuring-the-transcript-region-reliably-becomes-scrollable-within-the-available-viewport-height",
-      "featureTitle": "Fix the chat transcript area so it scrolls smoothly and never appears “stuck in one place” on the /chat page, including ensuring the transcript region reliably becomes scrollable within the available viewport height.",
+      "featureId": "feature-in-the-home-dashboard-quick-actions-section-remove-the-book-appointment-tile-and-replace-it-with-a-tile-labeled-log-avoid-english-text-keep-the-tile-in-the-same-grid-position-and-ensure-clicking-it-performs-a-safe-placeholder-action-e-g-a-console-log-without-navigating-to-a-non-existent-route",
+      "featureTitle": "In the Home Dashboard \"Quick Actions\" section, remove the \"Book Appointment\" tile and replace it with a tile labeled \"Log Avoid\" (English text). Keep the tile in the same grid position and ensure clicking it performs a safe placeholder action (e.g., a console log) without navigating to a non-existent route.",
       "files": [
-        "frontend/src/components/assistant/AssistantPanel.tsx",
-        "frontend/src/pages/Chatbot.tsx"
+        "frontend/src/pages/HomeDashboard.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -14,30 +13,11 @@
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
         "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0"
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-auto-scroll-to-bottom-behavior-reliable-when-new-chat-messages-are-added-using-a-scroll-target-that-actually-controls-the-scrollable-viewport-avoid-attaching-scroll-logic-to-a-non-scrollable-wrapper-without-modifying-any-files-under-frontend-src-components-ui",
-      "featureTitle": "Make auto-scroll-to-bottom behavior reliable when new chat messages are added, using a scroll target that actually controls the scrollable viewport (avoid attaching scroll logic to a non-scrollable wrapper), without modifying any files under frontend/src/components/ui.",
-      "files": [
-        "frontend/src/components/assistant/AssistantPanel.tsx",
-        "frontend/src/components/assistant/useTranscriptAutoScroll.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
       ],
       "confidence": "high"
     }

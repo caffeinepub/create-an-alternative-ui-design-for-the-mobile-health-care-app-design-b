@@ -7,6 +7,7 @@ import { AssistantPanel } from './AssistantPanel';
 import { AssistantStatus } from './assistantTypes';
 import { interpretCommand } from './assistantBrain';
 import { useAssistantTranscript } from './useAssistantTranscript';
+import { getErrorFallbackResponse } from './medicalKnowledgeBase';
 
 export function AssistantWidget() {
   const navigate = useNavigate();
@@ -26,26 +27,33 @@ export function AssistantWidget() {
     setStatus('processing');
     setErrorMessage(undefined);
 
-    // Interpret command immediately (no artificial delay)
-    const result = interpretCommand(userInput, transcript);
+    try {
+      // Interpret command immediately (no artificial delay)
+      const result = interpretCommand(userInput, transcript);
 
-    // Handle navigation
-    if (result.type === 'navigation' && result.navigationTarget) {
-      addMessage('assistant', result.message);
-      setStatus('idle');
-      
-      // Navigate immediately after adding confirmation message
-      setTimeout(() => {
-        navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' });
-        setIsOpen(false);
-      }, 100);
-    } else if (result.type === 'medical') {
-      // Add medical response
-      addMessage('assistant', result.message);
-      setStatus('idle');
-    } else {
-      // Add assistant response
-      addMessage('assistant', result.message);
+      // Handle navigation
+      if (result.type === 'navigation' && result.navigationTarget) {
+        addMessage('assistant', result.message);
+        setStatus('idle');
+        
+        // Navigate immediately after adding confirmation message
+        setTimeout(() => {
+          navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' | '/report' });
+          setIsOpen(false);
+        }, 100);
+      } else if (result.type === 'medical') {
+        // Add medical response
+        addMessage('assistant', result.message);
+        setStatus('idle');
+      } else {
+        // Add assistant response
+        addMessage('assistant', result.message);
+        setStatus('idle');
+      }
+    } catch (error) {
+      // On error, add a fallback assistant message and return to idle
+      console.error('Error processing command:', error);
+      addMessage('assistant', getErrorFallbackResponse());
       setStatus('idle');
     }
   }, [addMessage, navigate, transcript]);
@@ -55,7 +63,9 @@ export function AssistantWidget() {
   }, [inputValue, handleCommand]);
 
   const handleVoiceInput = useCallback((text: string) => {
-    handleCommand(text);
+    if (text.trim()) {
+      handleCommand(text);
+    }
   }, [handleCommand]);
 
   const handleClearConversation = useCallback(() => {

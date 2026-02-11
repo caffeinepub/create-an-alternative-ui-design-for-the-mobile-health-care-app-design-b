@@ -38,7 +38,7 @@ export function AssistantPanel({
 
   // Handle final transcript from speech recognition - process immediately
   useEffect(() => {
-    if (speech.transcript && !speech.isListening) {
+    if (speech.transcript && !speech.isListening && speech.transcript.trim()) {
       onVoiceInput(speech.transcript);
       speech.reset();
     }
@@ -111,7 +111,7 @@ export function AssistantPanel({
             <div className="text-center text-muted-foreground py-8">
               <p className="mb-2">👋 Hi! I'm your medical assistant.</p>
               <p className="text-sm">Ask me about symptoms, medications, or general health questions.</p>
-              <p className="text-xs mt-4 text-destructive">⚠️ This is for informational purposes only. Always consult a healthcare professional.</p>
+              <p className="text-xs mt-4 opacity-70">This is for informational purposes only. Always consult a healthcare professional for medical advice.</p>
             </div>
           ) : (
             transcript.map((message) => (

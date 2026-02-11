@@ -3,24 +3,14 @@
   "projectStateVersion": 3,
   "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [
-    "Chat section can get stuck in one place / scrolling not smooth"
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-fix-the-chat-transcript-area-so-it-scrolls-smoothly-and-never-appears-stuck-in-one-place-on-the-chat-page-including-ensuring-the-transcript-region-reliably-becomes-scrollable-within-the-available-viewport-height",
-      "title": "Fix the chat transcript area so it scrolls smoothly and never appears “stuck in one place” on the /chat page, including ensuring the transcript region reliably becomes scrollable within the available viewport height.",
+      "id": "feature-in-the-home-dashboard-quick-actions-section-remove-the-book-appointment-tile-and-replace-it-with-a-tile-labeled-log-avoid-english-text-keep-the-tile-in-the-same-grid-position-and-ensure-clicking-it-performs-a-safe-placeholder-action-e-g-a-console-log-without-navigating-to-a-non-existent-route",
+      "title": "In the Home Dashboard \"Quick Actions\" section, remove the \"Book Appointment\" tile and replace it with a tile labeled \"Log Avoid\" (English text). Keep the tile in the same grid position and ensure clicking it performs a safe placeholder action (e.g., a console log) without navigating to a non-existent route.",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-auto-scroll-to-bottom-behavior-reliable-when-new-chat-messages-are-added-using-a-scroll-target-that-actually-controls-the-scrollable-viewport-avoid-attaching-scroll-logic-to-a-non-scrollable-wrapper-without-modifying-any-files-under-frontend-src-components-ui",
-      "title": "Make auto-scroll-to-bottom behavior reliable when new chat messages are added, using a scroll target that actually controls the scrollable viewport (avoid attaching scroll logic to a non-scrollable wrapper), without modifying any files under frontend/src/components/ui.",
-      "reqIds": [
-        "REQ-2"
       ],
       "version": 1
     }
@@ -28,12 +18,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Fix chat section UI so it scrolls/runs smoothly and no longer sticks in one place",
+      "summary": "Update Quick Action: remove \"Book appointment\" and replace it with \"Log Avoid\"",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Fix chat transcript scrolling so it no longer sticks and feels smooth",
+  "projectName": "Update Quick Actions: replace “Book Appointment” with “Log Avoid”",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

@@ -5,6 +5,7 @@ import {
   generateClarifyingResponse, 
   generateMedicalResponse,
   getGeneralHealthResponse,
+  getErrorFallbackResponse,
   EMERGENCY_GUIDANCE
 } from './medicalKnowledgeBase';
 
@@ -28,18 +29,20 @@ export function interpretCommand(userInput: string, conversationHistory: any[] =
     }
   }
 
-  // Navigation patterns (including chatbot navigation)
+  // Navigation patterns (excluding locate/location navigation)
   const navigationPatterns = [
     { pattern: /\b(go to|open|navigate to|take me to|show|visit)\s+(home|dashboard)\b/i, target: '/home', name: 'Home' },
     { pattern: /\b(go to|open|navigate to|take me to|show|visit)\s+(profile|account|settings)\b/i, target: '/profile', name: 'Profile' },
     { pattern: /\b(go to|open|navigate to|take me to|show|visit)\s+(sign in|login|signin)\b/i, target: '/signin', name: 'Sign In' },
     { pattern: /\b(go to|open|navigate to|take me to|show|visit)\s+(welcome|start|beginning|main)\b/i, target: '/', name: 'Welcome' },
     { pattern: /\b(go to|open|navigate to|take me to|show|visit)\s+(chat|chatbot|assistant)\b/i, target: '/chat', name: 'Chatbot' },
+    { pattern: /\b(go to|open|navigate to|take me to|show|visit)\s+(report|reports|medical file|medical files)\b/i, target: '/report', name: 'Report' },
     { pattern: /\b(back to|return to)\s+(home|dashboard)\b/i, target: '/home', name: 'Home' },
     { pattern: /\b(back to|return to)\s+(welcome|start)\b/i, target: '/', name: 'Welcome' },
     { pattern: /\bopen\s+(chat|chatbot|assistant)\b/i, target: '/chat', name: 'Chatbot' },
     { pattern: /\bhome\b/i, target: '/home', name: 'Home' },
     { pattern: /\bprofile\b/i, target: '/profile', name: 'Profile' },
+    { pattern: /\breport\b/i, target: '/report', name: 'Report' },
   ];
 
   // Check for navigation commands
@@ -97,14 +100,14 @@ export function interpretCommand(userInput: string, conversationHistory: any[] =
           };
         }
         
-        // Provide detailed medical response
+        // Generate full medical response (answer-first, disclaimers at end)
         return {
           type: 'medical',
           message: generateMedicalResponse(topic),
         };
       }
       
-      // General medical query without specific topic match
+      // Medical-sounding but no specific topic match
       return {
         type: 'medical',
         message: getGeneralHealthResponse(),
@@ -112,71 +115,37 @@ export function interpretCommand(userInput: string, conversationHistory: any[] =
     }
   }
 
-  // Help patterns
-  const helpPatterns = [
-    /\b(help|what can you do|commands|how do i|assist)\b/i,
-    /\b(what|how)\b.*\b(work|use)\b/i,
-  ];
-
-  for (const pattern of helpPatterns) {
-    if (pattern.test(normalized)) {
-      return {
-        type: 'help',
-        message: `I'm your medical assistant! I can help you with:
-
-MEDICAL INFORMATION:
-• Symptoms and conditions
-• Medication information
-• General health guidance
-• Emergency guidance
-
-NAVIGATION:
-• "Go to home" or "Open home"
-• "Go to profile" or "Show profile"
-• "Open chatbot" or "Go to chat"
-• "Back to welcome"
-
-Try asking me about symptoms, medications, or health topics!
-
-⚠️ Remember: This is for informational purposes only. Always consult a healthcare professional for medical advice.`,
-      };
-    }
-  }
-
   // Greeting patterns
   const greetingPatterns = [
-    /\b(hi|hello|hey|greetings)\b/i,
+    /\b(hello|hi|hey|greetings|good morning|good afternoon|good evening)\b/i,
   ];
 
   for (const pattern of greetingPatterns) {
     if (pattern.test(normalized)) {
       return {
         type: 'help',
-        message: `Hello! I'm your medical assistant. I can provide general health information and help you navigate the app.
-
-Ask me about:
-• Symptoms (headaches, fever, cough)
-• Chronic conditions (diabetes, blood pressure)
-• Medications
-• Allergies
-• General health questions
-
-Or say "help" to see all available commands.
-
-⚠️ This is for informational purposes only. Always consult a healthcare professional.`,
+        message: `Hello! I'm your medical assistant. I can help you with:\n\n• Information about common symptoms\n• General health questions\n• Medication safety tips\n• Chronic condition management\n• When to seek medical care\n\nWhat would you like to know about?`,
       };
     }
   }
 
-  // Default fallback
+  // Help patterns
+  const helpPatterns = [
+    /\b(help|what can you do|capabilities|commands)\b/i,
+  ];
+
+  for (const pattern of helpPatterns) {
+    if (pattern.test(normalized)) {
+      return {
+        type: 'help',
+        message: `I'm here to provide general health information. I can help with:\n\n• Common symptoms (headaches, fever, cough, etc.)\n• Chronic conditions (diabetes, blood pressure)\n• Medication safety\n• Allergies\n• When to seek medical care\n• Navigation (e.g., "go to profile")\n\nJust ask me a question about your health concern!`,
+      };
+    }
+  }
+
+  // Default fallback - treat as potential medical question
   return {
-    type: 'unknown',
-    message: `I'm not sure how to help with that. I can:
-
-• Provide general health information (ask about symptoms, conditions, medications)
-• Navigate you to different pages ("go to home", "open profile", "open chatbot")
-• Answer questions about health topics
-
-Try asking a health question or say "help" to see all available commands.`,
+    type: 'help',
+    message: `I'm not sure I understood that. I can help with:\n\n• Common symptoms and health concerns\n• Medication information\n• Chronic condition management\n• General wellness questions\n• Navigation (e.g., "go to home")\n\nCould you rephrase your question or ask about a specific health topic?`,
   };
 }

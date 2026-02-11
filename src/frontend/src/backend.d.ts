@@ -7,6 +7,13 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
+export class ExternalBlob {
+    getBytes(): Promise<Uint8Array<ArrayBuffer>>;
+    getDirectURL(): string;
+    static fromURL(url: string): ExternalBlob;
+    static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
+    withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
+}
 export interface Allergy {
     name: string;
     severity: string;
@@ -69,14 +76,20 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    deleteMedicalFile(id: string): Promise<boolean>;
     getAllPredictions(): Promise<Array<[Principal, MLPrediction]>>;
     getCallerMLPrediction(): Promise<MLPrediction | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getFeatureImportance(): Promise<Array<[string, number]>>;
+    getLocation(): Promise<string | null>;
+    getMedicalFile(id: string): Promise<ExternalBlob | null>;
     getUserMLPrediction(user: Principal): Promise<MLPrediction | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
+    listMedicalFiles(): Promise<Array<[string, ExternalBlob]>>;
     runMLPrediction(input: MLInput): Promise<MLPrediction>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    updateLocation(location: string): Promise<void>;
+    uploadMedicalFile(id: string, file: ExternalBlob): Promise<string>;
 }

@@ -1,16 +1,47 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T05:31:09.974Z",
-  "summary": "Diff implements a dedicated auto-scroll hook and updates the /chat page and AssistantPanel layout to ensure the transcript area is a proper flex child with min-h-0 and overflow scrolling, with scroll logic attached directly to the scrollable container. No edits are shown under frontend/src/components/ui.",
-  "missing_requirements": [],
-  "hallucinated_features": [],
-  "confidence": 0.84,
+  "generatedAt": "2026-02-11T06:25:05.108Z",
+  "summary": "REQ-1 intent (replace “Book Appointment” Quick Action with “Log Avoid” and make it a safe placeholder) cannot be fully verified from the provided diff summary because the HomeDashboard.tsx snippet is truncated before showing the relevant tile, and no explicit evidence shows removal of “Book Appointment” or the exact onClick behavior for “Log Avoid”. The diff also includes unrelated metadata/documentation changes.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "On /home, remove the \"Book Appointment\" Quick Action tile and replace it with a tile labeled exactly \"Log Avoid\" in the same grid position.",
+      "reason": "The shown portion of HomeDashboard.tsx Quick Actions does not include either a \"Book Appointment\" tile (to confirm removal) or a \"Log Avoid\" tile (to confirm replacement/position). A separate summary file claims \"Log Avoid\" exists, but the actual page code evidence is truncated.",
+      "evidence": [
+        "frontend/src/pages/HomeDashboard.tsx (truncated)",
+        "frontend-file-summaries.txt (mentions Log Avoid but not authoritative code)"
+      ]
+    },
+    {
+      "id": "REQ-1",
+      "requirement": "Clicking \"Log Avoid\" performs a safe placeholder action (e.g., console.log) and does not navigate to a non-existent route or away from the page.",
+      "reason": "No onClick handler for a \"Log Avoid\" tile is visible in the provided HomeDashboard.tsx snippet, so it cannot be confirmed that it uses a safe placeholder (and not navigate()).",
+      "evidence": [
+        "frontend/src/pages/HomeDashboard.tsx (truncated)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Updated/added internal project tracking metadata for new feature requests (AR-1/AR-2)",
+      "reason": "The BuildRequest only asked for a UI change; it did not request modifying project_state.json tracking entries.",
+      "evidence": [
+        "project_state.json"
+      ]
+    },
+    {
+      "description": "Modified generated/auxiliary \"frontend-file-summaries.txt\" content describing many pages/features",
+      "reason": "The BuildRequest did not request updating documentation/summary files; this change is not part of implementing the Quick Actions tile behavior.",
+      "evidence": [
+        "frontend-file-summaries.txt"
+      ]
+    }
+  ],
+  "confidence": 0.62,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/components/assistant/AssistantPanel.tsx",
-    "frontend/src/components/assistant/useTranscriptAutoScroll.ts",
-    "frontend/src/pages/Chatbot.tsx",
+    "frontend/src/pages/HomeDashboard.tsx",
     "project_state.json"
   ]
 }

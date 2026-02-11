@@ -6,14 +6,16 @@ export interface MedicalTopic {
   clarifyingQuestions?: string[];
   response: string;
   redFlags?: string[];
+  isEmergency?: boolean;
 }
 
 export const MEDICAL_DISCLAIMER = `
-⚠️ IMPORTANT MEDICAL DISCLAIMER:
 This information is for educational purposes only and does not constitute medical advice, diagnosis, or treatment. Always consult with a qualified healthcare professional for medical concerns.`;
 
 export const EMERGENCY_GUIDANCE = `
-🚨 SEEK IMMEDIATE MEDICAL ATTENTION IF:
+🚨 SEEK IMMEDIATE MEDICAL ATTENTION
+
+Call emergency services (911 in US) or go to the nearest emergency room if you experience:
 • Chest pain or pressure
 • Difficulty breathing or shortness of breath
 • Sudden severe headache
@@ -23,7 +25,7 @@ export const EMERGENCY_GUIDANCE = `
 • Severe allergic reaction
 • Suicidal thoughts
 
-Call emergency services (911 in US) or go to the nearest emergency room immediately.`;
+This is a medical emergency. Do not wait.`;
 
 export const medicalKnowledgeBase: MedicalTopic[] = [
   {
@@ -48,6 +50,12 @@ GENERAL MANAGEMENT:
 • Apply cold or warm compress
 • Over-the-counter pain relievers (follow package directions)
 • Manage stress and maintain regular sleep schedule
+
+WHEN TO SEEK MEDICAL CARE:
+• Sudden severe headache ("worst headache of your life")
+• Headache with fever, stiff neck, confusion, or vision changes
+• Headache after head injury
+• New headache pattern in people over 50
 
 ${MEDICAL_DISCLAIMER}`,
     redFlags: [
@@ -85,6 +93,9 @@ WHEN TO SEEK CARE:
 • Fever lasting more than 3 days
 • Fever with severe symptoms
 • Infants under 3 months with any fever
+• Fever with severe headache and stiff neck
+• Fever with difficulty breathing
+• Fever with rash
 
 ${MEDICAL_DISCLAIMER}`,
     redFlags: [
@@ -125,6 +136,8 @@ SEEK MEDICAL CARE IF:
 • High fever
 • Difficulty breathing
 • Chest pain
+• Severe difficulty breathing
+• Cough with high fever and confusion
 
 ${MEDICAL_DISCLAIMER}`,
     redFlags: [
@@ -167,6 +180,12 @@ HEALTHY HABITS:
 WORK WITH YOUR HEALTHCARE TEAM:
 Diabetes management requires personalized care from doctors, dietitians, and diabetes educators.
 
+SEEK MEDICAL CARE IF:
+• Very high blood sugar (over 300 mg/dL)
+• Very low blood sugar (under 70 mg/dL) with confusion
+• Frequent urination with extreme thirst
+• Unexplained weight loss
+
 ${MEDICAL_DISCLAIMER}`,
     redFlags: [
       'Very high blood sugar (over 300 mg/dL)',
@@ -207,6 +226,12 @@ MONITORING:
 • Keep a log of readings
 • Take medications as prescribed
 • Regular check-ups with healthcare provider
+
+SEEK IMMEDIATE CARE IF:
+• Blood pressure 180/120 or higher
+• Severe headache with high blood pressure
+• Chest pain with high blood pressure
+• Vision changes with high blood pressure
 
 ${MEDICAL_DISCLAIMER}`,
     redFlags: [
@@ -252,6 +277,12 @@ NEVER:
 • Take someone else's medication
 • Mix medications without consulting a healthcare provider
 
+SEEK IMMEDIATE CARE IF:
+• Severe allergic reaction (difficulty breathing, swelling)
+• Severe side effects
+• Accidental overdose
+• Medication error
+
 ${MEDICAL_DISCLAIMER}
 
 For specific medication information, always consult your pharmacist or healthcare provider.`,
@@ -264,20 +295,23 @@ For specific medication information, always consult your pharmacist or healthcar
   },
   {
     keywords: ['chest pain', 'heart pain', 'cardiac'],
+    isEmergency: true,
     clarifyingQuestions: [
       'Where exactly is the pain located?',
       'How would you describe the pain (sharp, dull, pressure)?',
       'How long have you had this pain?',
       'Does anything make it better or worse?'
     ],
-    response: `⚠️ CHEST PAIN CAN BE SERIOUS - SEEK IMMEDIATE MEDICAL ATTENTION IF:
+    response: `🚨 CHEST PAIN CAN BE SERIOUS
+
+CALL 911 IMMEDIATELY IF YOU EXPERIENCE:
 • Pain or pressure in the chest
 • Pain radiating to arm, jaw, or back
 • Shortness of breath
 • Sweating, nausea, or lightheadedness
 • Feeling of impending doom
 
-CALL 911 IMMEDIATELY if you suspect a heart attack.
+DO NOT WAIT - If you're experiencing chest pain, especially with other symptoms, seek immediate medical evaluation.
 
 Chest pain can have many causes, some serious and some not:
 • Heart-related (heart attack, angina)
@@ -285,8 +319,6 @@ Chest pain can have many causes, some serious and some not:
 • Digestive (acid reflux, heartburn)
 • Musculoskeletal (muscle strain, costochondritis)
 • Anxiety/panic attacks
-
-DO NOT WAIT - If you're experiencing chest pain, especially with other symptoms, seek immediate medical evaluation.
 
 ${MEDICAL_DISCLAIMER}`,
     redFlags: [
@@ -396,15 +428,10 @@ export function generateClarifyingResponse(topic: MedicalTopic): string {
 }
 
 export function generateMedicalResponse(topic: MedicalTopic): string {
-  let response = topic.response;
-  
-  // Add red flag warnings if present
-  if (topic.redFlags && topic.redFlags.length > 0) {
-    const redFlagText = topic.redFlags.map(flag => `• ${flag}`).join('\n');
-    response = `${EMERGENCY_GUIDANCE}\n\nRED FLAGS - Seek immediate care if:\n${redFlagText}\n\n${response}`;
-  }
-  
-  return response;
+  // For emergency topics, the response already includes urgent guidance at the top
+  // For non-emergency topics, return the informational response as-is
+  // (disclaimers are already included at the end of each response)
+  return topic.response;
 }
 
 export function getGeneralHealthResponse(): string {
@@ -419,4 +446,8 @@ export function getGeneralHealthResponse(): string {
 What would you like to know about?
 
 ${MEDICAL_DISCLAIMER}`;
+}
+
+export function getErrorFallbackResponse(): string {
+  return `I ran into an error while processing your request. Please try asking your question again, or rephrase it if needed. I'm here to help!`;
 }

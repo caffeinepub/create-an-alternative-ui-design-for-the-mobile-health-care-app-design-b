@@ -7,6 +7,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { interpretCommand } from '../components/assistant/assistantBrain';
 import { AssistantMessage, AssistantStatus } from '../components/assistant/assistantTypes';
 import { useState } from 'react';
+import { getErrorFallbackResponse } from '../components/assistant/medicalKnowledgeBase';
 
 export default function Chatbot() {
   // Protect this route - redirect to signin if not authenticated
@@ -27,25 +28,32 @@ export default function Chatbot() {
     setStatus('processing');
     setErrorMessage(undefined);
 
-    // Interpret command immediately (no artificial delay)
-    const result = interpretCommand(userInput, transcript);
+    try {
+      // Interpret command immediately (no artificial delay)
+      const result = interpretCommand(userInput, transcript);
 
-    // Handle navigation
-    if (result.type === 'navigation' && result.navigationTarget) {
-      addMessage('assistant', result.message);
-      setStatus('idle');
-      
-      // Navigate immediately after adding confirmation message
-      setTimeout(() => {
-        navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' });
-      }, 100);
-    } else if (result.type === 'medical') {
-      // Add medical response
-      addMessage('assistant', result.message);
-      setStatus('idle');
-    } else {
-      // Add assistant response
-      addMessage('assistant', result.message);
+      // Handle navigation
+      if (result.type === 'navigation' && result.navigationTarget) {
+        addMessage('assistant', result.message);
+        setStatus('idle');
+        
+        // Navigate immediately after adding confirmation message
+        setTimeout(() => {
+          navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' });
+        }, 100);
+      } else if (result.type === 'medical') {
+        // Add medical response
+        addMessage('assistant', result.message);
+        setStatus('idle');
+      } else {
+        // Add assistant response
+        addMessage('assistant', result.message);
+        setStatus('idle');
+      }
+    } catch (error) {
+      // On error, add a fallback assistant message and return to idle
+      console.error('Error processing command:', error);
+      addMessage('assistant', getErrorFallbackResponse());
       setStatus('idle');
     }
   }, [addMessage, navigate, transcript]);
@@ -55,7 +63,9 @@ export default function Chatbot() {
   }, [inputValue, handleCommand]);
 
   const handleVoiceInput = useCallback((text: string) => {
-    handleCommand(text);
+    if (text.trim()) {
+      handleCommand(text);
+    }
   }, [handleCommand]);
 
   const handleClearConversation = useCallback(() => {

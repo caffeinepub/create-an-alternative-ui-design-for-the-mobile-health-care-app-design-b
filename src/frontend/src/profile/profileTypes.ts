@@ -14,6 +14,7 @@ export interface ProfileDetails {
     phone: string;
     relationship: string;
   };
+  location?: string;
 }
 
 /**
@@ -32,6 +33,7 @@ export function getEmptyProfileDetails(): ProfileDetails {
       phone: '',
       relationship: '',
     },
+    location: '',
   };
 }
 
@@ -49,6 +51,7 @@ export function hasProfileData(profile: ProfileDetails | null): boolean {
     profile.allergies.length > 0 ||
     profile.emergencyContact.name ||
     profile.emergencyContact.phone ||
-    profile.emergencyContact.relationship
+    profile.emergencyContact.relationship ||
+    profile.location
   );
 }

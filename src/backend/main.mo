@@ -1,19 +1,23 @@
 import Map "mo:core/Map";
+import Array "mo:core/Array";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
-import MixinAuthorization "authorization/MixinAuthorization";
-import AccessControl "authorization/access-control";
-
 import Time "mo:core/Time";
 import Nat8 "mo:core/Nat8";
 import Nat "mo:core/Nat";
-import List "mo:core/List";
 import Text "mo:core/Text";
+import MixinAuthorization "authorization/MixinAuthorization";
+import AccessControl "authorization/access-control";
+import MixinStorage "blob-storage/Mixin";
+import Storage "blob-storage/Storage";
+import Iter "mo:core/Iter";
+
 
 
 actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
+  include MixinStorage();
 
   public type BloodType = {
     #aPositive;
@@ -227,5 +231,97 @@ actor {
       ("smokingStatus", 10),
       ("diabetesStatus", 6),
     ];
+  };
+
+  // Medical Files Management
+
+  let medicalFiles = Map.empty<Principal, Map.Map<Text, Storage.ExternalBlob>>();
+
+  public shared ({ caller }) func uploadMedicalFile(id : Text, file : Storage.ExternalBlob) : async Text {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can upload files");
+    };
+
+    switch (medicalFiles.get(caller)) {
+      case (null) {
+        let userFiles = Map.empty<Text, Storage.ExternalBlob>();
+        userFiles.add(id, file);
+        medicalFiles.add(caller, userFiles);
+      };
+      case (?userFiles) {
+        userFiles.add(id, file);
+      };
+    };
+    id;
+  };
+
+  public query ({ caller }) func listMedicalFiles() : async [(Text, Storage.ExternalBlob)] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can list files");
+    };
+
+    switch (medicalFiles.get(caller)) {
+      case (null) { [] };
+      case (?userFiles) {
+        userFiles.toArray();
+      };
+    };
+  };
+
+  public query ({ caller }) func getMedicalFile(id : Text) : async ?Storage.ExternalBlob {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can download files");
+    };
+
+    switch (medicalFiles.get(caller)) {
+      case (null) { null };
+      case (?userFiles) {
+        userFiles.get(id);
+      };
+    };
+  };
+
+  public shared ({ caller }) func deleteMedicalFile(id : Text) : async Bool {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can delete files");
+    };
+
+    switch (medicalFiles.get(caller)) {
+      case (null) { false };
+      case (?userFiles) {
+        let existed = userFiles.containsKey(id);
+        userFiles.remove(id);
+        existed;
+      };
+    };
+  };
+
+  public query ({ caller }) func getLocation() : async ?Text {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view location");
+    };
+
+    switch (userProfiles.get(caller)) {
+      case (null) { null };
+      case (?profile) {
+        profile.location;
+      };
+    };
+  };
+
+  public shared ({ caller }) func updateLocation(location : Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can update location");
+    };
+
+    switch (userProfiles.get(caller)) {
+      case (null) {
+        Runtime.trap("User profile not found");
+      };
+      case (?profile) {
+        let updatedProfile = { profile with location = ?location };
+        userProfiles.add(caller, updatedProfile);
+      };
+    };
   };
 };
