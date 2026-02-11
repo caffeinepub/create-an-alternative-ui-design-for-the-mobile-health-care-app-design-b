@@ -12,7 +12,12 @@ actor {
 
   public type UserProfile = {
     name : Text;
-    // Add other user metadata if needed
+    email : ?Text;
+    location : ?Text;
+    company : ?Text;
+    website : ?Text;
+    bio : ?Text;
+    image : ?Text;
   };
 
   let userProfiles = Map.empty<Principal, UserProfile>();
@@ -37,16 +42,4 @@ actor {
     };
     userProfiles.add(caller, profile);
   };
-
-  // Write additional application-specific code here.
-  // Guard public functions as follows:
-  // * Admin-only:
-  //   if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-  //      Runtime.trap("Unauthorized: Only admins can perform this action");
-  //   };
-  // * Users only:
-  //   if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-  //      Runtime.trap("Unauthorized: Only users can perform this action");
-  //   };
-  // * Any user including guests: No check needed
 };

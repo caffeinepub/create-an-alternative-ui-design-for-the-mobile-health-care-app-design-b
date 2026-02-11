@@ -1,85 +1,44 @@
 {
   "kind": "build_request",
-  "title": "Persist login session so users stay signed in after reload",
-  "priority": "normal",
+  "title": "Retry deployment and resolve deployment-blocking errors",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Ensure non-Internet-Identity sign-ins (OTP, password, guest) persist a login session so that refreshing the page keeps the user authenticated and protected routes do not redirect to /signin while the saved session is valid.",
-      "target": "frontend",
+      "text": "Retry deploying the project and resolve any errors that prevent a successful deploy so the full stack (Motoko canister + React frontend assets) builds and deploys cleanly.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "user-1"
+          "msg-3"
         ],
         "quotes": [
-          "Can you make save the login data"
+          "Deploy again"
         ]
       },
       "acceptanceCriteria": [
-        "After completing OTP sign-in, password sign-in, or Continue as guest, reloading the browser keeps the user authenticated (the app does not redirect to /signin when navigating to protected routes).",
-        "Protected routes that use the existing route guard continue to consider a stored local session as authenticated via localStorage (using the existing healthcare_local_session key).",
-        "Signing out clears the local session so that a page reload no longer treats the user as authenticated."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Add validity checks for saved local login sessions so stale/invalid session data does not keep the user signed in indefinitely.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "user-1"
-        ],
-        "quotes": [
-          "Can you make save the login data"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Local session validation checks both shape/type (otp|password|guest) and a reasonable expiration window based on the stored timestamp.",
-        "If the stored local session is expired or malformed, it is treated as unauthenticated and the app redirects to /signin for protected routes.",
-        "Valid sessions continue to work without requiring the user to re-enter credentials on refresh."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "When a user is already authenticated (Internet Identity identity present or a valid local session exists), automatically redirect away from the /signin and / routes to the authenticated landing page (/home).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "user-1"
-        ],
-        "quotes": [
-          "Can you make save the login data"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Visiting /signin while already authenticated automatically navigates to /home without requiring user interaction.",
-        "Visiting / (welcome page) while already authenticated automatically navigates to /home.",
-        "If no valid authentication exists, / and /signin continue to behave as they do now."
+        "A fresh deployment attempt completes successfully without errors.",
+        "Backend canister installs/updates successfully.",
+        "Frontend build completes successfully and loads in the browser after deploy.",
+        "If deployment previously failed due to a compile/build/config error, the underlying cause is fixed (not just re-run)."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files in frontend immutablePaths (including frontend/src/hooks/useInternetIdentity.ts and frontend/src/hooks/useActor.ts). Compose around them instead.",
-    "Do not introduce third-party authentication providers; only existing Internet Identity + local demo session mechanisms are allowed.",
-    "Keep backend as a single Motoko actor; no additional backend services."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration.",
+    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT; compose those components instead."
   ],
   "nonGoals": [
-    "Implementing a real backend username/password authentication system.",
-    "Storing user passwords or OTP codes persistently beyond the existing demo behavior.",
-    "Adding new sign-in methods beyond OTP, password, guest, and Internet Identity."
+    "Adding new product features unrelated to deployment stability.",
+    "Redesigning UI/UX or changing existing user flows unless required to fix the deployment/build."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
   },
   "userProfileUpdate": {
-    "goalsToAdd": [
-      "Persist login session so users remain signed in after refresh for non-Internet-Identity flows."
-    ],
+    "goalsToAdd": [],
     "goalsToRemove": [],
-    "preferencesToAdd": [
-      "User-facing auth-related text must be in English."
-    ],
+    "preferencesToAdd": [],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],

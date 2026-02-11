@@ -14,6 +14,7 @@ import { useDemoOtp } from '../hooks/useDemoOtp';
 import { useAuthSession } from '../hooks/useAuthSession';
 import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated';
 import { verifyCredentials } from '../auth/demoCredentialStore';
+import { initializeLocalProfileFromAuth } from '../profile/profileLocalStore';
 import { Loader2, Phone, AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -88,6 +89,12 @@ export default function SignIn() {
 
       if (result.success) {
         signInAsOtp(fullPhone);
+        
+        // Initialize profile with phone from OTP sign-in
+        initializeLocalProfileFromAuth({
+          phone: fullPhone,
+        });
+        
         navigate({ to: '/home' });
       } else {
         setOtpError(result.error || 'Verification failed. Please try again.');
@@ -135,6 +142,13 @@ export default function SignIn() {
 
       if (result.success && result.account) {
         signInAsPassword(fullPhone, result.account.fullName);
+        
+        // Initialize profile with full name and phone from password sign-in
+        initializeLocalProfileFromAuth({
+          fullName: result.account.fullName,
+          phone: fullPhone,
+        });
+        
         navigate({ to: '/home' });
       } else {
         setPasswordError(result.error || 'Sign in failed. Please try again.');
@@ -317,7 +331,7 @@ export default function SignIn() {
                       ) : (
                         <>
                           <Phone className="mr-2 h-4 w-4" />
-                          Send Code
+                          Send OTP
                         </>
                       )}
                     </Button>
@@ -325,31 +339,33 @@ export default function SignIn() {
                 ) : (
                   <form onSubmit={handleVerifyOtp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label>Enter Verification Code</Label>
+                      <Label>Enter 6-digit code</Label>
                       <p className="text-sm text-muted-foreground">
-                        Code sent to {countryCode}{phoneNumber}
+                        Sent to {countryCode}{phoneNumber}
                       </p>
                       {currentOtp && (
-                        <Alert>
-                          <AlertDescription>
-                            Demo code: <strong>{currentOtp}</strong>
-                          </AlertDescription>
-                        </Alert>
+                        <div className="p-3 bg-muted rounded-md">
+                          <p className="text-sm font-mono font-semibold text-center">
+                            Demo Code: {currentOtp}
+                          </p>
+                        </div>
                       )}
-                      <InputOTP
-                        maxLength={6}
-                        value={otpCode}
-                        onChange={setOtpCode}
-                      >
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
-                        </InputOTPGroup>
-                      </InputOTP>
+                      <div className="flex justify-center">
+                        <InputOTP
+                          maxLength={6}
+                          value={otpCode}
+                          onChange={setOtpCode}
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
                     </div>
 
                     {otpError && (
@@ -385,32 +401,34 @@ export default function SignIn() {
                       </Button>
                     </div>
 
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={handleResendOtp}
-                      disabled={!canResend}
-                      className="w-full"
-                    >
-                      {canResend ? 'Resend Code' : `Resend in ${resendCooldown}s`}
-                    </Button>
+                    <div className="text-center">
+                      <Button
+                        type="button"
+                        variant="link"
+                        onClick={handleResendOtp}
+                        disabled={!canResend}
+                        className="text-sm"
+                      >
+                        {canResend ? 'Resend Code' : `Resend in ${resendCooldown}s`}
+                      </Button>
+                    </div>
                   </form>
                 )}
               </TabsContent>
             </Tabs>
 
-            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
               </div>
             </div>
 
-            {/* Alternative Sign In Methods */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <Button
                 variant="outline"
                 className="w-full"
@@ -435,19 +453,19 @@ export default function SignIn() {
                 Continue as Guest
               </Button>
             </div>
+
+            <div className="text-center text-sm">
+              <span className="text-muted-foreground">Don't have an account? </span>
+              <button
+                type="button"
+                className="text-primary hover:underline font-medium"
+                onClick={() => navigate({ to: '/signup' })}
+              >
+                Sign Up
+              </button>
+            </div>
           </CardContent>
         </Card>
-
-        {/* Sign Up Link */}
-        <div className="text-center text-sm">
-          <span className="text-muted-foreground">Don't have an account? </span>
-          <button
-            onClick={() => navigate({ to: '/signup' })}
-            className="text-primary hover:underline font-medium"
-          >
-            Sign Up
-          </button>
-        </div>
       </div>
     </div>
   );

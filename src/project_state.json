@@ -3,43 +3,22 @@
   "projectStateVersion": 3,
   "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Deployment process encountered a technical error; user requested redeploy/retry."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-ensure-non-internet-identity-sign-ins-otp-password-guest-persist-a-login-session-so-that-refreshing-the-page-keeps-the-user-authenticated-and-protected-routes-do-not-redirect-to-signin-while-the-saved-session-is-valid",
-      "title": "Ensure non-Internet-Identity sign-ins (OTP, password, guest) persist a login session so that refreshing the page keeps the user authenticated and protected routes do not redirect to /signin while the saved session is valid.",
+      "id": "feature-retry-deploying-the-project-and-resolve-any-errors-that-prevent-a-successful-deploy-so-the-full-stack-motoko-canister-react-frontend-assets-builds-and-deploys-cleanly",
+      "title": "Retry deploying the project and resolve any errors that prevent a successful deploy so the full stack (Motoko canister + React frontend assets) builds and deploys cleanly.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
-    },
-    {
-      "id": "feature-add-validity-checks-for-saved-local-login-sessions-so-stale-invalid-session-data-does-not-keep-the-user-signed-in-indefinitely",
-      "title": "Add validity checks for saved local login sessions so stale/invalid session data does not keep the user signed in indefinitely.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-when-a-user-is-already-authenticated-internet-identity-identity-present-or-a-valid-local-session-exists-automatically-redirect-away-from-the-signin-and-routes-to-the-authenticated-landing-page-home",
-      "title": "When a user is already authenticated (Internet Identity identity present or a valid local session exists), automatically redirect away from the /signin and / routes to the authenticated landing page (/home).",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Persist login data so users stay signed in (remember/save login session)",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "projectName": "Persist login session so users stay signed in after reload",
+  "new_feature_requests": [],
+  "projectName": "Retry deployment and resolve deployment-blocking errors",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

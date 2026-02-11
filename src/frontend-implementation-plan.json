@@ -1,88 +1,42 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Persist and validate local demo auth sessions + authenticated redirects",
+  "title": "Fix frontend build/deploy blockers and align frontend auth/actor wiring",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Persist OTP/password/guest sign-ins via the existing healthcare_local_session localStorage key so refresh keeps users authenticated and protected routes remain accessible until sign-out.",
+      "summary": "Resolve frontend build/type/runtime issues that block full-stack deployment, ensuring the React asset build completes and loads after deploy.",
       "acceptanceCriteria": [
-        "After completing OTP sign-in, password sign-in, or Continue as guest, reloading the browser keeps the user authenticated (the app does not redirect to /signin when navigating to protected routes).",
-        "Protected routes that use the existing route guard continue to consider a stored local session as authenticated via localStorage (using the existing healthcare_local_session key).",
-        "Signing out clears the local session so that a page reload no longer treats the user as authenticated."
+        "A fresh deployment attempt completes successfully without errors.",
+        "Backend canister installs/updates successfully.",
+        "Frontend build completes successfully and loads in the browser after deploy.",
+        "If deployment previously failed due to a compile/build/config error, the underlying cause is fixed (not just re-run)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Welcome.tsx",
+          "path": "frontend/src/hooks/useInternetIdentity.ts",
           "operation": "modify",
-          "description": "Update the \"Explore as Guest\" action to call the existing local session helper (via useAuthSession().continueAsGuest()) before navigating to /home, ensuring guest auth persists across reloads."
+          "description": "Remove/replace Node-specific environment access that can break Vite/TS builds (e.g., avoid relying on process.env) and instead use the project’s frontend config mechanism provided by the core-infrastructure component for Internet Identity provider configuration. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/hooks/useRequireAuth.ts",
+          "path": "frontend/src/hooks/useActor.ts",
           "operation": "modify",
-          "description": "Ensure the route guard continues to rely on the local session validity signal (via useAuthSession().hasSession()) so protected routes do not redirect to /signin when a saved local session is valid."
+          "description": "Fix TypeScript and runtime safety around access-control initialization by avoiding calls to methods missing from the typed backend interface unless they exist at runtime; ensure actor initialization remains compatible with the authorization component’s expected initialization behavior. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/Profile.tsx",
+          "path": "frontend/src/backend.d.ts",
           "operation": "modify",
-          "description": "Confirm sign-out clears both Internet Identity state and the saved local session (healthcare_local_session) and navigates to /signin with replace, so a reload is no longer authenticated."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Validate saved local sessions (shape + expiration window) so malformed or stale localStorage data does not keep users signed in indefinitely.",
-      "acceptanceCriteria": [
-        "Local session validation checks both shape/type (otp|password|guest) and a reasonable expiration window based on the stored timestamp.",
-        "If the stored local session is expired or malformed, it is treated as unauthenticated and the app redirects to /signin for protected routes.",
-        "Valid sessions continue to work without requiring the user to re-enter credentials on refresh."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/auth/session.ts",
-          "operation": "modify",
-          "description": "Add a strict local session validator that (1) verifies required fields by session type, (2) enforces an expiration window derived from the stored timestamp, and (3) clears healthcare_local_session when invalid/expired. Update hasValidSession() (and optionally loadSession()) to use this validation so all callers consistently treat stale/malformed sessions as unauthenticated."
+          "description": "Align generated/declared backend typings with the actor methods used by the frontend (including any authorization/bootstrap helper invoked during actor creation) so the frontend TypeScript build succeeds without type errors."
         },
         {
-          "path": "frontend/src/hooks/useAuthSession.ts",
+          "path": "frontend/src/main.tsx",
           "operation": "modify",
-          "description": "Align hasSession() with the updated validated hasValidSession() behavior so the route guard and other callers automatically benefit from expiration/shape checks."
+          "description": "Eliminate duplicate provider setup (React Query / Internet Identity) between main.tsx and App.tsx to prevent conflicting QueryClient instances and provider nesting issues that can cause build/runtime instability; keep a single, consistent top-level wiring."
         },
         {
-          "path": "frontend/src/hooks/useUserDisplayName.ts",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Switch display-name resolution to only use a validated local session (and fall back when session is invalid/expired) so the UI does not show authenticated/session-derived identity for stale localStorage."
-        },
-        {
-          "path": "frontend/src/designB/layout/DesignBAppShell.tsx",
-          "operation": "modify",
-          "description": "Ensure the header’s authenticated-user display logic uses the validated local session check so stale/malformed sessions do not show the signed-in UI state."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Auto-redirect authenticated users away from / and /signin to /home when Internet Identity is present or a valid local session exists.",
-      "acceptanceCriteria": [
-        "Visiting /signin while already authenticated automatically navigates to /home without requiring user interaction.",
-        "Visiting / (welcome page) while already authenticated automatically navigates to /home.",
-        "If no valid authentication exists, / and /signin continue to behave as they do now."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useRedirectIfAuthenticated.ts",
-          "operation": "create",
-          "description": "Create a small hook that checks authentication status using Internet Identity (respecting its initialization state) OR a validated local session, and performs a replace navigation to /home when authenticated. This should be usable from / and /signin without modifying immutable auth hooks."
-        },
-        {
-          "path": "frontend/src/pages/SignIn.tsx",
-          "operation": "modify",
-          "description": "Invoke the new useRedirectIfAuthenticated hook so users who already have Internet Identity or a valid local session are automatically redirected to /home when visiting /signin."
-        },
-        {
-          "path": "frontend/src/pages/Welcome.tsx",
-          "operation": "modify",
-          "description": "Invoke the new useRedirectIfAuthenticated hook so users who already have Internet Identity or a valid local session are automatically redirected to /home when visiting /."
+          "description": "After normalizing provider ownership (main.tsx vs App.tsx), update App.tsx wiring to match the chosen single source of truth for QueryClientProvider and InternetIdentityProvider and confirm routing + Toaster still render correctly without introducing new routes."
         }
       ]
     }

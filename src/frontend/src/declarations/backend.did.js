@@ -13,7 +13,15 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const UserProfile = IDL.Record({
+  'bio' : IDL.Opt(IDL.Text),
+  'name' : IDL.Text,
+  'email' : IDL.Opt(IDL.Text),
+  'website' : IDL.Opt(IDL.Text),
+  'company' : IDL.Opt(IDL.Text),
+  'image' : IDL.Opt(IDL.Text),
+  'location' : IDL.Opt(IDL.Text),
+});
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
@@ -37,7 +45,15 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const UserProfile = IDL.Record({
+    'bio' : IDL.Opt(IDL.Text),
+    'name' : IDL.Text,
+    'email' : IDL.Opt(IDL.Text),
+    'website' : IDL.Opt(IDL.Text),
+    'company' : IDL.Opt(IDL.Text),
+    'image' : IDL.Opt(IDL.Text),
+    'location' : IDL.Opt(IDL.Text),
+  });
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),

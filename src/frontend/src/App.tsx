@@ -84,12 +84,12 @@ function App() {
     <StrictMode>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <DesignBProvider>
-          <InternetIdentityProvider>
-            <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <InternetIdentityProvider>
               <RouterProvider router={router} />
               <Toaster />
-            </QueryClientProvider>
-          </InternetIdentityProvider>
+            </InternetIdentityProvider>
+          </QueryClientProvider>
         </DesignBProvider>
       </ThemeProvider>
     </StrictMode>

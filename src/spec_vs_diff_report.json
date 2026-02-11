@@ -1,73 +1,49 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-10T19:23:49.415Z",
-  "summary": "Diff adds local session validation with expiry, plus a new hook to redirect authenticated users away from / and /signin to /home. However, based on the provided diff summary, it’s not verifiable that the existing protected-route guard now treats a stored local session as authenticated, nor that OTP/password/guest sign-in and sign-out paths definitively persist/clear the session via the required localStorage key.",
+  "generatedAt": "2026-02-11T04:28:51.171Z",
+  "summary": "REQ-1 asks to resolve deployment-blocking errors so a fresh full-stack deploy succeeds. The diff shows substantial backend and frontend application changes (authorization/profile APIs, routing/provider restructuring) but provides no clear evidence of fixing a specific compile/build/config/deploy error or of changes targeted at deployment stability. Several changes also look like new functionality rather than deployment fixes.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Ensure non-Internet-Identity sign-ins (OTP, password, guest) persist a login session so refreshing the page keeps the user authenticated and protected routes do not redirect to /signin while the saved session is valid.",
-      "reason": "The diff shows session utilities (save/load/validate) and SignIn/Welcome calling useAuthSession methods, but it does not show (or modify) the actual implementations that would guarantee OTP/password/guest sign-ins write the required healthcare_local_session localStorage entry and that protected routes use that stored session to allow access after reload.",
+      "requirement": "Resolve any errors that prevent a successful deploy so the full stack (Motoko canister + React frontend assets) builds and deploys cleanly; fix the underlying cause of prior compile/build/config errors (not just re-run).",
+      "reason": "The diff does not show any explicit fixes to deployment/build configuration or specific compile errors (e.g., dfx config, canister settings, build scripts, dependency/version fixes). It only shows application-level code changes without evidence they address the prior deployment-blocking issue or ensure a clean deploy.",
       "evidence": [
-        "frontend/src/auth/session.ts",
-        "frontend/src/pages/SignIn.tsx",
-        "frontend/src/pages/Welcome.tsx"
-      ]
-    },
-    {
-      "id": "REQ-1",
-      "requirement": "Protected routes that use the existing route guard continue to consider a stored local session as authenticated via localStorage (using the existing healthcare_local_session key).",
-      "reason": "No changes to the route guard (e.g., useRequireAuth or router protection logic) are shown in the diff summary, so it is not verifiable that protected routes now consult hasValidSession()/healthcare_local_session during authorization checks.",
-      "evidence": [
-        "frontend/src/pages/Profile.tsx",
-        "frontend/src/pages/HomeDashboard.tsx (mentioned in frontend-file-summaries.txt only; no diff shown for route guard)",
-        "frontend/src/auth/session.ts"
-      ]
-    },
-    {
-      "id": "REQ-1",
-      "requirement": "Signing out clears the local session so that a page reload no longer treats the user as authenticated.",
-      "reason": "Profile sign-out calls clearLocalSession from useAuthSession, but the diff does not include useAuthSession implementation, so it cannot be confirmed that it clears the healthcare_local_session key (e.g., via clearSession()).",
-      "evidence": [
-        "frontend/src/pages/Profile.tsx",
-        "frontend/src/auth/session.ts"
+        "backend/main.mo",
+        "frontend/src/App.tsx",
+        "project_state.json"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Display-name resolution logic combining profile fullName, local session data (phone/fullName), and shortened Internet Identity principal.",
-      "reason": "The BuildRequest focuses on session persistence/validation and redirect behavior; it does not request changes to how user display names are computed or displayed.",
+      "description": "Backend user profile storage and profile APIs with access control/authorization mixin.",
+      "reason": "Not requested by REQ-1 (which is limited to deployment stability). These are product/API features rather than clearly deployment-error fixes.",
       "evidence": [
-        "frontend/src/hooks/useUserDisplayName.ts",
-        "frontend/src/designB/layout/DesignBAppShell.tsx"
+        "backend/main.mo"
       ]
     },
     {
-      "description": "UI behavior to show/hide the header user name based on validated session/Internet Identity state.",
-      "reason": "Not requested as part of session persistence, validity checks, or redirect requirements.",
+      "description": "New/changed frontend routing setup using @tanstack/react-router and reorganized provider/layout composition (DesignBAppShell, ThemeProvider, QueryClientProvider, InternetIdentityProvider, Toaster).",
+      "reason": "REQ-1 does not request a routing refactor or design system/layout changes; this appears to be functionality/architecture work beyond deployment-error resolution (unless tied to an error, which is not evidenced in the diff).",
       "evidence": [
-        "frontend/src/designB/layout/DesignBAppShell.tsx"
+        "frontend/src/App.tsx",
+        "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Profile sign-out also clears the React Query cache (queryClient.clear()).",
-      "reason": "Not requested; BuildRequest only specifies clearing local session on sign-out.",
+      "description": "Introduction/expansion of “Design B” theming system and multiple new pages/features (e.g., HomeDashboard metrics UI, DoctorList, AppointmentDetails) as described in the file summaries.",
+      "reason": "These are new UI/product features unrelated to the stated non-goal and not required by REQ-1 for deployment stability; also the diff evidence indicates broad feature work beyond deployment fix scope.",
       "evidence": [
-        "frontend/src/pages/Profile.tsx"
+        "frontend-file-summaries.txt"
       ]
     }
   ],
   "confidence": 0.62,
   "changed_files": [
+    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/auth/session.ts",
-    "frontend/src/designB/layout/DesignBAppShell.tsx",
-    "frontend/src/hooks/useRedirectIfAuthenticated.ts",
-    "frontend/src/hooks/useUserDisplayName.ts",
-    "frontend/src/pages/Profile.tsx",
-    "frontend/src/pages/SignIn.tsx",
-    "frontend/src/pages/Welcome.tsx",
+    "frontend/src/App.tsx",
     "project_state.json"
   ]
 }

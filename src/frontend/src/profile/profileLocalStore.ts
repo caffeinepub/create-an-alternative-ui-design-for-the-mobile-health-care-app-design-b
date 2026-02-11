@@ -1,4 +1,5 @@
 import type { ProfileDetails } from './profileTypes';
+import { getEmptyProfileDetails } from './profileTypes';
 import { loadSession } from '../auth/session';
 
 const PROFILE_KEY_PREFIX = 'healthcare_profile_';
@@ -85,5 +86,44 @@ export function clearLocalProfile(): void {
     localStorage.removeItem(storageKey);
   } catch (error) {
     console.error('Failed to clear local profile:', error);
+  }
+}
+
+/**
+ * Initialize or update local profile with auth-captured details.
+ * Only fills empty fields; never overwrites existing non-empty values.
+ * 
+ * @param updates - Partial profile data to merge (e.g., { fullName, phone })
+ */
+export function initializeLocalProfileFromAuth(updates: Partial<ProfileDetails>): void {
+  const sessionKey = getLocalSessionKey();
+  if (!sessionKey) {
+    console.warn('No active local session to initialize profile');
+    return;
+  }
+
+  try {
+    // Load existing profile or start with empty
+    const existing = loadLocalProfile() || getEmptyProfileDetails();
+
+    // Merge updates, only filling empty fields
+    const merged: ProfileDetails = {
+      fullName: existing.fullName || updates.fullName || '',
+      email: existing.email || updates.email || '',
+      phone: existing.phone || updates.phone || '',
+      dateOfBirth: existing.dateOfBirth || updates.dateOfBirth || '',
+      bloodType: existing.bloodType || updates.bloodType || '',
+      allergies: existing.allergies.length > 0 ? existing.allergies : (updates.allergies || []),
+      emergencyContact: {
+        name: existing.emergencyContact.name || updates.emergencyContact?.name || '',
+        phone: existing.emergencyContact.phone || updates.emergencyContact?.phone || '',
+        relationship: existing.emergencyContact.relationship || updates.emergencyContact?.relationship || '',
+      },
+    };
+
+    // Save merged profile
+    saveLocalProfile(merged);
+  } catch (error) {
+    console.error('Failed to initialize local profile from auth:', error);
   }
 }

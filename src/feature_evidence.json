@@ -2,11 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-ensure-non-internet-identity-sign-ins-otp-password-guest-persist-a-login-session-so-that-refreshing-the-page-keeps-the-user-authenticated-and-protected-routes-do-not-redirect-to-signin-while-the-saved-session-is-valid",
-      "featureTitle": "Ensure non-Internet-Identity sign-ins (OTP, password, guest) persist a login session so that refreshing the page keeps the user authenticated and protected routes do not redirect to /signin while the saved session is valid.",
+      "featureId": "feature-retry-deploying-the-project-and-resolve-any-errors-that-prevent-a-successful-deploy-so-the-full-stack-motoko-canister-react-frontend-assets-builds-and-deploys-cleanly",
+      "featureTitle": "Retry deploying the project and resolve any errors that prevent a successful deploy so the full stack (Motoko canister + React frontend assets) builds and deploys cleanly.",
       "files": [
-        "frontend/src/pages/Profile.tsx",
-        "frontend/src/pages/Welcome.tsx"
+        "frontend/src/App.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -18,48 +17,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-validity-checks-for-saved-local-login-sessions-so-stale-invalid-session-data-does-not-keep-the-user-signed-in-indefinitely",
-      "featureTitle": "Add validity checks for saved local login sessions so stale/invalid session data does not keep the user signed in indefinitely.",
-      "files": [
-        "frontend/src/auth/session.ts",
-        "frontend/src/designB/layout/DesignBAppShell.tsx",
-        "frontend/src/hooks/useUserDisplayName.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-when-a-user-is-already-authenticated-internet-identity-identity-present-or-a-valid-local-session-exists-automatically-redirect-away-from-the-signin-and-routes-to-the-authenticated-landing-page-home",
-      "featureTitle": "When a user is already authenticated (Internet Identity identity present or a valid local session exists), automatically redirect away from the /signin and / routes to the authenticated landing page (/home).",
-      "files": [
-        "frontend/src/hooks/useRedirectIfAuthenticated.ts",
-        "frontend/src/pages/SignIn.tsx",
-        "frontend/src/pages/Welcome.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

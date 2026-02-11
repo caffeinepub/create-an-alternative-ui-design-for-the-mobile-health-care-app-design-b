@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Persist non-Internet-Identity authentication so users remain signed in after a page refresh, with basic validation and sensible redirects.
+**Goal:** Retry deployment and fix any deployment-blocking issues so the Motoko canister and React frontend build and deploy successfully.
 
 **Planned changes:**
-- Persist OTP, password, and guest sign-in state in localStorage using the existing `healthcare_local_session` key so protected routes treat a valid stored session as authenticated after reload.
-- Add local session validation (expected type/shape and an expiration window based on stored timestamp) so malformed or expired sessions are treated as signed out.
-- Ensure signing out clears the saved local session so refresh no longer authenticates the user.
-- When already authenticated (Internet Identity present or valid local session), redirect visits to `/` and `/signin` to `/home`.
+- Re-run a clean deployment and identify the specific error(s) blocking deploy.
+- Apply minimal fixes to configuration/build/compile issues preventing backend canister install/upgrade.
+- Apply minimal fixes to frontend build/asset generation issues preventing the deployed app from loading.
 
-**User-visible outcome:** After signing in via OTP, password, or guest, reloading the page keeps the user signed in and able to access protected routes; expired/invalid saved sessions require signing in again; authenticated users are automatically sent to `/home` when visiting `/` or `/signin`.
+**User-visible outcome:** A fresh deploy completes without errors, the backend canister installs/updates successfully, and the frontend loads in the browser after deployment.

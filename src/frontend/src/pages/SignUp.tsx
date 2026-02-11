@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { PageTitle } from '../designB/components/DesignBTypography';
 import { createAccount } from '../auth/demoCredentialStore';
 import { useAuthSession } from '../hooks/useAuthSession';
+import { initializeLocalProfileFromAuth } from '../profile/profileLocalStore';
 import { Loader2, UserPlus, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function SignUp() {
@@ -53,6 +54,13 @@ export default function SignUp() {
       if (result.success && result.account) {
         // Create authenticated session
         signInAsPassword(fullPhone, result.account.fullName);
+        
+        // Initialize profile with sign-up details
+        initializeLocalProfileFromAuth({
+          fullName: fullName.trim(),
+          phone: fullPhone,
+        });
+        
         // Navigate to home
         navigate({ to: '/home' });
       } else {

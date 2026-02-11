@@ -33,10 +33,18 @@ export function useProfileDetails() {
           const backendProfile = await actor.getCallerUserProfile();
           if (backendProfile) {
             // Convert backend UserProfile to frontend ProfileDetails
-            // Backend only stores name, so we merge with empty defaults
             const profile: ProfileDetails = {
-              ...getEmptyProfileDetails(),
-              fullName: backendProfile.name,
+              fullName: backendProfile.name || '',
+              email: backendProfile.email || '',
+              phone: '', // Backend doesn't store phone for II users
+              dateOfBirth: '', // Not yet in backend
+              bloodType: '', // Not yet in backend
+              allergies: [], // Not yet in backend
+              emergencyContact: {
+                name: '',
+                phone: '',
+                relationship: '',
+              },
             };
             return profile;
           }
@@ -69,6 +77,12 @@ export function useProfileDetails() {
       if (isInternetIdentity && actor) {
         const backendProfile: UserProfile = {
           name: profile.fullName,
+          email: profile.email || undefined,
+          location: undefined,
+          company: undefined,
+          website: undefined,
+          bio: undefined,
+          image: undefined,
         };
         await actor.saveCallerUserProfile(backendProfile);
         return profile;
