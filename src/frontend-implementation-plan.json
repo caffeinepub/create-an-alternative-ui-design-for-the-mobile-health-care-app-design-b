@@ -1,42 +1,34 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix frontend build/deploy blockers and align frontend auth/actor wiring",
+  "title": "Replace Health Insights tile label and logging from Energy Levels to PCOD & PCOS Risks",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Resolve frontend build/type/runtime issues that block full-stack deployment, ensuring the React asset build completes and loads after deploy.",
+      "summary": "Replace the existing \"Energy Levels\" Health Insights tile label with \"PCOD & PCOS Risks\" on the /home dashboard without changing other tiles.",
       "acceptanceCriteria": [
-        "A fresh deployment attempt completes successfully without errors.",
-        "Backend canister installs/updates successfully.",
-        "Frontend build completes successfully and loads in the browser after deploy.",
-        "If deployment previously failed due to a compile/build/config error, the underlying cause is fixed (not just re-run)."
+        "On the /home dashboard, within the \"Health Insights\" grid, the tile label reads \"PCOD & PCOS Risks\" instead of \"Energy Levels\".",
+        "No other tiles in the \"Health Insights\" section are removed or renamed."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useInternetIdentity.ts",
+          "path": "frontend/src/pages/HomeDashboard.tsx",
           "operation": "modify",
-          "description": "Remove/replace Node-specific environment access that can break Vite/TS builds (e.g., avoid relying on process.env) and instead use the project’s frontend config mechanism provided by the core-infrastructure component for Internet Identity provider configuration. Verify the component's usage instructions before implementing."
-        },
+          "description": "In the Health Insights grid, update the DashboardTile currently labeled \"Energy Levels\" to instead use the label \"PCOD & PCOS Risks\" while keeping the rest of the tiles unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Update the click handler/logging for the replaced tile to reference PCOD & PCOS risks instead of energy predictions.",
+      "acceptanceCriteria": [
+        "Clicking the \"PCOD & PCOS Risks\" tile triggers a handler/log message that references PCOD & PCOS risks rather than energy."
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/hooks/useActor.ts",
+          "path": "frontend/src/pages/HomeDashboard.tsx",
           "operation": "modify",
-          "description": "Fix TypeScript and runtime safety around access-control initialization by avoiding calls to methods missing from the typed backend interface unless they exist at runtime; ensure actor initialization remains compatible with the authorization component’s expected initialization behavior. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/backend.d.ts",
-          "operation": "modify",
-          "description": "Align generated/declared backend typings with the actor methods used by the frontend (including any authorization/bootstrap helper invoked during actor creation) so the frontend TypeScript build succeeds without type errors."
-        },
-        {
-          "path": "frontend/src/main.tsx",
-          "operation": "modify",
-          "description": "Eliminate duplicate provider setup (React Query / Internet Identity) between main.tsx and App.tsx to prevent conflicting QueryClient instances and provider nesting issues that can cause build/runtime instability; keep a single, consistent top-level wiring."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "After normalizing provider ownership (main.tsx vs App.tsx), update App.tsx wiring to match the chosen single source of truth for QueryClientProvider and InternetIdentityProvider and confirm routing + Toaster still render correctly without introducing new routes."
+          "description": "Update the onClick handler/log message for the tile that was previously \"Energy Levels\" so it no longer references energy predictions and instead references PCOD & PCOS risks (no user-facing text changes beyond the tile label)."
         }
       ]
     }

@@ -1,48 +1,51 @@
 {
   "kind": "build_request",
-  "title": "Retry deployment and resolve deployment-blocking errors",
-  "priority": "high",
+  "title": "Replace Health Insights tile 'Energy Levels' with 'PCOD & PCOS Risks'",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Retry deploying the project and resolve any errors that prevent a successful deploy so the full stack (Motoko canister + React frontend assets) builds and deploys cleanly.",
-      "target": "both",
+      "text": "In the Health Insights section of the dashboard, replace the existing \"Energy Levels\" insight tile with a new tile labeled \"PCOD & PCOS Risks\".",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-4"
         ],
         "quotes": [
-          "Deploy again"
+          "in health insight can you  replace the energy level to pcod & pcos risks"
         ]
       },
       "acceptanceCriteria": [
-        "A fresh deployment attempt completes successfully without errors.",
-        "Backend canister installs/updates successfully.",
-        "Frontend build completes successfully and loads in the browser after deploy.",
-        "If deployment previously failed due to a compile/build/config error, the underlying cause is fixed (not just re-run)."
+        "On the /home dashboard, within the \"Health Insights\" grid, the tile label reads \"PCOD & PCOS Risks\" instead of \"Energy Levels\".",
+        "No other tiles in the \"Health Insights\" section are removed or renamed."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Update the click handler/logging for the replaced Health Insights tile so it no longer references energy predictions and instead references PCOD & PCOS risks (user-facing text remains unchanged aside from the tile label).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "replace the energy level to pcod & pcos risks"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking the \"PCOD & PCOS Risks\" tile triggers a handler/log message that references PCOD & PCOS risks rather than energy."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration.",
-    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT; compose those components instead."
+    "Do not edit files under frontend/src/components/ui or any other immutable paths listed in SYSTEM_CONTEXT."
   ],
   "nonGoals": [
-    "Adding new product features unrelated to deployment stability.",
-    "Redesigning UI/UX or changing existing user flows unless required to fix the deployment/build."
+    "Do not implement a new backend ML model or API for PCOD/PCOS risk calculation as part of this change.",
+    "Do not add new routes/pages for PCOD/PCOS unless explicitly requested."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

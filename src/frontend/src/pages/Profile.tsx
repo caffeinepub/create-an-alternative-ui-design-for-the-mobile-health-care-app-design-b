@@ -236,7 +236,7 @@ export default function Profile() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-email">Email *</Label>
+                <Label htmlFor="edit-email">Email</Label>
                 <Input
                   id="edit-email"
                   type="email"
@@ -247,7 +247,7 @@ export default function Profile() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-phone">Phone *</Label>
+                <Label htmlFor="edit-phone">Phone</Label>
                 <Input
                   id="edit-phone"
                   type="tel"
@@ -258,7 +258,7 @@ export default function Profile() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-dob">Date of Birth *</Label>
+                <Label htmlFor="edit-dob">Date of Birth</Label>
                 <Input
                   id="edit-dob"
                   type="date"
@@ -320,7 +320,7 @@ export default function Profile() {
               <SectionTitle>Emergency Contact</SectionTitle>
               
               <div className="space-y-2">
-                <Label htmlFor="edit-ec-name">Name *</Label>
+                <Label htmlFor="edit-ec-name">Name</Label>
                 <Input
                   id="edit-ec-name"
                   value={editedProfile.emergencyContact.name}
@@ -333,7 +333,7 @@ export default function Profile() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-ec-phone">Phone *</Label>
+                <Label htmlFor="edit-ec-phone">Phone</Label>
                 <Input
                   id="edit-ec-phone"
                   type="tel"
@@ -347,7 +347,7 @@ export default function Profile() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-ec-relationship">Relationship *</Label>
+                <Label htmlFor="edit-ec-relationship">Relationship</Label>
                 <Input
                   id="edit-ec-relationship"
                   value={editedProfile.emergencyContact.relationship}

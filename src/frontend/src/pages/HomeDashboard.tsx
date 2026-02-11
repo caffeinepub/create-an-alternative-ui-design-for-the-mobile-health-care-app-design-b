@@ -14,7 +14,7 @@ import {
   Dumbbell,
   Stethoscope,
   Brain,
-  Zap
+  AlertCircle
 } from 'lucide-react';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 
@@ -163,10 +163,10 @@ export default function HomeDashboard() {
             onClick={() => console.log('View general health predictions')}
           />
           <DashboardTile
-            icon={Zap}
-            label="Energy Levels"
+            icon={AlertCircle}
+            label="PCOD & PCOS Risks"
             colorAccent="amber"
-            onClick={() => console.log('View energy predictions')}
+            onClick={() => console.log('View PCOD & PCOS risk predictions')}
           />
           <DashboardTile
             icon={Dumbbell}

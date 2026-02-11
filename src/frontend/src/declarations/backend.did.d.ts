@@ -10,13 +10,57 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface Allergy {
+  'name' : string,
+  'severity' : string,
+  'reaction' : string,
+}
+export type BloodType = { 'aNegative' : null } |
+  { 'oPositive' : null } |
+  { 'abPositive' : null } |
+  { 'bPositive' : null } |
+  { 'aPositive' : null } |
+  { 'oNegative' : null } |
+  { 'abNegative' : null } |
+  { 'bNegative' : null };
+export interface EmergencyContact {
+  'relationship' : string,
+  'name' : string,
+  'phone' : string,
+}
+export interface MLInput {
+  'age' : number,
+  'bmi' : number,
+  'sleepQuality' : string,
+  'saltIntake' : string,
+  'stressLevel' : string,
+  'bloodPressure' : number,
+  'exerciseFrequency' : number,
+  'heartRate' : number,
+  'gender' : string,
+  'smokingStatus' : string,
+  'medicationAdherence' : string,
+  'diabetesStatus' : string,
+  'cholesterol' : number,
+}
+export interface MLPrediction {
+  'featureWeights' : Array<[string, number]>,
+  'modelVersion' : string,
+  'timestamp' : bigint,
+  'confidence' : number,
+  'riskLevel' : string,
+}
 export interface UserProfile {
   'bio' : [] | [string],
+  'bloodType' : [] | [BloodType],
+  'dateOfBirth' : [] | [bigint],
   'name' : string,
+  'emergencyContact' : [] | [EmergencyContact],
   'email' : [] | [string],
   'website' : [] | [string],
   'company' : [] | [string],
   'image' : [] | [string],
+  'allergies' : Array<Allergy>,
   'location' : [] | [string],
 }
 export type UserRole = { 'admin' : null } |
@@ -25,10 +69,15 @@ export type UserRole = { 'admin' : null } |
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'getAllPredictions' : ActorMethod<[], Array<[Principal, MLPrediction]>>,
+  'getCallerMLPrediction' : ActorMethod<[], [] | [MLPrediction]>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getFeatureImportance' : ActorMethod<[], Array<[string, number]>>,
+  'getUserMLPrediction' : ActorMethod<[Principal], [] | [MLPrediction]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'runMLPrediction' : ActorMethod<[MLInput], MLPrediction>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

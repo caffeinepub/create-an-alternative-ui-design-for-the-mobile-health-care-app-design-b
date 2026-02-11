@@ -1,11 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Retry deployment and fix any deployment-blocking issues so the Motoko canister and React frontend build and deploy successfully.
+**Goal:** Replace the “Energy Levels” Health Insights tile on the /home dashboard with “PCOD & PCOS Risks” and update its click handler/logging references accordingly.
 
 **Planned changes:**
-- Re-run a clean deployment and identify the specific error(s) blocking deploy.
-- Apply minimal fixes to configuration/build/compile issues preventing backend canister install/upgrade.
-- Apply minimal fixes to frontend build/asset generation issues preventing the deployed app from loading.
+- Update the Health Insights grid tile label from “Energy Levels” to “PCOD & PCOS Risks” on /home.
+- Update the replaced tile’s click handler/log message so it references PCOD & PCOS risks (and no longer references energy predictions), without changing other user-facing text beyond the tile label.
 
-**User-visible outcome:** A fresh deploy completes without errors, the backend canister installs/updates successfully, and the frontend loads in the browser after deployment.
+**User-visible outcome:** On the /home dashboard, the Health Insights tile now shows “PCOD & PCOS Risks,” and clicking it triggers the corresponding PCOD/PCOS risks handler/logging.

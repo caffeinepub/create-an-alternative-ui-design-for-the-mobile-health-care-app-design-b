@@ -13,27 +13,90 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const MLPrediction = IDL.Record({
+  'featureWeights' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat8)),
+  'modelVersion' : IDL.Text,
+  'timestamp' : IDL.Int,
+  'confidence' : IDL.Nat8,
+  'riskLevel' : IDL.Text,
+});
+export const BloodType = IDL.Variant({
+  'aNegative' : IDL.Null,
+  'oPositive' : IDL.Null,
+  'abPositive' : IDL.Null,
+  'bPositive' : IDL.Null,
+  'aPositive' : IDL.Null,
+  'oNegative' : IDL.Null,
+  'abNegative' : IDL.Null,
+  'bNegative' : IDL.Null,
+});
+export const EmergencyContact = IDL.Record({
+  'relationship' : IDL.Text,
+  'name' : IDL.Text,
+  'phone' : IDL.Text,
+});
+export const Allergy = IDL.Record({
+  'name' : IDL.Text,
+  'severity' : IDL.Text,
+  'reaction' : IDL.Text,
+});
 export const UserProfile = IDL.Record({
   'bio' : IDL.Opt(IDL.Text),
+  'bloodType' : IDL.Opt(BloodType),
+  'dateOfBirth' : IDL.Opt(IDL.Int),
   'name' : IDL.Text,
+  'emergencyContact' : IDL.Opt(EmergencyContact),
   'email' : IDL.Opt(IDL.Text),
   'website' : IDL.Opt(IDL.Text),
   'company' : IDL.Opt(IDL.Text),
   'image' : IDL.Opt(IDL.Text),
+  'allergies' : IDL.Vec(Allergy),
   'location' : IDL.Opt(IDL.Text),
+});
+export const MLInput = IDL.Record({
+  'age' : IDL.Nat8,
+  'bmi' : IDL.Nat8,
+  'sleepQuality' : IDL.Text,
+  'saltIntake' : IDL.Text,
+  'stressLevel' : IDL.Text,
+  'bloodPressure' : IDL.Nat8,
+  'exerciseFrequency' : IDL.Nat8,
+  'heartRate' : IDL.Nat8,
+  'gender' : IDL.Text,
+  'smokingStatus' : IDL.Text,
+  'medicationAdherence' : IDL.Text,
+  'diabetesStatus' : IDL.Text,
+  'cholesterol' : IDL.Nat8,
 });
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'getAllPredictions' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Principal, MLPrediction))],
+      ['query'],
+    ),
+  'getCallerMLPrediction' : IDL.Func([], [IDL.Opt(MLPrediction)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getFeatureImportance' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat8))],
+      ['query'],
+    ),
+  'getUserMLPrediction' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(MLPrediction)],
+      ['query'],
+    ),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'runMLPrediction' : IDL.Func([MLInput], [MLPrediction], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
 });
 
@@ -45,27 +108,90 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const MLPrediction = IDL.Record({
+    'featureWeights' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat8)),
+    'modelVersion' : IDL.Text,
+    'timestamp' : IDL.Int,
+    'confidence' : IDL.Nat8,
+    'riskLevel' : IDL.Text,
+  });
+  const BloodType = IDL.Variant({
+    'aNegative' : IDL.Null,
+    'oPositive' : IDL.Null,
+    'abPositive' : IDL.Null,
+    'bPositive' : IDL.Null,
+    'aPositive' : IDL.Null,
+    'oNegative' : IDL.Null,
+    'abNegative' : IDL.Null,
+    'bNegative' : IDL.Null,
+  });
+  const EmergencyContact = IDL.Record({
+    'relationship' : IDL.Text,
+    'name' : IDL.Text,
+    'phone' : IDL.Text,
+  });
+  const Allergy = IDL.Record({
+    'name' : IDL.Text,
+    'severity' : IDL.Text,
+    'reaction' : IDL.Text,
+  });
   const UserProfile = IDL.Record({
     'bio' : IDL.Opt(IDL.Text),
+    'bloodType' : IDL.Opt(BloodType),
+    'dateOfBirth' : IDL.Opt(IDL.Int),
     'name' : IDL.Text,
+    'emergencyContact' : IDL.Opt(EmergencyContact),
     'email' : IDL.Opt(IDL.Text),
     'website' : IDL.Opt(IDL.Text),
     'company' : IDL.Opt(IDL.Text),
     'image' : IDL.Opt(IDL.Text),
+    'allergies' : IDL.Vec(Allergy),
     'location' : IDL.Opt(IDL.Text),
+  });
+  const MLInput = IDL.Record({
+    'age' : IDL.Nat8,
+    'bmi' : IDL.Nat8,
+    'sleepQuality' : IDL.Text,
+    'saltIntake' : IDL.Text,
+    'stressLevel' : IDL.Text,
+    'bloodPressure' : IDL.Nat8,
+    'exerciseFrequency' : IDL.Nat8,
+    'heartRate' : IDL.Nat8,
+    'gender' : IDL.Text,
+    'smokingStatus' : IDL.Text,
+    'medicationAdherence' : IDL.Text,
+    'diabetesStatus' : IDL.Text,
+    'cholesterol' : IDL.Nat8,
   });
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'getAllPredictions' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Principal, MLPrediction))],
+        ['query'],
+      ),
+    'getCallerMLPrediction' : IDL.Func([], [IDL.Opt(MLPrediction)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getFeatureImportance' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat8))],
+        ['query'],
+      ),
+    'getUserMLPrediction' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(MLPrediction)],
+        ['query'],
+      ),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'runMLPrediction' : IDL.Func([MLInput], [MLPrediction], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   });
 };

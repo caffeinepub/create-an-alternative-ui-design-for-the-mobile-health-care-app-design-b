@@ -5,7 +5,7 @@ import type { ProfileDetails } from './profileTypes';
 import { getEmptyProfileDetails } from './profileTypes';
 import { loadLocalProfile, saveLocalProfile } from './profileLocalStore';
 import { loadSession } from '../auth/session';
-import type { UserProfile } from '../backend';
+import { backendToFrontend, frontendToBackend } from './profileBackendMapper';
 
 const PROFILE_QUERY_KEY = 'userProfile';
 
@@ -32,34 +32,16 @@ export function useProfileDetails() {
         try {
           const backendProfile = await actor.getCallerUserProfile();
           if (backendProfile) {
-            // Convert backend UserProfile to frontend ProfileDetails
-            const profile: ProfileDetails = {
-              fullName: backendProfile.name || '',
-              email: backendProfile.email || '',
-              phone: '', // Backend doesn't store phone for II users
-              dateOfBirth: '', // Not yet in backend
-              bloodType: '', // Not yet in backend
-              allergies: [], // Not yet in backend
-              emergencyContact: {
-                name: '',
-                phone: '',
-                relationship: '',
-              },
-            };
-            return profile;
+            return backendToFrontend(backendProfile);
           }
           return null;
-        } catch (error: any) {
-          // Handle authorization errors gracefully
-          if (error.message && error.message.includes('Unauthorized')) {
-            console.warn('Unauthorized access to profile');
-            return null;
-          }
-          throw error;
+        } catch (error) {
+          console.error('Failed to fetch backend profile:', error);
+          return null;
         }
       }
 
-      // Local session: load from localStorage
+      // Local session: fetch from localStorage
       if (hasLocalSession) {
         return loadLocalProfile();
       }
@@ -75,45 +57,35 @@ export function useProfileDetails() {
     mutationFn: async (profile: ProfileDetails) => {
       // Internet Identity: save to backend
       if (isInternetIdentity && actor) {
-        const backendProfile: UserProfile = {
-          name: profile.fullName,
-          email: profile.email || undefined,
-          location: undefined,
-          company: undefined,
-          website: undefined,
-          bio: undefined,
-          image: undefined,
-        };
+        const backendProfile = frontendToBackend(profile);
         await actor.saveCallerUserProfile(backendProfile);
-        return profile;
+        return;
       }
 
       // Local session: save to localStorage
       if (hasLocalSession) {
         saveLocalProfile(profile);
-        return profile;
+        return;
       }
 
-      throw new Error('No active session to save profile');
+      throw new Error('No active session');
     },
-    onSuccess: (savedProfile) => {
-      // Update the cache immediately
+    onSuccess: (_, profile) => {
+      // Update cache immediately
       queryClient.setQueryData(
         [PROFILE_QUERY_KEY, identity?.getPrincipal().toString(), localSession?.type, localSession?.phone],
-        savedProfile
+        profile
       );
-      // Invalidate to ensure consistency
+      // Invalidate to refetch
       queryClient.invalidateQueries({ queryKey: [PROFILE_QUERY_KEY] });
     },
   });
 
   return {
-    profile: query.data ?? null,
-    isLoading: actorFetching || query.isLoading,
-    isFetched: (isInternetIdentity ? !!actor : true) && query.isFetched,
-    error: query.error,
+    profile: query.data || null,
+    isLoading: actorFetching || isInitializing || query.isLoading,
+    isFetched: query.isFetched,
     saveProfile: saveMutation.mutateAsync,
     isSaving: saveMutation.isPending,
-    saveError: saveMutation.error,
   };
 }
