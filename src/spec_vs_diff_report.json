@@ -1,31 +1,16 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T05:15:44.814Z",
-  "summary": "The diff summary is truncated before the Health Insights grid content in HomeDashboard.tsx, so there isn’t sufficient visible evidence to confirm the Energy Levels tile was replaced or that its click handler/logging was updated as requested.",
-  "missing_requirements": [
-    {
-      "id": "REQ-1",
-      "requirement": "In the Health Insights section of the dashboard, replace the existing \"Energy Levels\" insight tile with a new tile labeled \"PCOD & PCOS Risks\" (and do not remove/rename other Health Insights tiles).",
-      "reason": "HomeDashboard.tsx is truncated before the Health Insights grid; the diff snippet does not show the tile label change, so implementation cannot be verified from the provided evidence.",
-      "evidence": [
-        "frontend/src/pages/HomeDashboard.tsx (truncated)"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "requirement": "Update the click handler/logging for the replaced tile so it references PCOD & PCOS risks rather than energy predictions.",
-      "reason": "The diff snippet does not include the Health Insights tile’s onClick handler/log statement; cannot confirm it no longer references energy.",
-      "evidence": [
-        "frontend/src/pages/HomeDashboard.tsx (truncated)"
-      ]
-    }
-  ],
+  "generatedAt": "2026-02-11T05:31:09.974Z",
+  "summary": "Diff implements a dedicated auto-scroll hook and updates the /chat page and AssistantPanel layout to ensure the transcript area is a proper flex child with min-h-0 and overflow scrolling, with scroll logic attached directly to the scrollable container. No edits are shown under frontend/src/components/ui.",
+  "missing_requirements": [],
   "hallucinated_features": [],
-  "confidence": 0.46,
+  "confidence": 0.84,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/pages/HomeDashboard.tsx",
+    "frontend/src/components/assistant/AssistantPanel.tsx",
+    "frontend/src/components/assistant/useTranscriptAutoScroll.ts",
+    "frontend/src/pages/Chatbot.tsx",
     "project_state.json"
   ]
 }

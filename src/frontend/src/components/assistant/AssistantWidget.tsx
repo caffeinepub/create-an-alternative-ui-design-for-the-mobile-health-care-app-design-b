@@ -1,45 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { useState, useCallback } from 'react';
+import { useNavigate, useLocation } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { MessageSquare } from 'lucide-react';
 import { AssistantPanel } from './AssistantPanel';
-import { AssistantMessage, AssistantStatus } from './assistantTypes';
+import { AssistantStatus } from './assistantTypes';
 import { interpretCommand } from './assistantBrain';
-import { loadTranscript, saveTranscript, clearTranscript } from './assistantStorage';
+import { useAssistantTranscript } from './useAssistantTranscript';
 
 export function AssistantWidget() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<AssistantStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>();
-  const [transcript, setTranscript] = useState<AssistantMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
-
-  // Load transcript from storage on mount
-  useEffect(() => {
-    const stored = loadTranscript();
-    if (stored && stored.messages.length > 0) {
-      setTranscript(stored.messages as AssistantMessage[]);
-    }
-  }, []);
-
-  // Save transcript to storage whenever it changes
-  useEffect(() => {
-    if (transcript.length > 0) {
-      saveTranscript(transcript);
-    }
-  }, [transcript]);
-
-  const addMessage = useCallback((role: 'user' | 'assistant', content: string) => {
-    const message: AssistantMessage = {
-      id: `${Date.now()}-${Math.random()}`,
-      role,
-      content,
-      timestamp: Date.now(),
-    };
-    setTranscript(prev => [...prev, message]);
-  }, []);
+  const { transcript, addMessage, clearTranscript } = useAssistantTranscript();
 
   const handleCommand = useCallback(async (userInput: string) => {
     if (!userInput.trim()) return;
@@ -50,27 +26,29 @@ export function AssistantWidget() {
     setStatus('processing');
     setErrorMessage(undefined);
 
-    // Simulate brief processing delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    // Interpret command
-    const result = interpretCommand(userInput);
+    // Interpret command immediately (no artificial delay)
+    const result = interpretCommand(userInput, transcript);
 
     // Handle navigation
     if (result.type === 'navigation' && result.navigationTarget) {
       addMessage('assistant', result.message);
       setStatus('idle');
       
-      // Navigate after a brief delay to show the confirmation message
+      // Navigate immediately after adding confirmation message
       setTimeout(() => {
-        navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' });
-      }, 500);
+        navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' });
+        setIsOpen(false);
+      }, 100);
+    } else if (result.type === 'medical') {
+      // Add medical response
+      addMessage('assistant', result.message);
+      setStatus('idle');
     } else {
       // Add assistant response
       addMessage('assistant', result.message);
       setStatus('idle');
     }
-  }, [addMessage, navigate]);
+  }, [addMessage, navigate, transcript]);
 
   const handleSendMessage = useCallback(() => {
     handleCommand(inputValue);
@@ -81,12 +59,16 @@ export function AssistantWidget() {
   }, [handleCommand]);
 
   const handleClearConversation = useCallback(() => {
-    setTranscript([]);
     clearTranscript();
     setStatus('idle');
     setErrorMessage(undefined);
     setInputValue('');
-  }, []);
+  }, [clearTranscript]);
+
+  // Don't show widget on /chat page
+  if (location.pathname === '/chat') {
+    return null;
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>

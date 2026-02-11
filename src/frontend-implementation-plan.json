@@ -1,34 +1,47 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Replace Health Insights tile label and logging from Energy Levels to PCOD & PCOS Risks",
+  "title": "Smooth, reliable chat transcript scrolling on /chat",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Replace the existing \"Energy Levels\" Health Insights tile label with \"PCOD & PCOS Risks\" on the /home dashboard without changing other tiles.",
+      "summary": "Make the /chat transcript region reliably scrollable within the available height and prevent “stuck” scrolling by fixing flex/height constraints.",
       "acceptanceCriteria": [
-        "On the /home dashboard, within the \"Health Insights\" grid, the tile label reads \"PCOD & PCOS Risks\" instead of \"Energy Levels\".",
-        "No other tiles in the \"Health Insights\" section are removed or renamed."
+        "On /chat, when the transcript grows beyond the visible area, the message list can be scrolled naturally (wheel/touch/trackpad) and does not get stuck.",
+        "The transcript region properly takes remaining height in the chat layout (no collapsed or non-scrollable flex child behavior).",
+        "No new layout regressions: header and input controls remain visible and usable while the transcript scrolls independently."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/HomeDashboard.tsx",
+          "path": "frontend/src/pages/Chatbot.tsx",
           "operation": "modify",
-          "description": "In the Health Insights grid, update the DashboardTile currently labeled \"Energy Levels\" to instead use the label \"PCOD & PCOS Risks\" while keeping the rest of the tiles unchanged."
+          "description": "Adjust the /chat page layout to use a stable flex-based height model (avoid fragile viewport calc stacking) so the AssistantPanel can occupy remaining space reliably; ensure the panel wrapper uses flex + min-h-0 patterns so the transcript can scroll while the page header remains visible."
+        },
+        {
+          "path": "frontend/src/components/assistant/AssistantPanel.tsx",
+          "operation": "modify",
+          "description": "Replace the current transcript wrapper with an explicitly scrollable element (e.g., a div with overflow-y-auto, flex-1, min-h-0, and overscroll containment) so the transcript never gets stuck due to non-scrollable wrappers; keep header and controls outside the scroll container. Continue using shadcn-ui components (Button/Input/Card/etc.) without modifying any files under frontend/src/components/ui. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Update the click handler/logging for the replaced tile to reference PCOD & PCOS risks instead of energy predictions.",
+      "summary": "Implement reliable, non-jumpy auto-scroll-to-bottom by targeting the real scroll container and respecting user scroll position, without editing shadcn/ui source files.",
       "acceptanceCriteria": [
-        "Clicking the \"PCOD & PCOS Risks\" tile triggers a handler/log message that references PCOD & PCOS risks rather than energy."
+        "When a new message is appended, the transcript scroll position updates to show the newest message at the bottom (unless the user has manually scrolled up, in which case behavior should not feel jumpy).",
+        "Auto-scroll works consistently on initial load (when transcript is restored) and during ongoing conversation.",
+        "No edits are made to shadcn/ui component source files under frontend/src/components/ui (compose around them instead)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/HomeDashboard.tsx",
+          "path": "frontend/src/components/assistant/useTranscriptAutoScroll.ts",
+          "operation": "create",
+          "description": "Create a small hook that manages (1) a scroll container ref, (2) a bottom sentinel ref, (3) an isNearBottom state derived from onScroll, and (4) a safe scrollToBottom function supporting smooth scrolling; default to scrolling on initial load and only auto-scroll on new messages when the user is already near the bottom."
+        },
+        {
+          "path": "frontend/src/components/assistant/AssistantPanel.tsx",
           "operation": "modify",
-          "description": "Update the onClick handler/log message for the tile that was previously \"Energy Levels\" so it no longer references energy predictions and instead references PCOD & PCOS risks (no user-facing text changes beyond the tile label)."
+          "description": "Wire the new auto-scroll hook to the transcript list: attach refs/scroll handlers to the actual scrollable element (not a non-scrollable wrapper), add a bottom sentinel element, and trigger smooth scroll on transcript changes only when appropriate. Ensure this composes around shadcn-ui components (do not edit frontend/src/components/ui). Verify the component's usage instructions before implementing."
         }
       ]
     }

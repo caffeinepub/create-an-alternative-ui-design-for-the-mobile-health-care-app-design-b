@@ -1,22 +1,24 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Health insight module updates: replace the \"Energy level\" metric with \"PCOD & PCOS risks\".",
+  "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Chat section can get stuck in one place / scrolling not smooth"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-in-the-health-insights-section-of-the-dashboard-replace-the-existing-energy-levels-insight-tile-with-a-new-tile-labeled-pcod-pcos-risks",
-      "title": "In the Health Insights section of the dashboard, replace the existing \"Energy Levels\" insight tile with a new tile labeled \"PCOD & PCOS Risks\".",
+      "id": "feature-fix-the-chat-transcript-area-so-it-scrolls-smoothly-and-never-appears-stuck-in-one-place-on-the-chat-page-including-ensuring-the-transcript-region-reliably-becomes-scrollable-within-the-available-viewport-height",
+      "title": "Fix the chat transcript area so it scrolls smoothly and never appears “stuck in one place” on the /chat page, including ensuring the transcript region reliably becomes scrollable within the available viewport height.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-click-handler-logging-for-the-replaced-health-insights-tile-so-it-no-longer-references-energy-predictions-and-instead-references-pcod-pcos-risks-user-facing-text-remains-unchanged-aside-from-the-tile-label",
-      "title": "Update the click handler/logging for the replaced Health Insights tile so it no longer references energy predictions and instead references PCOD & PCOS risks (user-facing text remains unchanged aside from the tile label).",
+      "id": "feature-make-auto-scroll-to-bottom-behavior-reliable-when-new-chat-messages-are-added-using-a-scroll-target-that-actually-controls-the-scrollable-viewport-avoid-attaching-scroll-logic-to-a-non-scrollable-wrapper-without-modifying-any-files-under-frontend-src-components-ui",
+      "title": "Make auto-scroll-to-bottom behavior reliable when new chat messages are added, using a scroll target that actually controls the scrollable viewport (avoid attaching scroll logic to a non-scrollable wrapper), without modifying any files under frontend/src/components/ui.",
       "reqIds": [
         "REQ-2"
       ],
@@ -26,12 +28,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "In Health Insight, replace the \"Energy level\" item/metric with \"PCOD & PCOS risks\".",
+      "summary": "Fix chat section UI so it scrolls/runs smoothly and no longer sticks in one place",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Replace Health Insights tile 'Energy Levels' with 'PCOD & PCOS Risks'",
+  "projectName": "Fix chat transcript scrolling so it no longer sticks and feels smooth",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

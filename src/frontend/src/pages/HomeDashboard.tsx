@@ -14,13 +14,16 @@ import {
   Dumbbell,
   Stethoscope,
   Brain,
-  AlertCircle
+  AlertCircle,
+  MessageSquare
 } from 'lucide-react';
 import { useRequireAuth } from '../hooks/useRequireAuth';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function HomeDashboard() {
   // Protect this route - redirect to signin if not authenticated
   useRequireAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
@@ -95,37 +98,49 @@ export default function HomeDashboard() {
         </div>
       </section>
 
-      {/* Quick Log Section */}
+      {/* Quick Actions Section */}
       <section className="space-y-4">
         <DashboardSectionHeader
-          title="Quick Log"
-          caption="Track your daily activities"
+          title="Quick Actions"
+          caption="Access key features instantly"
         />
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <DashboardTile
+            icon={MessageSquare}
+            label="Medical Chatbot"
+            colorAccent="purple"
+            onClick={() => navigate({ to: '/chat' })}
+          />
           <DashboardTile
             icon={Pill}
-            label="Medication"
+            label="Log Medication"
             colorAccent="pink"
             onClick={() => console.log('Log medication')}
           />
           <DashboardTile
             icon={Apple}
-            label="Meal"
+            label="Log Meal"
             colorAccent="green"
             onClick={() => console.log('Log meal')}
           />
           <DashboardTile
             icon={Dumbbell}
-            label="Exercise"
+            label="Log Exercise"
             colorAccent="blue"
             onClick={() => console.log('Log exercise')}
           />
           <DashboardTile
             icon={Moon}
-            label="Sleep"
+            label="Log Sleep"
             colorAccent="indigo"
             onClick={() => console.log('Log sleep')}
+          />
+          <DashboardTile
+            icon={Stethoscope}
+            label="Book Appointment"
+            colorAccent="amber"
+            onClick={() => console.log('Book appointment')}
           />
         </div>
       </section>

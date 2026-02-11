@@ -50,10 +50,10 @@ export function DesignBAppShell() {
         <Outlet />
       </main>
 
-      {/* Bottom Navigation */}
-      {!hideNavigation && <DesignBBottomTabs />}
+      {/* Bottom Navigation - hide on /chat */}
+      {!hideNavigation && location.pathname !== '/chat' && <DesignBBottomTabs />}
 
-      {/* Voice Assistant - only show on routes with navigation */}
+      {/* Voice Assistant - only show on routes with navigation, but not on /chat */}
       {!hideNavigation && <AssistantWidget />}
 
       {/* Footer */}

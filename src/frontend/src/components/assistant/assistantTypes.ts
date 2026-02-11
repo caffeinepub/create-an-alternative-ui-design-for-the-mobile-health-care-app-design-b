@@ -19,7 +19,7 @@ export interface AssistantState {
 }
 
 export interface CommandResult {
-  type: 'navigation' | 'help' | 'unknown';
+  type: 'navigation' | 'help' | 'unknown' | 'medical';
   message: string;
   navigationTarget?: string;
 }

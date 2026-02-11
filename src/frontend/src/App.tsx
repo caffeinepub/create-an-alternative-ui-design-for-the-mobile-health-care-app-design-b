@@ -13,6 +13,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import HomeDashboard from './pages/HomeDashboard';
 import Profile from './pages/Profile';
+import Chatbot from './pages/Chatbot';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -60,6 +61,12 @@ const profileRoute = createRoute({
   component: Profile,
 });
 
+const chatbotRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/chat',
+  component: Chatbot,
+});
+
 // Create the route tree
 const routeTree = rootRoute.addChildren([
   welcomeRoute,
@@ -67,6 +74,7 @@ const routeTree = rootRoute.addChildren([
   signUpRoute,
   homeRoute,
   profileRoute,
+  chatbotRoute,
 ]);
 
 // Create the router

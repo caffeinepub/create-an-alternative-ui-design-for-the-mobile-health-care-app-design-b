@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-in-the-health-insights-section-of-the-dashboard-replace-the-existing-energy-levels-insight-tile-with-a-new-tile-labeled-pcod-pcos-risks",
-      "featureTitle": "In the Health Insights section of the dashboard, replace the existing \"Energy Levels\" insight tile with a new tile labeled \"PCOD & PCOS Risks\".",
+      "featureId": "feature-fix-the-chat-transcript-area-so-it-scrolls-smoothly-and-never-appears-stuck-in-one-place-on-the-chat-page-including-ensuring-the-transcript-region-reliably-becomes-scrollable-within-the-available-viewport-height",
+      "featureTitle": "Fix the chat transcript area so it scrolls smoothly and never appears “stuck in one place” on the /chat page, including ensuring the transcript region reliably becomes scrollable within the available viewport height.",
       "files": [
-        "frontend/src/pages/HomeDashboard.tsx"
+        "frontend/src/components/assistant/AssistantPanel.tsx",
+        "frontend/src/pages/Chatbot.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,10 +22,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-click-handler-logging-for-the-replaced-health-insights-tile-so-it-no-longer-references-energy-predictions-and-instead-references-pcod-pcos-risks-user-facing-text-remains-unchanged-aside-from-the-tile-label",
-      "featureTitle": "Update the click handler/logging for the replaced Health Insights tile so it no longer references energy predictions and instead references PCOD & PCOS risks (user-facing text remains unchanged aside from the tile label).",
+      "featureId": "feature-make-auto-scroll-to-bottom-behavior-reliable-when-new-chat-messages-are-added-using-a-scroll-target-that-actually-controls-the-scrollable-viewport-avoid-attaching-scroll-logic-to-a-non-scrollable-wrapper-without-modifying-any-files-under-frontend-src-components-ui",
+      "featureTitle": "Make auto-scroll-to-bottom behavior reliable when new chat messages are added, using a scroll target that actually controls the scrollable viewport (avoid attaching scroll logic to a non-scrollable wrapper), without modifying any files under frontend/src/components/ui.",
       "files": [
-        "frontend/src/pages/HomeDashboard.tsx"
+        "frontend/src/components/assistant/AssistantPanel.tsx",
+        "frontend/src/components/assistant/useTranscriptAutoScroll.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",

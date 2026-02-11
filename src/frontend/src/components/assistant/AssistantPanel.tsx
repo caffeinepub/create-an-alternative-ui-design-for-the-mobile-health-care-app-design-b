@@ -1,15 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Card } from '@/components/ui/card';
 import { Mic, MicOff, Send, Trash2, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { AssistantMessage, AssistantStatus } from './assistantTypes';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { useSpeechSynthesis } from './useSpeechSynthesis';
+import { useTranscriptAutoScroll } from './useTranscriptAutoScroll';
 
 interface AssistantPanelProps {
   transcript: AssistantMessage[];
@@ -32,18 +32,11 @@ export function AssistantPanel({
   onVoiceInput,
   onClearConversation,
 }: AssistantPanelProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const speech = useSpeechRecognition();
   const tts = useSpeechSynthesis();
+  const { scrollContainerRef, bottomSentinelRef, handleScroll } = useTranscriptAutoScroll(transcript);
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [transcript]);
-
-  // Handle final transcript from speech recognition
+  // Handle final transcript from speech recognition - process immediately
   useEffect(() => {
     if (speech.transcript && !speech.isListening) {
       onVoiceInput(speech.transcript);
@@ -51,12 +44,13 @@ export function AssistantPanel({
     }
   }, [speech.transcript, speech.isListening, onVoiceInput, speech]);
 
-  // Speak assistant responses if TTS is enabled
+  // Speak assistant responses if TTS is enabled (non-blocking)
   useEffect(() => {
     if (transcript.length > 0) {
       const lastMessage = transcript[transcript.length - 1];
       if (lastMessage.role === 'assistant' && tts.isEnabled) {
-        tts.speak(lastMessage.content);
+        // TTS starts after render (non-blocking)
+        setTimeout(() => tts.speak(lastMessage.content), 0);
       }
     }
   }, [transcript, tts]);
@@ -76,7 +70,7 @@ export function AssistantPanel({
     if (speech.isListening && speech.interimTranscript) {
       return `Hearing: "${speech.interimTranscript}"`;
     }
-    return 'Ready to help! Type or speak your command.';
+    return 'Ready to help! Ask me about symptoms, medications, or health questions.';
   };
 
   const getStatusColor = () => {
@@ -89,9 +83,9 @@ export function AssistantPanel({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-border">
+      <div className="flex-shrink-0 p-4 border-b border-border">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold">Voice Assistant</h2>
+          <h2 className="text-lg font-semibold">Medical Assistant</h2>
           <Button
             variant="ghost"
             size="icon"
@@ -106,13 +100,18 @@ export function AssistantPanel({
         </p>
       </div>
 
-      {/* Transcript */}
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+      {/* Transcript - Scrollable Container */}
+      <div 
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4"
+      >
         <div className="space-y-4">
           {transcript.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
-              <p className="mb-2">👋 Hi! I'm your assistant.</p>
-              <p className="text-sm">Try saying "go to home" or "help"</p>
+              <p className="mb-2">👋 Hi! I'm your medical assistant.</p>
+              <p className="text-sm">Ask me about symptoms, medications, or general health questions.</p>
+              <p className="text-xs mt-4 text-destructive">⚠️ This is for informational purposes only. Always consult a healthcare professional.</p>
             </div>
           ) : (
             transcript.map((message) => (
@@ -135,13 +134,15 @@ export function AssistantPanel({
               </div>
             ))
           )}
+          {/* Bottom sentinel for scroll tracking */}
+          <div ref={bottomSentinelRef} className="h-px" />
         </div>
-      </ScrollArea>
+      </div>
 
-      <Separator />
+      <Separator className="flex-shrink-0" />
 
       {/* Controls */}
-      <div className="p-4 space-y-4">
+      <div className="flex-shrink-0 p-4 space-y-4">
         {/* TTS Toggle */}
         {tts.isSupported && (
           <div className="flex items-center justify-between">
@@ -186,7 +187,7 @@ export function AssistantPanel({
         {/* Text Input */}
         <div className="flex gap-2">
           <Input
-            placeholder="Type your command..."
+            placeholder="Ask about symptoms, medications..."
             value={inputValue}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyPress={handleKeyPress}

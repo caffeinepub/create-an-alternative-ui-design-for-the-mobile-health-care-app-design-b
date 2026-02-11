@@ -1,51 +1,65 @@
 {
   "kind": "build_request",
-  "title": "Replace Health Insights tile 'Energy Levels' with 'PCOD & PCOS Risks'",
+  "title": "Fix chat transcript scrolling so it no longer sticks and feels smooth",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "In the Health Insights section of the dashboard, replace the existing \"Energy Levels\" insight tile with a new tile labeled \"PCOD & PCOS Risks\".",
+      "text": "Fix the chat transcript area so it scrolls smoothly and never appears “stuck in one place” on the /chat page, including ensuring the transcript region reliably becomes scrollable within the available viewport height.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "in health insight can you  replace the energy level to pcod & pcos risks"
+          "can you make the chat section run smoothly it will stick at one place"
         ]
       },
       "acceptanceCriteria": [
-        "On the /home dashboard, within the \"Health Insights\" grid, the tile label reads \"PCOD & PCOS Risks\" instead of \"Energy Levels\".",
-        "No other tiles in the \"Health Insights\" section are removed or renamed."
+        "On /chat, when the transcript grows beyond the visible area, the message list can be scrolled naturally (wheel/touch/trackpad) and does not get stuck.",
+        "The transcript region properly takes remaining height in the chat layout (no collapsed or non-scrollable flex child behavior).",
+        "No new layout regressions: header and input controls remain visible and usable while the transcript scrolls independently."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update the click handler/logging for the replaced Health Insights tile so it no longer references energy predictions and instead references PCOD & PCOS risks (user-facing text remains unchanged aside from the tile label).",
+      "text": "Make auto-scroll-to-bottom behavior reliable when new chat messages are added, using a scroll target that actually controls the scrollable viewport (avoid attaching scroll logic to a non-scrollable wrapper), without modifying any files under frontend/src/components/ui.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "replace the energy level to pcod & pcos risks"
+          "can you make the chat section run smoothly it will stick at one place"
         ]
       },
       "acceptanceCriteria": [
-        "Clicking the \"PCOD & PCOS Risks\" tile triggers a handler/log message that references PCOD & PCOS risks rather than energy."
+        "When a new message is appended, the transcript scroll position updates to show the newest message at the bottom (unless the user has manually scrolled up, in which case behavior should not feel jumpy).",
+        "Auto-scroll works consistently on initial load (when transcript is restored) and during ongoing conversation.",
+        "No edits are made to shadcn/ui component source files under frontend/src/components/ui (compose around them instead)."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui or any other immutable paths listed in SYSTEM_CONTEXT."
+    "Frontend files in frontend/src/components/ui are read-only and must not be edited.",
+    "Do not change the authentication/session behavior; only address chat scrolling/smoothness."
   ],
   "nonGoals": [
-    "Do not implement a new backend ML model or API for PCOD/PCOS risk calculation as part of this change.",
-    "Do not add new routes/pages for PCOD/PCOS unless explicitly requested."
+    "Adding new chatbot capabilities, medical categories, or backend AI/ML changes.",
+    "Introducing real-time messaging or websockets."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }
