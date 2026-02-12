@@ -51,6 +51,14 @@ export interface MLPrediction {
   'confidence' : number,
   'riskLevel' : string,
 }
+export interface MedicalFileMetadata {
+  'id' : string,
+  'contentType' : [] | [string],
+  'size' : bigint,
+  'filename' : string,
+  'uploadedAt' : Time,
+}
+export type Time = bigint;
 export interface UserProfile {
   'bio' : [] | [string],
   'bloodType' : [] | [BloodType],
@@ -104,14 +112,27 @@ export interface _SERVICE {
   'getFeatureImportance' : ActorMethod<[], Array<[string, number]>>,
   'getLocation' : ActorMethod<[], [] | [string]>,
   'getMedicalFile' : ActorMethod<[string], [] | [ExternalBlob]>,
+  'getMedicalFileMetadata' : ActorMethod<[string], [] | [MedicalFileMetadata]>,
+  'getMedicalReportMetadata' : ActorMethod<
+    [string],
+    [] | [MedicalFileMetadata]
+  >,
+  'getMedicalReportsSummary' : ActorMethod<
+    [],
+    Array<[string, MedicalFileMetadata]>
+  >,
   'getUserMLPrediction' : ActorMethod<[Principal], [] | [MLPrediction]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'listMedicalFiles' : ActorMethod<[], Array<[string, ExternalBlob]>>,
+  'listMedicalFilesMetadata' : ActorMethod<[], Array<MedicalFileMetadata>>,
   'runMLPrediction' : ActorMethod<[MLInput], MLPrediction>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'updateLocation' : ActorMethod<[string], undefined>,
-  'uploadMedicalFile' : ActorMethod<[string, ExternalBlob], string>,
+  'uploadMedicalFile' : ActorMethod<
+    [string, ExternalBlob, string, bigint, [] | [string]],
+    string
+  >,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

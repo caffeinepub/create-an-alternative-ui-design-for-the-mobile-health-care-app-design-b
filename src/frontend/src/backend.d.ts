@@ -34,6 +34,14 @@ export interface MLInput {
     diabetesStatus: string;
     cholesterol: number;
 }
+export type Time = bigint;
+export interface MedicalFileMetadata {
+    id: string;
+    contentType?: string;
+    size: bigint;
+    filename: string;
+    uploadedAt: Time;
+}
 export interface EmergencyContact {
     relationship: string;
     name: string;
@@ -84,12 +92,16 @@ export interface backendInterface {
     getFeatureImportance(): Promise<Array<[string, number]>>;
     getLocation(): Promise<string | null>;
     getMedicalFile(id: string): Promise<ExternalBlob | null>;
+    getMedicalFileMetadata(id: string): Promise<MedicalFileMetadata | null>;
+    getMedicalReportMetadata(id: string): Promise<MedicalFileMetadata | null>;
+    getMedicalReportsSummary(): Promise<Array<[string, MedicalFileMetadata]>>;
     getUserMLPrediction(user: Principal): Promise<MLPrediction | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     listMedicalFiles(): Promise<Array<[string, ExternalBlob]>>;
+    listMedicalFilesMetadata(): Promise<Array<MedicalFileMetadata>>;
     runMLPrediction(input: MLInput): Promise<MLPrediction>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     updateLocation(location: string): Promise<void>;
-    uploadMedicalFile(id: string, file: ExternalBlob): Promise<string>;
+    uploadMedicalFile(id: string, file: ExternalBlob, filename: string, size: bigint, contentType: string | null): Promise<string>;
 }

@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T06:25:05.111Z",
+  "generatedAt": "2026-02-11T07:07:32.223Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,23 +12,30 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "In the Home Dashboard \"Quick Actions\" section, remove the \"Book Appointment\" tile and replace it with a tile labeled \"Log Avoid\" (English text). Keep the tile in the same grid position and ensure clicking it performs a safe placeholder action (e.g., a console log) without navigating to a non-existent route.",
+        "summary": "Re-run the full build and deployment to the Internet Computer, and if deployment fails again, capture the exact failure output and apply the minimal code/config changes needed to make deployment succeed.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/HomeDashboard.tsx"
+          "frontend/src/hooks/useInternetIdentity.ts",
+          "frontend/src/main.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/utils/frontendEnv.ts",
+          "frontend/DEPLOY_NOTES.md"
         ],
         "matchedFiles": [
-          "frontend/src/pages/HomeDashboard.tsx"
+          "frontend/src/utils/frontendEnv.ts",
+          "frontend/DEPLOY_NOTES.md"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/HomeDashboard.tsx",
+    "frontend/DEPLOY_NOTES.md",
+    "frontend/src/utils/frontendEnv.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

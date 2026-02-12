@@ -65,6 +65,14 @@ export const UserProfile = IDL.Record({
   'location' : IDL.Opt(IDL.Text),
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
+export const Time = IDL.Int;
+export const MedicalFileMetadata = IDL.Record({
+  'id' : IDL.Text,
+  'contentType' : IDL.Opt(IDL.Text),
+  'size' : IDL.Nat,
+  'filename' : IDL.Text,
+  'uploadedAt' : Time,
+});
 export const MLInput = IDL.Record({
   'age' : IDL.Nat8,
   'bmi' : IDL.Nat8,
@@ -126,6 +134,21 @@ export const idlService = IDL.Service({
     ),
   'getLocation' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
   'getMedicalFile' : IDL.Func([IDL.Text], [IDL.Opt(ExternalBlob)], ['query']),
+  'getMedicalFileMetadata' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(MedicalFileMetadata)],
+      ['query'],
+    ),
+  'getMedicalReportMetadata' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(MedicalFileMetadata)],
+      ['query'],
+    ),
+  'getMedicalReportsSummary' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, MedicalFileMetadata))],
+      ['query'],
+    ),
   'getUserMLPrediction' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(MLPrediction)],
@@ -142,10 +165,19 @@ export const idlService = IDL.Service({
       [IDL.Vec(IDL.Tuple(IDL.Text, ExternalBlob))],
       ['query'],
     ),
+  'listMedicalFilesMetadata' : IDL.Func(
+      [],
+      [IDL.Vec(MedicalFileMetadata)],
+      ['query'],
+    ),
   'runMLPrediction' : IDL.Func([MLInput], [MLPrediction], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'updateLocation' : IDL.Func([IDL.Text], [], []),
-  'uploadMedicalFile' : IDL.Func([IDL.Text, ExternalBlob], [IDL.Text], []),
+  'uploadMedicalFile' : IDL.Func(
+      [IDL.Text, ExternalBlob, IDL.Text, IDL.Nat, IDL.Opt(IDL.Text)],
+      [IDL.Text],
+      [],
+    ),
 });
 
 export const idlInitArgs = [];
@@ -208,6 +240,14 @@ export const idlFactory = ({ IDL }) => {
     'location' : IDL.Opt(IDL.Text),
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
+  const Time = IDL.Int;
+  const MedicalFileMetadata = IDL.Record({
+    'id' : IDL.Text,
+    'contentType' : IDL.Opt(IDL.Text),
+    'size' : IDL.Nat,
+    'filename' : IDL.Text,
+    'uploadedAt' : Time,
+  });
   const MLInput = IDL.Record({
     'age' : IDL.Nat8,
     'bmi' : IDL.Nat8,
@@ -269,6 +309,21 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getLocation' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
     'getMedicalFile' : IDL.Func([IDL.Text], [IDL.Opt(ExternalBlob)], ['query']),
+    'getMedicalFileMetadata' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(MedicalFileMetadata)],
+        ['query'],
+      ),
+    'getMedicalReportMetadata' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(MedicalFileMetadata)],
+        ['query'],
+      ),
+    'getMedicalReportsSummary' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, MedicalFileMetadata))],
+        ['query'],
+      ),
     'getUserMLPrediction' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(MLPrediction)],
@@ -285,10 +340,19 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(IDL.Text, ExternalBlob))],
         ['query'],
       ),
+    'listMedicalFilesMetadata' : IDL.Func(
+        [],
+        [IDL.Vec(MedicalFileMetadata)],
+        ['query'],
+      ),
     'runMLPrediction' : IDL.Func([MLInput], [MLPrediction], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'updateLocation' : IDL.Func([IDL.Text], [], []),
-    'uploadMedicalFile' : IDL.Func([IDL.Text, ExternalBlob], [IDL.Text], []),
+    'uploadMedicalFile' : IDL.Func(
+        [IDL.Text, ExternalBlob, IDL.Text, IDL.Nat, IDL.Opt(IDL.Text)],
+        [IDL.Text],
+        [],
+      ),
   });
 };
 

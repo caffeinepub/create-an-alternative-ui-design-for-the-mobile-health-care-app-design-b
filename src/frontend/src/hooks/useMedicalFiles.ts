@@ -1,13 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import { ExternalBlob } from '../backend';
-import { loadFileMetadata, saveFileMetadata, deleteFileMetadata } from '../report/reportMetadataStore';
+import { ExternalBlob, MedicalFileMetadata as BackendMetadata } from '../backend';
 
 export interface MedicalFileMetadata {
   id: string;
   filename: string;
   size: number;
   uploadedAt: number;
+  contentType?: string;
 }
 
 const MEDICAL_FILES_QUERY_KEY = 'medicalFiles';
@@ -16,25 +16,26 @@ export function useMedicalFiles() {
   const { actor, isFetching: actorFetching } = useActor();
   const queryClient = useQueryClient();
 
-  // Query to list all medical files
+  // Query to list all medical files using backend metadata
   const filesQuery = useQuery<MedicalFileMetadata[]>({
     queryKey: [MEDICAL_FILES_QUERY_KEY],
     queryFn: async () => {
       if (!actor) return [];
       
       try {
-        const backendFiles = await actor.listMedicalFiles();
+        const backendMetadata = await actor.listMedicalFilesMetadata();
         
-        // Merge backend data with local metadata
-        const filesWithMetadata = backendFiles.map(([id, _blob]) => {
-          const metadata = loadFileMetadata(id);
-          return metadata || {
-            id,
-            filename: `file-${id.substring(0, 8)}`,
-            size: 0,
-            uploadedAt: Date.now(),
-          };
-        });
+        // Convert backend metadata to frontend format
+        const filesWithMetadata = backendMetadata.map((meta: BackendMetadata) => ({
+          id: meta.id,
+          filename: meta.filename,
+          size: Number(meta.size),
+          uploadedAt: Number(meta.uploadedAt) / 1_000_000, // Convert nanoseconds to milliseconds
+          contentType: meta.contentType || undefined,
+        }));
+
+        // Sort by upload date (newest first)
+        filesWithMetadata.sort((a, b) => b.uploadedAt - a.uploadedAt);
 
         return filesWithMetadata;
       } catch (error) {
@@ -60,19 +61,22 @@ export function useMedicalFiles() {
       // Create ExternalBlob
       const blob = ExternalBlob.fromBytes(bytes);
 
-      // Upload to backend
-      await actor.uploadMedicalFile(fileId, blob);
+      // Upload to backend with metadata
+      await actor.uploadMedicalFile(
+        fileId,
+        blob,
+        file.name,
+        BigInt(file.size),
+        file.type || null
+      );
 
-      // Save metadata locally
-      const metadata: MedicalFileMetadata = {
+      return {
         id: fileId,
         filename: file.name,
         size: file.size,
         uploadedAt: Date.now(),
+        contentType: file.type || undefined,
       };
-      saveFileMetadata(metadata);
-
-      return metadata;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [MEDICAL_FILES_QUERY_KEY] });
@@ -88,9 +92,6 @@ export function useMedicalFiles() {
       if (!success) {
         throw new Error('File not found or already deleted');
       }
-
-      // Delete local metadata
-      deleteFileMetadata(fileId);
 
       return fileId;
     },
@@ -123,18 +124,38 @@ export function useMedicalFiles() {
       document.body.removeChild(link);
 
       // Clean up
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (error) {
-      console.error('Failed to download file:', error);
+      console.error('Download error:', error);
+      throw error;
+    }
+  };
+
+  // Function to get file bytes for analysis
+  const getFileBytes = async (fileId: string): Promise<Uint8Array | null> => {
+    if (!actor) throw new Error('Actor not available');
+
+    try {
+      const blob = await actor.getMedicalFile(fileId);
+      if (!blob) {
+        return null;
+      }
+
+      const bytes = await blob.getBytes();
+      return bytes;
+    } catch (error) {
+      console.error('Failed to get file bytes:', error);
       throw error;
     }
   };
 
   return {
     files: filesQuery.data || [],
-    isLoading: filesQuery.isLoading || uploadMutation.isPending || deleteMutation.isPending,
+    isLoading: uploadMutation.isPending || deleteMutation.isPending,
+    isFetching: filesQuery.isFetching,
     uploadFile: uploadMutation.mutateAsync,
     deleteFile: deleteMutation.mutateAsync,
     downloadFile,
+    getFileBytes,
   };
 }

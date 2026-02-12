@@ -19,7 +19,16 @@ export interface AssistantState {
 }
 
 export interface CommandResult {
-  type: 'navigation' | 'help' | 'unknown' | 'medical';
+  type: 'navigation' | 'help' | 'unknown' | 'medical' | 'report-list' | 'report-analysis' | 'report-paste-request';
   message: string;
   navigationTarget?: string;
+  reportList?: Array<{ id: string; filename: string }>;
+  awaitingReportSelection?: boolean;
+  awaitingReportText?: boolean;
+}
+
+export interface ReportAnalysisContext {
+  state: 'idle' | 'awaiting-selection' | 'awaiting-paste' | 'analyzing';
+  selectedReportId?: string;
+  selectedReportFilename?: string;
 }

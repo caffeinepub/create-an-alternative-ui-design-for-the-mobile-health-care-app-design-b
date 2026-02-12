@@ -3,27 +3,22 @@
   "projectStateVersion": 3,
   "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Deployment failed with an unspecified error; user requested redeploy."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-in-the-home-dashboard-quick-actions-section-remove-the-book-appointment-tile-and-replace-it-with-a-tile-labeled-log-avoid-english-text-keep-the-tile-in-the-same-grid-position-and-ensure-clicking-it-performs-a-safe-placeholder-action-e-g-a-console-log-without-navigating-to-a-non-existent-route",
-      "title": "In the Home Dashboard \"Quick Actions\" section, remove the \"Book Appointment\" tile and replace it with a tile labeled \"Log Avoid\" (English text). Keep the tile in the same grid position and ensure clicking it performs a safe placeholder action (e.g., a console log) without navigating to a non-existent route.",
+      "id": "feature-re-run-the-full-build-and-deployment-to-the-internet-computer-and-if-deployment-fails-again-capture-the-exact-failure-output-and-apply-the-minimal-code-config-changes-needed-to-make-deployment-succeed",
+      "title": "Re-run the full build and deployment to the Internet Computer, and if deployment fails again, capture the exact failure output and apply the minimal code/config changes needed to make deployment succeed.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Update Quick Action: remove \"Book appointment\" and replace it with \"Log Avoid\"",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "projectName": "Update Quick Actions: replace “Book Appointment” with “Log Avoid”",
+  "new_feature_requests": [],
+  "projectName": "Retry deployment and resolve blocking deploy error",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

@@ -1,21 +1,41 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Home Dashboard Quick Actions: replace “Book Appointment” with “Log Avoid”",
+  "title": "Unblock IC deployment by fixing frontend build configuration issues",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Update the Home Dashboard Quick Actions grid to replace the “Book Appointment” tile with a “Log Avoid” tile that performs a safe placeholder action without navigation.",
+      "summary": "Make the minimal frontend code/config adjustments required for a clean production build that can be deployed to the Internet Computer.",
       "acceptanceCriteria": [
-        "On /home, the Quick Actions grid no longer shows a tile labeled \"Book Appointment\".",
-        "On /home, the Quick Actions grid shows a tile labeled exactly \"Log Avoid\".",
-        "Clicking \"Log Avoid\" does not throw errors and does not navigate away from the page unless a valid route is implemented."
+        "A fresh build completes without errors.",
+        "Deployment completes successfully (canisters install/upgrade without errors).",
+        "If deployment initially fails, the final PR includes the root-cause fix plus enough context (error message and what was changed) to prevent the same failure on the next deploy."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/HomeDashboard.tsx",
+          "path": "frontend/src/hooks/useInternetIdentity.ts",
           "operation": "modify",
-          "description": "In the \"Quick Actions\" section, replace the existing DashboardTile labeled \"Book Appointment\" with a tile labeled exactly \"Log Avoid\" in the same position in the grid. Ensure the tile's onClick runs a safe placeholder action (e.g., console.log('Log avoid')) and does not navigate to any route."
+          "description": "Fix production build incompatibility by removing Node-style environment access (e.g., process.env) and switching to a frontend-safe configuration source for the Internet Identity provider URL. Use the existing authorization/auth setup patterns and verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Remove duplicate provider wiring (React Query + InternetIdentityProvider are currently applied in both main.tsx and App.tsx) so the runtime/provider tree is consistent and less likely to cause build/deploy surprises. Ensure App.tsx remains the single place for provider composition."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Confirm provider composition remains correct after main.tsx changes (React Query, Internet Identity, theming, router). Keep usage of existing core-infrastructure wiring patterns and verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/utils/frontendEnv.ts",
+          "operation": "create",
+          "description": "Add a tiny helper to safely read required frontend build-time configuration (e.g., II URL) from the bundler-supported environment mechanism and provide clear errors/fallbacks suitable for IC deployments."
+        },
+        {
+          "path": "frontend/DEPLOY_NOTES.md",
+          "operation": "create",
+          "description": "Record the exact build/deploy failure output observed, the identified root cause, and the minimal frontend changes applied so the next deploy attempt has the needed context."
         }
       ]
     }

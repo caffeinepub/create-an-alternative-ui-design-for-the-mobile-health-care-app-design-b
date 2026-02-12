@@ -1,34 +1,34 @@
 {
   "kind": "build_request",
-  "title": "Update Quick Actions: replace “Book Appointment” with “Log Avoid”",
-  "priority": "normal",
+  "title": "Retry deployment and resolve blocking deploy error",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "In the Home Dashboard \"Quick Actions\" section, remove the \"Book Appointment\" tile and replace it with a tile labeled \"Log Avoid\" (English text). Keep the tile in the same grid position and ensure clicking it performs a safe placeholder action (e.g., a console log) without navigating to a non-existent route.",
-      "target": "frontend",
+      "text": "Re-run the full build and deployment to the Internet Computer, and if deployment fails again, capture the exact failure output and apply the minimal code/config changes needed to make deployment succeed.",
+      "target": "unknown",
       "source": {
         "messageIds": [
-          "msg-4"
+          "recent-msg-3"
         ],
         "quotes": [
-          "In Quick action can you remove book appointment & replace to log Avoid"
+          "deploy again"
         ]
       },
       "acceptanceCriteria": [
-        "On /home, the Quick Actions grid no longer shows a tile labeled \"Book Appointment\".",
-        "On /home, the Quick Actions grid shows a tile labeled exactly \"Log Avoid\".",
-        "Clicking \"Log Avoid\" does not throw errors and does not navigate away from the page unless a valid route is implemented."
+        "A fresh build completes without errors.",
+        "Deployment completes successfully (canisters install/upgrade without errors).",
+        "If deployment initially fails, the final PR includes the root-cause fix plus enough context (error message and what was changed) to prevent the same failure on the next deploy."
       ]
     }
   ],
   "constraints": [
-    "Use English for any user-facing text.",
-    "Do not edit any files under frontend/src/components/ui or any other frontend immutablePaths."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration.",
+    "Do not edit frontend files under frontend/src/components/ui or any other paths listed as immutable in SYSTEM_CONTEXT."
   ],
   "nonGoals": [
-    "Implementing an appointment booking flow or appointment-related pages/routes.",
-    "Implementing persistence or backend support for the new \"Log Avoid\" action."
+    "Implementing new product features unrelated to deployment.",
+    "Refactoring application logic beyond what is necessary to fix the deployment failure."
   ],
   "imageRequirements": {
     "required": [],

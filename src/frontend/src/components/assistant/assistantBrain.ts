@@ -13,6 +13,24 @@ import {
 export function interpretCommand(userInput: string, conversationHistory: any[] = []): CommandResult {
   const normalized = userInput.toLowerCase().trim();
 
+  // Report analysis patterns (high priority - check early)
+  const reportPatterns = [
+    /\b(use|analyze|check|review|look at|explain|interpret)\s+(my\s+)?(report|reports|medical report|test result)/i,
+    /\b(what does|explain)\s+(my\s+)?(report|test result)/i,
+    /\banalyze\s+(my\s+)?report/i,
+    /\breport\s+analysis/i,
+  ];
+
+  for (const pattern of reportPatterns) {
+    if (pattern.test(normalized)) {
+      return {
+        type: 'report-list',
+        message: '', // Will be populated by the widget/chatbot
+        awaitingReportSelection: true,
+      };
+    }
+  }
+
   // Flutter/.dart detection pattern (high priority - check first)
   const flutterPatterns = [
     /\b(flutter|flitter)\b/i,
@@ -42,10 +60,9 @@ export function interpretCommand(userInput: string, conversationHistory: any[] =
     { pattern: /\bopen\s+(chat|chatbot|assistant)\b/i, target: '/chat', name: 'Chatbot' },
     { pattern: /\bhome\b/i, target: '/home', name: 'Home' },
     { pattern: /\bprofile\b/i, target: '/profile', name: 'Profile' },
-    { pattern: /\breport\b/i, target: '/report', name: 'Report' },
   ];
 
-  // Check for navigation commands
+  // Check for navigation commands (but not "report" alone - that's handled above)
   for (const { pattern, target, name } of navigationPatterns) {
     if (pattern.test(normalized)) {
       return {
@@ -124,7 +141,7 @@ export function interpretCommand(userInput: string, conversationHistory: any[] =
     if (pattern.test(normalized)) {
       return {
         type: 'help',
-        message: `Hello! I'm your medical assistant. I can help you with:\n\n• Information about common symptoms\n• General health questions\n• Medication safety tips\n• Chronic condition management\n• When to seek medical care\n\nWhat would you like to know about?`,
+        message: `Hello! I'm your medical assistant. I can help you with:\n\n• Information about common symptoms\n• General health questions\n• Medication safety tips\n• Chronic condition management\n• Analyzing your medical reports\n• When to seek medical care\n\nWhat would you like to know about?`,
       };
     }
   }
@@ -138,7 +155,7 @@ export function interpretCommand(userInput: string, conversationHistory: any[] =
     if (pattern.test(normalized)) {
       return {
         type: 'help',
-        message: `I'm here to provide general health information. I can help with:\n\n• Common symptoms (headaches, fever, cough, etc.)\n• Chronic conditions (diabetes, blood pressure)\n• Medication safety\n• Allergies\n• When to seek medical care\n• Navigation (e.g., "go to profile")\n\nJust ask me a question about your health concern!`,
+        message: `I'm here to provide general health information. I can help with:\n\n• Common symptoms (headaches, fever, cough, etc.)\n• Chronic conditions (diabetes, blood pressure)\n• Medication safety\n• Allergies\n• Analyzing your medical reports\n• When to seek medical care\n• Navigation (e.g., "go to profile")\n\nJust ask me a question about your health concern!`,
       };
     }
   }
@@ -146,6 +163,6 @@ export function interpretCommand(userInput: string, conversationHistory: any[] =
   // Default fallback - treat as potential medical question
   return {
     type: 'help',
-    message: `I'm not sure I understood that. I can help with:\n\n• Common symptoms and health concerns\n• Medication information\n• Chronic condition management\n• General wellness questions\n• Navigation (e.g., "go to home")\n\nCould you rephrase your question or ask about a specific health topic?`,
+    message: `I'm not sure I understood that. I can help with:\n\n• Common symptoms and health concerns\n• Medication information\n• Chronic condition management\n• Analyzing your medical reports\n• General wellness questions\n• Navigation (e.g., "go to home")\n\nCould you rephrase your question or ask about a specific health topic?`,
   };
 }

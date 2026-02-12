@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-in-the-home-dashboard-quick-actions-section-remove-the-book-appointment-tile-and-replace-it-with-a-tile-labeled-log-avoid-english-text-keep-the-tile-in-the-same-grid-position-and-ensure-clicking-it-performs-a-safe-placeholder-action-e-g-a-console-log-without-navigating-to-a-non-existent-route",
-      "featureTitle": "In the Home Dashboard \"Quick Actions\" section, remove the \"Book Appointment\" tile and replace it with a tile labeled \"Log Avoid\" (English text). Keep the tile in the same grid position and ensure clicking it performs a safe placeholder action (e.g., a console log) without navigating to a non-existent route.",
+      "featureId": "feature-re-run-the-full-build-and-deployment-to-the-internet-computer-and-if-deployment-fails-again-capture-the-exact-failure-output-and-apply-the-minimal-code-config-changes-needed-to-make-deployment-succeed",
+      "featureTitle": "Re-run the full build and deployment to the Internet Computer, and if deployment fails again, capture the exact failure output and apply the minimal code/config changes needed to make deployment succeed.",
       "files": [
-        "frontend/src/pages/HomeDashboard.tsx"
+        "frontend/DEPLOY_NOTES.md",
+        "frontend/src/utils/frontendEnv.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",

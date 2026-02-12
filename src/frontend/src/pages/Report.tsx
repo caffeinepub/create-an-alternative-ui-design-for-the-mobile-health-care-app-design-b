@@ -23,7 +23,7 @@ export default function Report() {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileToDelete, setFileToDelete] = useState<string | null>(null);
-  const { files, isLoading, uploadFile, deleteFile, downloadFile } = useMedicalFiles();
+  const { files, isLoading, isFetching, uploadFile, deleteFile, downloadFile } = useMedicalFiles();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -95,7 +95,7 @@ export default function Report() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Medical Reports</h1>
         <p className="text-muted-foreground">
-          Save and manage your medical reports securely
+          Save and manage your medical reports securely. Ask the Medical Assistant to analyze them!
         </p>
       </div>
 
@@ -155,7 +155,7 @@ export default function Report() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading && files.length === 0 ? (
+          {isFetching && files.length === 0 ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>

@@ -10,9 +10,6 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
-import Iter "mo:core/Iter";
-
-
 
 actor {
   let accessControlState = AccessControl.initState();
@@ -78,6 +75,14 @@ actor {
     modelVersion : Text;
     timestamp : Int;
     featureWeights : [(Text, Nat8)];
+  };
+
+  public type MedicalFileMetadata = {
+    id : Text;
+    filename : Text;
+    size : Nat;
+    uploadedAt : Time.Time;
+    contentType : ?Text;
   };
 
   let userProfiles = Map.empty<Principal, UserProfile>();
@@ -234,14 +239,21 @@ actor {
   };
 
   // Medical Files Management
-
   let medicalFiles = Map.empty<Principal, Map.Map<Text, Storage.ExternalBlob>>();
+  let medicalFileMetadata = Map.empty<Principal, Map.Map<Text, MedicalFileMetadata>>();
 
-  public shared ({ caller }) func uploadMedicalFile(id : Text, file : Storage.ExternalBlob) : async Text {
+  public shared ({ caller }) func uploadMedicalFile(
+    id : Text,
+    file : Storage.ExternalBlob,
+    filename : Text,
+    size : Nat,
+    contentType : ?Text,
+  ) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can upload files");
     };
 
+    // Store file reference
     switch (medicalFiles.get(caller)) {
       case (null) {
         let userFiles = Map.empty<Text, Storage.ExternalBlob>();
@@ -252,6 +264,27 @@ actor {
         userFiles.add(id, file);
       };
     };
+
+    // Store metadata
+    let metadata : MedicalFileMetadata = {
+      id;
+      filename;
+      size;
+      uploadedAt = Time.now();
+      contentType;
+    };
+
+    switch (medicalFileMetadata.get(caller)) {
+      case (null) {
+        let userMetadata = Map.empty<Text, MedicalFileMetadata>();
+        userMetadata.add(id, metadata);
+        medicalFileMetadata.add(caller, userMetadata);
+      };
+      case (?userMetadata) {
+        userMetadata.add(id, metadata);
+      };
+    };
+
     id;
   };
 
@@ -286,12 +319,47 @@ actor {
       Runtime.trap("Unauthorized: Only users can delete files");
     };
 
+    // Delete file
     switch (medicalFiles.get(caller)) {
-      case (null) { false };
+      case (null) {};
       case (?userFiles) {
-        let existed = userFiles.containsKey(id);
         userFiles.remove(id);
-        existed;
+      };
+    };
+
+    // Delete metadata
+    switch (medicalFileMetadata.get(caller)) {
+      case (null) {};
+      case (?userMetadata) {
+        userMetadata.remove(id);
+      };
+    };
+
+    true;
+  };
+
+  public query ({ caller }) func listMedicalFilesMetadata() : async [MedicalFileMetadata] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can list file metadata");
+    };
+
+    switch (medicalFileMetadata.get(caller)) {
+      case (null) { [] };
+      case (?userMetadata) {
+        userMetadata.values().toArray();
+      };
+    };
+  };
+
+  public query ({ caller }) func getMedicalFileMetadata(id : Text) : async ?MedicalFileMetadata {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can get file metadata");
+    };
+
+    switch (medicalFileMetadata.get(caller)) {
+      case (null) { null };
+      case (?userMetadata) {
+        userMetadata.get(id);
       };
     };
   };
@@ -324,4 +392,31 @@ actor {
       };
     };
   };
+
+  public query ({ caller }) func getMedicalReportsSummary() : async [(Text, MedicalFileMetadata)] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can access medical reports");
+    };
+
+    switch (medicalFileMetadata.get(caller)) {
+      case (null) { [] };
+      case (?userMetadata) {
+        userMetadata.toArray();
+      };
+    };
+  };
+
+  public query ({ caller }) func getMedicalReportMetadata(id : Text) : async ?MedicalFileMetadata {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can access medical reports");
+    };
+
+    switch (medicalFileMetadata.get(caller)) {
+      case (null) { null };
+      case (?userMetadata) {
+        userMetadata.get(id);
+      };
+    };
+  };
 };
+

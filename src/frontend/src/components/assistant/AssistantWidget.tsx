@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { MessageSquare } from 'lucide-react';
 import { AssistantPanel } from './AssistantPanel';
-import { AssistantStatus } from './assistantTypes';
+import { AssistantStatus, ReportAnalysisContext } from './assistantTypes';
 import { interpretCommand } from './assistantBrain';
 import { useAssistantTranscript } from './useAssistantTranscript';
 import { getErrorFallbackResponse } from './medicalKnowledgeBase';
+import { useMedicalFiles, MedicalFileMetadata } from '../../hooks/useMedicalFiles';
+import { extractTextFromBytes } from './reportTextExtraction';
+import { analyzeReportText, formatAnalysisMessage } from './reportAnalysis';
 
 export function AssistantWidget() {
   const navigate = useNavigate();
@@ -17,6 +20,8 @@ export function AssistantWidget() {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [inputValue, setInputValue] = useState('');
   const { transcript, addMessage, clearTranscript } = useAssistantTranscript();
+  const { files, getFileBytes } = useMedicalFiles();
+  const [reportContext, setReportContext] = useState<ReportAnalysisContext>({ state: 'idle' });
 
   const handleCommand = useCallback(async (userInput: string) => {
     if (!userInput.trim()) return;
@@ -28,8 +33,116 @@ export function AssistantWidget() {
     setErrorMessage(undefined);
 
     try {
-      // Interpret command immediately (no artificial delay)
+      // Check if we're in a report analysis flow
+      if (reportContext.state === 'awaiting-selection') {
+        // User is selecting a report by number or name
+        const selection = userInput.trim();
+        const selectedIndex = parseInt(selection) - 1;
+
+        let selectedFile: MedicalFileMetadata | undefined = undefined;
+        if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < files.length) {
+          selectedFile = files[selectedIndex];
+        } else {
+          // Try to match by filename
+          selectedFile = files.find(f => 
+            f.filename.toLowerCase().includes(selection.toLowerCase())
+          );
+        }
+
+        if (!selectedFile) {
+          addMessage('assistant', `I couldn't find that report. Please enter the number (1-${files.length}) or part of the filename.`);
+          setStatus('idle');
+          return;
+        }
+
+        // Attempt to extract text from the file
+        addMessage('assistant', `Reading "${selectedFile.filename}"...`);
+        
+        try {
+          const bytes = await getFileBytes(selectedFile.id);
+          if (!bytes) {
+            addMessage('assistant', `I couldn't access that file. Please try again or upload it again.`);
+            setReportContext({ state: 'idle' });
+            setStatus('idle');
+            return;
+          }
+
+          const extractionResult = await extractTextFromBytes(
+            bytes,
+            selectedFile.filename,
+            selectedFile.contentType
+          );
+
+          if (extractionResult.success && extractionResult.text) {
+            // Successfully extracted text - analyze it
+            setReportContext({ state: 'analyzing' });
+            const analysis = analyzeReportText(extractionResult.text, selectedFile.filename);
+            const message = formatAnalysisMessage(analysis, selectedFile.filename);
+            addMessage('assistant', message);
+            setReportContext({ state: 'idle' });
+            setStatus('idle');
+          } else {
+            // Could not extract text - ask user to paste it
+            setReportContext({
+              state: 'awaiting-paste',
+              selectedReportId: selectedFile.id,
+              selectedReportFilename: selectedFile.filename,
+            });
+            addMessage('assistant', `I couldn't automatically read the text from "${selectedFile.filename}" (it may be a PDF, image, or binary format).\n\nPlease paste the key text or values from your report into the chat, and I'll help you understand them.`);
+            setStatus('idle');
+          }
+        } catch (error) {
+          console.error('Error reading file:', error);
+          addMessage('assistant', `I encountered an error reading that file. Please try again or paste the report text directly.`);
+          setReportContext({ state: 'idle' });
+          setStatus('idle');
+        }
+        return;
+      }
+
+      if (reportContext.state === 'awaiting-paste') {
+        // User is pasting report text
+        const pastedText = userInput.trim();
+        
+        if (pastedText.length < 20) {
+          addMessage('assistant', `That seems quite short. Please paste more details from your report so I can provide a better analysis.`);
+          setStatus('idle');
+          return;
+        }
+
+        // Analyze the pasted text
+        setReportContext({ state: 'analyzing' });
+        const analysis = analyzeReportText(pastedText, reportContext.selectedReportFilename || 'Your Report');
+        const message = formatAnalysisMessage(analysis, reportContext.selectedReportFilename || 'Your Report');
+        addMessage('assistant', message);
+        setReportContext({ state: 'idle' });
+        setStatus('idle');
+        return;
+      }
+
+      // Normal command interpretation
       const result = interpretCommand(userInput, transcript);
+
+      // Handle report listing request
+      if (result.type === 'report-list') {
+        if (files.length === 0) {
+          addMessage('assistant', `You don't have any saved medical reports yet.\n\nTo analyze a report:\n1. Go to the Reports page\n2. Upload your medical report\n3. Come back and ask me to analyze it\n\nYou can also paste report text directly into this chat for analysis.`);
+          setStatus('idle');
+          return;
+        }
+
+        // List available reports
+        let listMessage = `I found ${files.length} saved report${files.length === 1 ? '' : 's'}:\n\n`;
+        files.forEach((file, index) => {
+          listMessage += `${index + 1}. ${file.filename}\n`;
+        });
+        listMessage += `\nWhich report would you like me to analyze? Enter the number (1-${files.length}) or part of the filename.`;
+
+        addMessage('assistant', listMessage);
+        setReportContext({ state: 'awaiting-selection' });
+        setStatus('idle');
+        return;
+      }
 
       // Handle navigation
       if (result.type === 'navigation' && result.navigationTarget) {
@@ -54,9 +167,10 @@ export function AssistantWidget() {
       // On error, add a fallback assistant message and return to idle
       console.error('Error processing command:', error);
       addMessage('assistant', getErrorFallbackResponse());
+      setReportContext({ state: 'idle' });
       setStatus('idle');
     }
-  }, [addMessage, navigate, transcript]);
+  }, [addMessage, navigate, transcript, files, getFileBytes, reportContext]);
 
   const handleSendMessage = useCallback(() => {
     handleCommand(inputValue);
@@ -73,6 +187,7 @@ export function AssistantWidget() {
     setStatus('idle');
     setErrorMessage(undefined);
     setInputValue('');
+    setReportContext({ state: 'idle' });
   }, [clearTranscript]);
 
   // Don't show widget on /chat page

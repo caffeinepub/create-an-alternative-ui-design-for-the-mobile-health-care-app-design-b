@@ -109,6 +109,14 @@ export interface MLInput {
     diabetesStatus: string;
     cholesterol: number;
 }
+export type Time = bigint;
+export interface MedicalFileMetadata {
+    id: string;
+    contentType?: string;
+    size: bigint;
+    filename: string;
+    uploadedAt: Time;
+}
 export interface _CaffeineStorageRefillInformation {
     proposed_top_up_amount?: bigint;
 }
@@ -177,16 +185,20 @@ export interface backendInterface {
     getFeatureImportance(): Promise<Array<[string, number]>>;
     getLocation(): Promise<string | null>;
     getMedicalFile(id: string): Promise<ExternalBlob | null>;
+    getMedicalFileMetadata(id: string): Promise<MedicalFileMetadata | null>;
+    getMedicalReportMetadata(id: string): Promise<MedicalFileMetadata | null>;
+    getMedicalReportsSummary(): Promise<Array<[string, MedicalFileMetadata]>>;
     getUserMLPrediction(user: Principal): Promise<MLPrediction | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     listMedicalFiles(): Promise<Array<[string, ExternalBlob]>>;
+    listMedicalFilesMetadata(): Promise<Array<MedicalFileMetadata>>;
     runMLPrediction(input: MLInput): Promise<MLPrediction>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     updateLocation(location: string): Promise<void>;
-    uploadMedicalFile(id: string, file: ExternalBlob): Promise<string>;
+    uploadMedicalFile(id: string, file: ExternalBlob, filename: string, size: bigint, contentType: string | null): Promise<string>;
 }
-import type { Allergy as _Allergy, BloodType as _BloodType, EmergencyContact as _EmergencyContact, ExternalBlob as _ExternalBlob, MLPrediction as _MLPrediction, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { Allergy as _Allergy, BloodType as _BloodType, EmergencyContact as _EmergencyContact, ExternalBlob as _ExternalBlob, MLPrediction as _MLPrediction, MedicalFileMetadata as _MedicalFileMetadata, Time as _Time, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -413,6 +425,48 @@ export class Backend implements backendInterface {
             return from_candid_opt_n22(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getMedicalFileMetadata(arg0: string): Promise<MedicalFileMetadata | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMedicalFileMetadata(arg0);
+                return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMedicalFileMetadata(arg0);
+            return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMedicalReportMetadata(arg0: string): Promise<MedicalFileMetadata | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMedicalReportMetadata(arg0);
+                return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMedicalReportMetadata(arg0);
+            return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMedicalReportsSummary(): Promise<Array<[string, MedicalFileMetadata]>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMedicalReportsSummary();
+                return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMedicalReportsSummary();
+            return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getUserMLPrediction(arg0: Principal): Promise<MLPrediction | null> {
         if (this.processError) {
             try {
@@ -459,14 +513,28 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.listMedicalFiles();
-                return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n29(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.listMedicalFiles();
-            return from_candid_vec_n24(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n29(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async listMedicalFilesMetadata(): Promise<Array<MedicalFileMetadata>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listMedicalFilesMetadata();
+                return from_candid_vec_n31(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listMedicalFilesMetadata();
+            return from_candid_vec_n31(this._uploadFile, this._downloadFile, result);
         }
     }
     async runMLPrediction(arg0: MLInput): Promise<MLPrediction> {
@@ -486,14 +554,14 @@ export class Backend implements backendInterface {
     async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n26(this._uploadFile, this._downloadFile, arg0));
+                const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n32(this._uploadFile, this._downloadFile, arg0));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n26(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n32(this._uploadFile, this._downloadFile, arg0));
             return result;
         }
     }
@@ -511,17 +579,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async uploadMedicalFile(arg0: string, arg1: ExternalBlob): Promise<string> {
+    async uploadMedicalFile(arg0: string, arg1: ExternalBlob, arg2: string, arg3: bigint, arg4: string | null): Promise<string> {
         if (this.processError) {
             try {
-                const result = await this.actor.uploadMedicalFile(arg0, await to_candid_ExternalBlob_n30(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.uploadMedicalFile(arg0, await to_candid_ExternalBlob_n36(this._uploadFile, this._downloadFile, arg1), arg2, arg3, to_candid_opt_n37(this._uploadFile, this._downloadFile, arg4));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.uploadMedicalFile(arg0, await to_candid_ExternalBlob_n30(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.uploadMedicalFile(arg0, await to_candid_ExternalBlob_n36(this._uploadFile, this._downloadFile, arg1), arg2, arg3, to_candid_opt_n37(this._uploadFile, this._downloadFile, arg4));
             return result;
         }
     }
@@ -531,6 +599,9 @@ function from_candid_BloodType_n16(_uploadFile: (file: ExternalBlob) => Promise<
 }
 async function from_candid_ExternalBlob_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ExternalBlob): Promise<ExternalBlob> {
     return await _downloadFile(value);
+}
+function from_candid_MedicalFileMetadata_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _MedicalFileMetadata): MedicalFileMetadata {
+    return from_candid_record_n26(_uploadFile, _downloadFile, value);
 }
 function from_candid_UserProfile_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserProfile): UserProfile {
     return from_candid_record_n13(_uploadFile, _downloadFile, value);
@@ -561,6 +632,9 @@ function from_candid_opt_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 }
 async function from_candid_opt_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ExternalBlob]): Promise<ExternalBlob | null> {
     return value.length === 0 ? null : await from_candid_ExternalBlob_n23(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_MedicalFileMetadata]): MedicalFileMetadata | null {
+    return value.length === 0 ? null : from_candid_MedicalFileMetadata_n25(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
@@ -607,6 +681,27 @@ function from_candid_record_n13(_uploadFile: (file: ExternalBlob) => Promise<Uin
         location: record_opt_to_undefined(from_candid_opt_n14(_uploadFile, _downloadFile, value.location))
     };
 }
+function from_candid_record_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: string;
+    contentType: [] | [string];
+    size: bigint;
+    filename: string;
+    uploadedAt: _Time;
+}): {
+    id: string;
+    contentType?: string;
+    size: bigint;
+    filename: string;
+    uploadedAt: Time;
+} {
+    return {
+        id: value.id,
+        contentType: record_opt_to_undefined(from_candid_opt_n14(_uploadFile, _downloadFile, value.contentType)),
+        size: value.size,
+        filename: value.filename,
+        uploadedAt: value.uploadedAt
+    };
+}
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     success: [] | [boolean];
     topped_up_amount: [] | [bigint];
@@ -619,7 +714,13 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
     };
 }
-async function from_candid_tuple_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [string, _ExternalBlob]): Promise<[string, ExternalBlob]> {
+function from_candid_tuple_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [string, _MedicalFileMetadata]): [string, MedicalFileMetadata] {
+    return [
+        value[0],
+        from_candid_MedicalFileMetadata_n25(_uploadFile, _downloadFile, value[1])
+    ];
+}
+async function from_candid_tuple_n30(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [string, _ExternalBlob]): Promise<[string, ExternalBlob]> {
     return [
         value[0],
         await from_candid_ExternalBlob_n23(_uploadFile, _downloadFile, value[1])
@@ -653,17 +754,23 @@ function from_candid_variant_n21(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): UserRole {
     return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-async function from_candid_vec_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<[string, _ExternalBlob]>): Promise<Array<[string, ExternalBlob]>> {
-    return await Promise.all(value.map(async (x)=>await from_candid_tuple_n25(_uploadFile, _downloadFile, x)));
+function from_candid_vec_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<[string, _MedicalFileMetadata]>): Array<[string, MedicalFileMetadata]> {
+    return value.map((x)=>from_candid_tuple_n28(_uploadFile, _downloadFile, x));
 }
-function to_candid_BloodType_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BloodType): _BloodType {
-    return to_candid_variant_n29(_uploadFile, _downloadFile, value);
+async function from_candid_vec_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<[string, _ExternalBlob]>): Promise<Array<[string, ExternalBlob]>> {
+    return await Promise.all(value.map(async (x)=>await from_candid_tuple_n30(_uploadFile, _downloadFile, x)));
 }
-async function to_candid_ExternalBlob_n30(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
+function from_candid_vec_n31(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_MedicalFileMetadata>): Array<MedicalFileMetadata> {
+    return value.map((x)=>from_candid_MedicalFileMetadata_n25(_uploadFile, _downloadFile, x));
+}
+function to_candid_BloodType_n34(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BloodType): _BloodType {
+    return to_candid_variant_n35(_uploadFile, _downloadFile, value);
+}
+async function to_candid_ExternalBlob_n36(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
     return await _uploadFile(value);
 }
-function to_candid_UserProfile_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserProfile): _UserProfile {
-    return to_candid_record_n27(_uploadFile, _downloadFile, value);
+function to_candid_UserProfile_n32(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserProfile): _UserProfile {
+    return to_candid_record_n33(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n9(_uploadFile, _downloadFile, value);
@@ -674,7 +781,19 @@ function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: Exte
 function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation | null): [] | [__CaffeineStorageRefillInformation] {
     return value === null ? candid_none() : candid_some(to_candid__CaffeineStorageRefillInformation_n2(_uploadFile, _downloadFile, value));
 }
-function to_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function to_candid_opt_n37(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: string | null): [] | [string] {
+    return value === null ? candid_none() : candid_some(value);
+}
+function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    proposed_top_up_amount?: bigint;
+}): {
+    proposed_top_up_amount: [] | [bigint];
+} {
+    return {
+        proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
+    };
+}
+function to_candid_record_n33(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     bio?: string;
     bloodType?: BloodType;
     dateOfBirth?: bigint;
@@ -701,7 +820,7 @@ function to_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8
 } {
     return {
         bio: value.bio ? candid_some(value.bio) : candid_none(),
-        bloodType: value.bloodType ? candid_some(to_candid_BloodType_n28(_uploadFile, _downloadFile, value.bloodType)) : candid_none(),
+        bloodType: value.bloodType ? candid_some(to_candid_BloodType_n34(_uploadFile, _downloadFile, value.bloodType)) : candid_none(),
         dateOfBirth: value.dateOfBirth ? candid_some(value.dateOfBirth) : candid_none(),
         name: value.name,
         emergencyContact: value.emergencyContact ? candid_some(value.emergencyContact) : candid_none(),
@@ -713,16 +832,7 @@ function to_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         location: value.location ? candid_some(value.location) : candid_none()
     };
 }
-function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    proposed_top_up_amount?: bigint;
-}): {
-    proposed_top_up_amount: [] | [bigint];
-} {
-    return {
-        proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
-    };
-}
-function to_candid_variant_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BloodType): {
+function to_candid_variant_n35(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BloodType): {
     aNegative: null;
 } | {
     oPositive: null;

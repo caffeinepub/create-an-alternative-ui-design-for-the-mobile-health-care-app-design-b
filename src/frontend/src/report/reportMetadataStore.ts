@@ -48,3 +48,7 @@ export function clearAllMetadata(): void {
     console.error('Failed to clear metadata store:', error);
   }
 }
+
+// Note: This module is now deprecated for listing purposes.
+// The backend metadata API is the source of truth for file listings.
+// Local metadata is kept for backward compatibility only.

@@ -1,10 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Update the Home Dashboard Quick Actions to replace “Book Appointment” with a “Log Avoid” action without introducing new navigation.
+**Goal:** Re-run build and deploy to the Internet Computer and resolve any blocking deployment error with minimal code/config changes.
 
 **Planned changes:**
-- Remove the “Book Appointment” tile from the /home Quick Actions grid and replace it with a tile labeled exactly “Log Avoid”, keeping the same grid position.
-- Wire the “Log Avoid” tile click to a safe placeholder action (e.g., console logging) that does not navigate to any route and does not throw errors.
+- Re-attempt a clean build and IC deployment.
+- If deployment fails, capture the exact error output and apply the smallest necessary fix to make deployment succeed (keeping backend as a single Motoko actor, adding a migration file only if required for upgrade).
 
-**User-visible outcome:** On /home, users see “Log Avoid” instead of “Book Appointment” in Quick Actions, and clicking it safely performs a placeholder action while staying on the same page.
+**User-visible outcome:** The project builds cleanly and deploys successfully to the Internet Computer (canisters install/upgrade without errors).
