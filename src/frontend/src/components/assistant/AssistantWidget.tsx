@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { MessageSquare } from 'lucide-react';
 import { AssistantPanel } from './AssistantPanel';
-import { AssistantStatus, ReportAnalysisContext } from './assistantTypes';
+import { AssistantStatus, ReportAnalysisContext, ConfidenceLevel } from './assistantTypes';
 import { interpretCommand } from './assistantBrain';
 import { useAssistantTranscript } from './useAssistantTranscript';
 import { getErrorFallbackResponse } from './medicalKnowledgeBase';
@@ -23,11 +23,11 @@ export function AssistantWidget() {
   const { files, getFileBytes } = useMedicalFiles();
   const [reportContext, setReportContext] = useState<ReportAnalysisContext>({ state: 'idle' });
 
-  const handleCommand = useCallback(async (userInput: string) => {
+  const handleCommand = useCallback(async (userInput: string, confidence?: ConfidenceLevel) => {
     if (!userInput.trim()) return;
 
     // Add user message
-    addMessage('user', userInput);
+    addMessage('user', userInput, confidence);
     setInputValue('');
     setStatus('processing');
     setErrorMessage(undefined);
@@ -144,18 +144,18 @@ export function AssistantWidget() {
         return;
       }
 
-      // Handle navigation
+      // Handle navigation - execute immediately
       if (result.type === 'navigation' && result.navigationTarget) {
         addMessage('assistant', result.message);
         setStatus('idle');
         
-        // Navigate immediately after adding confirmation message
+        // Navigate immediately
         setTimeout(() => {
           navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' | '/report' });
           setIsOpen(false);
         }, 100);
       } else if (result.type === 'medical') {
-        // Add medical response
+        // Add medical response with formatted structure
         addMessage('assistant', result.message);
         setStatus('idle');
       } else {
@@ -176,9 +176,9 @@ export function AssistantWidget() {
     handleCommand(inputValue);
   }, [inputValue, handleCommand]);
 
-  const handleVoiceInput = useCallback((text: string) => {
+  const handleVoiceInput = useCallback((text: string, confidence?: ConfidenceLevel) => {
     if (text.trim()) {
-      handleCommand(text);
+      handleCommand(text, confidence);
     }
   }, [handleCommand]);
 

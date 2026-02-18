@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { type LucideIcon } from 'lucide-react';
+import { type LucideIcon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DesignBSurface } from './DesignBSurface';
 
@@ -14,6 +14,8 @@ interface DashboardTileProps {
   isToday?: boolean;
   onClick?: () => void;
   className?: string;
+  isActive?: boolean;
+  onClose?: () => void;
 }
 
 const colorMap = {
@@ -50,6 +52,8 @@ export function DashboardTile({
   isToday = false,
   onClick,
   className,
+  isActive = false,
+  onClose,
 }: DashboardTileProps) {
   const isInteractive = !!onClick;
 
@@ -92,6 +96,28 @@ export function DashboardTile({
           )}
         </div>
       </div>
+
+      {/* Close button - shown when active */}
+      {isActive && onClose && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className={cn(
+            'absolute top-2 right-2 z-10',
+            'h-6 w-6 rounded-full',
+            'bg-muted hover:bg-muted-foreground/20',
+            'flex items-center justify-center',
+            'transition-all duration-200',
+            'hover:scale-110 active:scale-95',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+          )}
+          aria-label="Close"
+        >
+          <X className="h-4 w-4 text-muted-foreground" />
+        </button>
+      )}
 
       {/* Focus visible ring */}
       {isInteractive && (

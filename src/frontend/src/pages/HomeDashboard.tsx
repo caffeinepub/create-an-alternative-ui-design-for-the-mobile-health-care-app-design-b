@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { DashboardSectionHeader } from '../designB/components/DashboardSectionHeader';
 import { DashboardTile } from '../designB/components/DashboardTile';
 import { DesignBSurface } from '../designB/components/DesignBSurface';
@@ -26,6 +27,18 @@ export default function HomeDashboard() {
   // Protect this route - redirect to signin if not authenticated
   useRequireAuth();
   const navigate = useNavigate();
+
+  // Track which quick action tile is currently active
+  const [activeTile, setActiveTile] = useState<string | null>(null);
+
+  const handleTileClick = (tileId: string, action: () => void) => {
+    setActiveTile(tileId);
+    action();
+  };
+
+  const handleTileClose = () => {
+    setActiveTile(null);
+  };
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
@@ -112,37 +125,49 @@ export default function HomeDashboard() {
             icon={MessageSquare}
             label="Medical Chatbot"
             colorAccent="purple"
-            onClick={() => navigate({ to: '/chat' })}
+            onClick={() => handleTileClick('chatbot', () => navigate({ to: '/chat' }))}
+            isActive={activeTile === 'chatbot'}
+            onClose={handleTileClose}
           />
           <DashboardTile
             icon={FileText}
             label="Medical Reports"
             colorAccent="blue"
-            onClick={() => navigate({ to: '/report' })}
+            onClick={() => handleTileClick('reports', () => navigate({ to: '/report' }))}
+            isActive={activeTile === 'reports'}
+            onClose={handleTileClose}
           />
           <DashboardTile
             icon={Pill}
             label="Log Medication"
             colorAccent="pink"
-            onClick={() => console.log('Log medication')}
+            onClick={() => handleTileClick('medication', () => console.log('Log medication'))}
+            isActive={activeTile === 'medication'}
+            onClose={handleTileClose}
           />
           <DashboardTile
             icon={Apple}
             label="Log Meal"
             colorAccent="green"
-            onClick={() => console.log('Log meal')}
+            onClick={() => handleTileClick('meal', () => console.log('Log meal'))}
+            isActive={activeTile === 'meal'}
+            onClose={handleTileClose}
           />
           <DashboardTile
             icon={Dumbbell}
             label="Log Exercise"
             colorAccent="blue"
-            onClick={() => console.log('Log exercise')}
+            onClick={() => handleTileClick('exercise', () => console.log('Log exercise'))}
+            isActive={activeTile === 'exercise'}
+            onClose={handleTileClose}
           />
           <DashboardTile
             icon={XCircle}
             label="Log Avoid"
             colorAccent="amber"
-            onClick={() => console.log('Log avoid')}
+            onClick={() => handleTileClick('avoid', () => console.log('Log avoid'))}
+            isActive={activeTile === 'avoid'}
+            onClose={handleTileClose}
           />
         </div>
       </section>

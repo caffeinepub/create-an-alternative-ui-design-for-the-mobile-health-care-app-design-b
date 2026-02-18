@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { AssistantMessage } from './assistantTypes';
+import { AssistantMessage, ConfidenceLevel } from './assistantTypes';
 import { loadTranscript, saveTranscript, clearTranscript as clearStoredTranscript } from './assistantStorage';
 
 export function useAssistantTranscript() {
@@ -8,7 +8,7 @@ export function useAssistantTranscript() {
   // Load transcript from storage on mount
   useEffect(() => {
     const stored = loadTranscript();
-    if (stored && stored.messages.length > 0) {
+    if (stored && stored.messages) {
       setTranscript(stored.messages as AssistantMessage[]);
     }
   }, []);
@@ -20,12 +20,13 @@ export function useAssistantTranscript() {
     }
   }, [transcript]);
 
-  const addMessage = useCallback((role: 'user' | 'assistant', content: string) => {
+  const addMessage = useCallback((role: 'user' | 'assistant', content: string, confidence?: ConfidenceLevel) => {
     const message: AssistantMessage = {
       id: `${Date.now()}-${Math.random()}`,
       role,
       content,
       timestamp: Date.now(),
+      confidence: role === 'user' ? confidence : undefined,
     };
     setTranscript(prev => [...prev, message]);
   }, []);

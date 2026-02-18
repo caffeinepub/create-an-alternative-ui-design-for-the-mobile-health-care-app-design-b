@@ -1,10 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Re-run build and deploy to the Internet Computer and resolve any blocking deployment error with minimal code/config changes.
+**Goal:** Expand the medical knowledge base to include comprehensive women's health information covering menstrual periods, menstrual cycle phases, pregnancy, and common women's health conditions.
 
 **Planned changes:**
-- Re-attempt a clean build and IC deployment.
-- If deployment fails, capture the exact error output and apply the smallest necessary fix to make deployment succeed (keeping backend as a single Motoko actor, adding a migration file only if required for upgrade).
+- Add "Menstrual Periods" entry with normal cycle characteristics, symptoms, and when to seek medical care
+- Add "Menstrual Cycle" entry explaining the four phases (follicular, ovulation, luteal, menstruation) with hormonal changes and symptoms
+- Add "Pregnancy" entry covering early signs, trimester overview, common symptoms, prenatal care, and warning signs
+- Add entries for common women's health conditions: PCOS, endometriosis, PMS, and menopause with symptoms and management guidance
 
-**User-visible outcome:** The project builds cleanly and deploys successfully to the Internet Computer (canisters install/upgrade without errors).
+**User-visible outcome:** Users can ask the medical assistant about women's health topics including periods, menstrual cycles, pregnancy, PCOS, endometriosis, PMS, and menopause, and receive comprehensive educational information following the same detailed format as existing medical topics.

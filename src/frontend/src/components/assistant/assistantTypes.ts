@@ -2,11 +2,14 @@
 
 export type AssistantMessageRole = 'user' | 'assistant' | 'system';
 
+export type ConfidenceLevel = 'high' | 'medium' | 'low';
+
 export interface AssistantMessage {
   id: string;
   role: AssistantMessageRole;
   content: string;
   timestamp: number;
+  confidence?: ConfidenceLevel;
 }
 
 export type AssistantStatus = 'idle' | 'listening' | 'processing' | 'error';

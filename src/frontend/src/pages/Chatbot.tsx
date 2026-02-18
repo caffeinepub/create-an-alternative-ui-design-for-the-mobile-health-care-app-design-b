@@ -5,7 +5,7 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useCallback, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { interpretCommand } from '../components/assistant/assistantBrain';
-import { AssistantStatus, ReportAnalysisContext } from '../components/assistant/assistantTypes';
+import { AssistantStatus, ReportAnalysisContext, ConfidenceLevel } from '../components/assistant/assistantTypes';
 import { getErrorFallbackResponse } from '../components/assistant/medicalKnowledgeBase';
 import { useMedicalFiles, MedicalFileMetadata } from '../hooks/useMedicalFiles';
 import { extractTextFromBytes } from '../components/assistant/reportTextExtraction';
@@ -23,11 +23,11 @@ export default function Chatbot() {
   const { files, getFileBytes } = useMedicalFiles();
   const [reportContext, setReportContext] = useState<ReportAnalysisContext>({ state: 'idle' });
 
-  const handleCommand = useCallback(async (userInput: string) => {
+  const handleCommand = useCallback(async (userInput: string, confidence?: ConfidenceLevel) => {
     if (!userInput.trim()) return;
 
     // Add user message
-    addMessage('user', userInput);
+    addMessage('user', userInput, confidence);
     setInputValue('');
     setStatus('processing');
     setErrorMessage(undefined);
@@ -144,12 +144,12 @@ export default function Chatbot() {
         return;
       }
 
-      // Handle navigation
+      // Handle navigation - execute immediately
       if (result.type === 'navigation' && result.navigationTarget) {
         addMessage('assistant', result.message);
         setStatus('idle');
         
-        // Navigate immediately after adding confirmation message
+        // Navigate immediately
         setTimeout(() => {
           navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' });
         }, 100);
@@ -175,9 +175,9 @@ export default function Chatbot() {
     handleCommand(inputValue);
   }, [inputValue, handleCommand]);
 
-  const handleVoiceInput = useCallback((text: string) => {
+  const handleVoiceInput = useCallback((text: string, confidence?: ConfidenceLevel) => {
     if (text.trim()) {
-      handleCommand(text);
+      handleCommand(text, confidence);
     }
   }, [handleCommand]);
 

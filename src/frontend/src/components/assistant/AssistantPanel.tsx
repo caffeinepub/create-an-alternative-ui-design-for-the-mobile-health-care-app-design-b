@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Card } from '@/components/ui/card';
-import { Mic, MicOff, Send, Trash2, Volume2, VolumeX, Loader2 } from 'lucide-react';
+import { Mic, MicOff, Send, Trash2, Volume2, VolumeX, Loader2, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
 import { AssistantMessage, AssistantStatus } from './assistantTypes';
 import { useSpeechRecognition } from './useSpeechRecognition';
 import { useSpeechSynthesis } from './useSpeechSynthesis';
@@ -18,7 +18,7 @@ interface AssistantPanelProps {
   inputValue: string;
   onInputChange: (value: string) => void;
   onSendMessage: () => void;
-  onVoiceInput: (text: string) => void;
+  onVoiceInput: (text: string, confidence?: 'high' | 'medium' | 'low') => void;
   onClearConversation: () => void;
 }
 
@@ -39,7 +39,7 @@ export function AssistantPanel({
   // Handle final transcript from speech recognition - process immediately
   useEffect(() => {
     if (speech.transcript && !speech.isListening && speech.transcript.trim()) {
-      onVoiceInput(speech.transcript);
+      onVoiceInput(speech.transcript, speech.confidence);
       speech.reset();
     }
   }, [speech.transcript, speech.isListening, onVoiceInput, speech]);
@@ -63,7 +63,8 @@ export function AssistantPanel({
   };
 
   const getStatusText = () => {
-    if (speech.error) return speech.error;
+    if (speech.error) return speech.error.message;
+    if (speech.isRetrying) return 'Retrying speech recognition...';
     if (errorMessage) return errorMessage;
     if (status === 'listening') return 'Listening...';
     if (status === 'processing') return 'Processing...';
@@ -76,8 +77,78 @@ export function AssistantPanel({
   const getStatusColor = () => {
     if (speech.error || errorMessage || status === 'error') return 'text-destructive';
     if (status === 'listening' || speech.isListening) return 'text-primary';
-    if (status === 'processing') return 'text-muted-foreground';
+    if (status === 'processing' || speech.isRetrying) return 'text-muted-foreground';
     return 'text-muted-foreground';
+  };
+
+  const getConfidenceIcon = (confidence?: 'high' | 'medium' | 'low') => {
+    if (!confidence || confidence === 'high') {
+      return <CheckCircle className="h-3 w-3 text-green-600" />;
+    }
+    if (confidence === 'medium') {
+      return <AlertTriangle className="h-3 w-3 text-amber-600" />;
+    }
+    return <AlertCircle className="h-3 w-3 text-red-600" />;
+  };
+
+  const getConfidenceLabel = (confidence?: 'high' | 'medium' | 'low') => {
+    if (!confidence || confidence === 'high') return 'High confidence';
+    if (confidence === 'medium') return 'Medium confidence - please verify';
+    return 'Low confidence - please check if correct';
+  };
+
+  // Format medical content with proper structure
+  const formatMessageContent = (content: string) => {
+    // Split by section headers (lines starting with ** and ending with **)
+    const lines = content.split('\n');
+    const formattedLines: React.ReactElement[] = [];
+    
+    lines.forEach((line, index) => {
+      // Check if line is a section header (e.g., **📊 PROBLEM INFORMATION:**)
+      if (line.match(/^\*\*[📊🛡️⚠️].*:\*\*$/)) {
+        formattedLines.push(
+          <div key={index} className="font-bold text-base mt-4 mb-2 border-b border-border pb-1">
+            {line.replace(/\*\*/g, '')}
+          </div>
+        );
+      }
+      // Check if line is a subsection header (e.g., **What is Diabetes?**)
+      else if (line.match(/^\*\*[^*]+\*\*$/)) {
+        formattedLines.push(
+          <div key={index} className="font-semibold text-sm mt-3 mb-1">
+            {line.replace(/\*\*/g, '')}
+          </div>
+        );
+      }
+      // Check if line is a bullet point
+      else if (line.trim().startsWith('•')) {
+        formattedLines.push(
+          <div key={index} className="ml-2 text-sm">
+            {line}
+          </div>
+        );
+      }
+      // Check if line is a separator
+      else if (line.trim() === '---') {
+        formattedLines.push(
+          <div key={index} className="my-3 border-t border-border" />
+        );
+      }
+      // Regular line
+      else if (line.trim()) {
+        formattedLines.push(
+          <div key={index} className="text-sm">
+            {line}
+          </div>
+        );
+      }
+      // Empty line for spacing
+      else {
+        formattedLines.push(<div key={index} className="h-2" />);
+      }
+    });
+
+    return <div className="space-y-1">{formattedLines}</div>;
   };
 
   return (
@@ -120,16 +191,30 @@ export function AssistantPanel({
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <Card
-                  className={`max-w-[80%] p-3 ${
+                  className={`max-w-[85%] p-3 ${
                     message.role === 'user'
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </p>
+                  {message.role === 'assistant' ? (
+                    formatMessageContent(message.content)
+                  ) : (
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  )}
+                  <div className="flex items-center justify-between mt-2 gap-2">
+                    <p className="text-xs opacity-70">
+                      {new Date(message.timestamp).toLocaleTimeString()}
+                    </p>
+                    {message.role === 'user' && message.confidence && (
+                      <div 
+                        className="flex items-center gap-1"
+                        title={getConfidenceLabel(message.confidence)}
+                      >
+                        {getConfidenceIcon(message.confidence)}
+                      </div>
+                    )}
+                  </div>
                 </Card>
               </div>
             ))
@@ -164,12 +249,17 @@ export function AssistantPanel({
             variant={speech.isListening ? 'destructive' : 'outline'}
             className="w-full"
             onClick={speech.isListening ? speech.stop : speech.start}
-            disabled={status === 'processing'}
+            disabled={status === 'processing' || speech.isRetrying}
           >
             {speech.isListening ? (
               <>
                 <MicOff className="mr-2 h-4 w-4" />
                 Stop Listening
+              </>
+            ) : speech.isRetrying ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Retrying...
               </>
             ) : (
               <>

@@ -1,47 +1,98 @@
 {
   "kind": "build_request",
-  "title": "Retry deployment and resolve blocking deploy error",
-  "priority": "high",
+  "title": "Add women's health topics to medical knowledge base",
+  "projectName": "Medical Assistant",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Re-run the full build and deployment to the Internet Computer, and if deployment fails again, capture the exact failure output and apply the minimal code/config changes needed to make deployment succeed.",
-      "target": "unknown",
+      "text": "Expand the medical knowledge base in frontend/src/components/assistant/medicalKnowledgeBase.ts to include comprehensive information about menstrual periods, including normal cycle characteristics, common symptoms, when periods are irregular, and when to seek medical care",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-msg-3"
+          "msg-6"
         ],
         "quotes": [
-          "deploy again"
+          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
         ]
       },
       "acceptanceCriteria": [
-        "A fresh build completes without errors.",
-        "Deployment completes successfully (canisters install/upgrade without errors).",
-        "If deployment initially fails, the final PR includes the root-cause fix plus enough context (error message and what was changed) to prevent the same failure on the next deploy."
+        "Knowledge base includes a 'Menstrual Periods' entry with symptoms, normal ranges, common concerns, precautions, and emergency indicators",
+        "Information covers typical cycle length (21-35 days), flow duration, and what constitutes heavy bleeding",
+        "Guidance on when to consult a healthcare provider is clearly stated"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add detailed information about the menstrual cycle phases to the medical knowledge base, covering follicular phase, ovulation, luteal phase, and menstruation with associated hormonal changes and typical symptoms",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Knowledge base includes 'Menstrual Cycle' entry explaining all four phases",
+        "Each phase description includes typical duration, hormonal changes, and common physical/emotional symptoms",
+        "Information about tracking cycles and identifying fertility windows is included"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add comprehensive pregnancy information to the medical knowledge base including early signs, trimesters overview, common symptoms, prenatal care guidance, warning signs, and when to seek immediate medical attention",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Knowledge base includes 'Pregnancy' entry with early signs (missed period, nausea, breast tenderness, fatigue)",
+        "Information covers all three trimesters with typical developments and symptoms",
+        "Emergency warning signs are clearly identified (severe bleeding, severe abdominal pain, vision changes, severe headaches, reduced fetal movement)",
+        "Guidance on prenatal care importance and regular check-ups is included"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add information about common women's health conditions to the medical knowledge base including PCOS (Polycystic Ovary Syndrome), endometriosis, PMS (Premenstrual Syndrome), and menopause with symptoms, management approaches, and when to consult a healthcare provider",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Knowledge base includes entries for PCOS, endometriosis, PMS, and menopause",
+        "Each condition entry includes typical symptoms, potential causes or risk factors, and management strategies",
+        "Clear guidance on when to seek medical evaluation is provided for each condition"
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration.",
-    "Do not edit frontend files under frontend/src/components/ui or any other paths listed as immutable in SYSTEM_CONTEXT."
+    "All medical information must be general educational content only, not medical advice",
+    "Maintain the existing knowledge base structure with sections for overview, symptoms, causes, precautions, and emergency indicators",
+    "Follow the same detailed, informative style as existing entries (blood pressure, diabetes)",
+    "Do not modify backend files or authentication logic"
   ],
   "nonGoals": [
-    "Implementing new product features unrelated to deployment.",
-    "Refactoring application logic beyond what is necessary to fix the deployment failure."
+    "Providing personalized medical advice or diagnosis",
+    "Adding cycle tracking functionality or pregnancy calculators",
+    "Integrating external medical APIs or databases",
+    "Modifying the assistant's command interpretation logic",
+    "Adding new UI components or pages"
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

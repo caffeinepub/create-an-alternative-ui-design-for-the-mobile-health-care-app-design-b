@@ -1,41 +1,67 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-11T07:07:32.223Z",
+  "generatedAt": "2026-02-18T20:20:48.896Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 4,
+    "implemented": 4,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Re-run the full build and deployment to the Internet Computer, and if deployment fails again, capture the exact failure output and apply the minimal code/config changes needed to make deployment succeed.",
+        "summary": "Expand the medical knowledge base in frontend/src/components/assistant/medicalKnowledgeBase.ts to include comprehensive information about menstrual periods, including normal cycle characteristics, common symptoms, when periods are irregular, and when to seek medical care",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useInternetIdentity.ts",
-          "frontend/src/main.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/utils/frontendEnv.ts",
-          "frontend/DEPLOY_NOTES.md"
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
         ],
         "matchedFiles": [
-          "frontend/src/utils/frontendEnv.ts",
-          "frontend/DEPLOY_NOTES.md"
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add detailed information about the menstrual cycle phases to the medical knowledge base, covering follicular phase, ovulation, luteal phase, and menstruation with associated hormonal changes and typical symptoms",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add comprehensive pregnancy information to the medical knowledge base including early signs, trimesters overview, common symptoms, prenatal care guidance, warning signs, and when to seek immediate medical attention",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Add information about common women's health conditions to the medical knowledge base including PCOS (Polycystic Ovary Syndrome), endometriosis, PMS (Premenstrual Syndrome), and menopause with symptoms, management approaches, and when to consult a healthcare provider",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/DEPLOY_NOTES.md",
-    "frontend/src/utils/frontendEnv.ts",
+    "frontend/src/components/assistant/medicalKnowledgeBase.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

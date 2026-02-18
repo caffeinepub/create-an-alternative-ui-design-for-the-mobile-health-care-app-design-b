@@ -1,41 +1,70 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Unblock IC deployment by fixing frontend build configuration issues",
+  "title": "Add women's health topics to medical knowledge base",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Make the minimal frontend code/config adjustments required for a clean production build that can be deployed to the Internet Computer.",
+      "summary": "Expand medical knowledge base with comprehensive information about menstrual periods including cycle characteristics, symptoms, irregularities, and when to seek care",
       "acceptanceCriteria": [
-        "A fresh build completes without errors.",
-        "Deployment completes successfully (canisters install/upgrade without errors).",
-        "If deployment initially fails, the final PR includes the root-cause fix plus enough context (error message and what was changed) to prevent the same failure on the next deploy."
+        "Knowledge base includes a 'Menstrual Periods' entry with symptoms, normal ranges, common concerns, precautions, and emergency indicators",
+        "Information covers typical cycle length (21-35 days), flow duration, and what constitutes heavy bleeding",
+        "Guidance on when to consult a healthcare provider is clearly stated"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useInternetIdentity.ts",
+          "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
           "operation": "modify",
-          "description": "Fix production build incompatibility by removing Node-style environment access (e.g., process.env) and switching to a frontend-safe configuration source for the Internet Identity provider URL. Use the existing authorization/auth setup patterns and verify the component's usage instructions before implementing."
-        },
+          "description": "Add a new 'Menstrual Periods' entry to the medicalKnowledgeBase object following the existing structure. Include sections for overview (definition and normal cycle characteristics), symptoms (typical menstrual symptoms and what's normal), causes (hormonal regulation), precautions (tracking cycles, managing symptoms, lifestyle factors), and emergencyIndicators (severe bleeding, severe pain, prolonged bleeding, signs of infection). Cover normal cycle length (21-35 days), flow duration (3-7 days), and definitions of heavy bleeding (soaking through products every 1-2 hours, passing large clots). Maintain the same detailed, educational style as existing entries for blood pressure and diabetes."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add detailed menstrual cycle phase information covering follicular phase, ovulation, luteal phase, and menstruation with hormonal changes and symptoms",
+      "acceptanceCriteria": [
+        "Knowledge base includes 'Menstrual Cycle' entry explaining all four phases",
+        "Each phase description includes typical duration, hormonal changes, and common physical/emotional symptoms",
+        "Information about tracking cycles and identifying fertility windows is included"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/main.tsx",
+          "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
           "operation": "modify",
-          "description": "Remove duplicate provider wiring (React Query + InternetIdentityProvider are currently applied in both main.tsx and App.tsx) so the runtime/provider tree is consistent and less likely to cause build/deploy surprises. Ensure App.tsx remains the single place for provider composition."
-        },
+          "description": "Add a new 'Menstrual Cycle' entry to the medicalKnowledgeBase object. Include an overview section explaining the four phases of the menstrual cycle. In the symptoms section, detail each phase: follicular phase (days 1-13, rising estrogen, energy increase), ovulation (day 14, LH surge, fertile window), luteal phase (days 15-28, progesterone dominance, PMS symptoms possible), and menstruation (days 1-5, hormone drop, cramping and bleeding). Cover typical durations, hormonal changes (FSH, LH, estrogen, progesterone), and associated physical and emotional symptoms for each phase. Include information about cycle tracking methods and identifying the fertile window around ovulation. Follow the existing knowledge base structure with overview, symptoms, causes (hormonal regulation), precautions (tracking benefits, when cycle changes warrant attention), and emergencyIndicators (if cycle irregularities suggest underlying conditions)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Add comprehensive pregnancy information including early signs, trimester overview, symptoms, prenatal care, warning signs, and emergency guidance",
+      "acceptanceCriteria": [
+        "Knowledge base includes 'Pregnancy' entry with early signs (missed period, nausea, breast tenderness, fatigue)",
+        "Information covers all three trimesters with typical developments and symptoms",
+        "Emergency warning signs are clearly identified (severe bleeding, severe abdominal pain, vision changes, severe headaches, reduced fetal movement)",
+        "Guidance on prenatal care importance and regular check-ups is included"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
           "operation": "modify",
-          "description": "Confirm provider composition remains correct after main.tsx changes (React Query, Internet Identity, theming, router). Keep usage of existing core-infrastructure wiring patterns and verify the component's usage instructions before implementing."
-        },
+          "description": "Add a new 'Pregnancy' entry to the medicalKnowledgeBase object. Include an overview section covering the three trimesters (first: weeks 1-12, second: weeks 13-26, third: weeks 27-40). In the symptoms section, detail early signs (missed period, nausea/morning sickness, breast tenderness, fatigue, frequent urination, food aversions/cravings) and common symptoms by trimester (first: nausea, fatigue, mood changes; second: fetal movement, back pain, skin changes; third: increased discomfort, Braxton Hicks contractions, nesting instinct). Cover typical fetal development milestones for each trimester. In precautions, emphasize the importance of prenatal care, regular check-ups, proper nutrition, avoiding harmful substances, taking prenatal vitamins, and staying active as recommended. In emergencyIndicators, clearly list warning signs requiring immediate medical attention: severe bleeding, severe abdominal or pelvic pain, vision changes or severe headaches, high fever, severe swelling of face/hands, reduced or absent fetal movement after 20 weeks, fluid leakage, and severe persistent vomiting. Maintain the educational tone and structure consistent with other knowledge base entries."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Add information about common women's health conditions (PCOS, endometriosis, PMS, menopause) with symptoms, management, and consultation guidance",
+      "acceptanceCriteria": [
+        "Knowledge base includes entries for PCOS, endometriosis, PMS, and menopause",
+        "Each condition entry includes typical symptoms, potential causes or risk factors, and management strategies",
+        "Clear guidance on when to seek medical evaluation is provided for each condition"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/utils/frontendEnv.ts",
-          "operation": "create",
-          "description": "Add a tiny helper to safely read required frontend build-time configuration (e.g., II URL) from the bundler-supported environment mechanism and provide clear errors/fallbacks suitable for IC deployments."
-        },
-        {
-          "path": "frontend/DEPLOY_NOTES.md",
-          "operation": "create",
-          "description": "Record the exact build/deploy failure output observed, the identified root cause, and the minimal frontend changes applied so the next deploy attempt has the needed context."
+          "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
+          "operation": "modify",
+          "description": "Add four new entries to the medicalKnowledgeBase object: 'PCOS (Polycystic Ovary Syndrome)', 'Endometriosis', 'PMS (Premenstrual Syndrome)', and 'Menopause'. For PCOS: include symptoms (irregular periods, excess androgen signs like acne/hirsutism, polycystic ovaries, weight gain, difficulty conceiving), causes (hormonal imbalance, insulin resistance, genetics), precautions (lifestyle modifications, weight management, regular monitoring), and emergencyIndicators (severe symptoms affecting quality of life). For Endometriosis: include symptoms (severe pelvic pain, painful periods, pain during intercourse, heavy bleeding, infertility), causes (retrograde menstruation theory, immune factors, genetics), precautions (pain management, hormonal therapies, surgical options), and emergencyIndicators (severe debilitating pain, severe bleeding). For PMS: include symptoms (mood changes, irritability, bloating, breast tenderness, fatigue, food cravings occurring 1-2 weeks before period), causes (hormonal fluctuations, neurotransmitter changes), precautions (lifestyle modifications, stress management, dietary changes, exercise), and when to seek help (symptoms severely impacting daily life, PMDD possibility). For Menopause: include symptoms (irregular periods leading to cessation, hot flashes, night sweats, mood changes, vaginal dryness, sleep disturbances, typically ages 45-55), causes (natural decline in reproductive hormones, ovarian function cessation), precautions (hormone replacement therapy options, bone health monitoring, heart health, managing symptoms), and emergencyIndicators (severe symptoms affecting quality of life, unexpected bleeding after menopause). Ensure each entry follows the standard knowledge base structure and maintains the educational, general information tone."
         }
       ]
     }
