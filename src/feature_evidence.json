@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-expand-the-medical-knowledge-base-in-frontend-src-components-assistant-medicalknowledgebase-ts-to-include-comprehensive-information-about-menstrual-periods-including-normal-cycle-characteristics-common-symptoms-when-periods-are-irregular-and-when-to-seek-medical-care",
-      "featureTitle": "Expand the medical knowledge base in frontend/src/components/assistant/medicalKnowledgeBase.ts to include comprehensive information about menstrual periods, including normal cycle characteristics, common symptoms, when periods are irregular, and when to seek medical care",
+      "featureId": "feature-remove-the-custom-q-a-tab-and-management-ui-from-the-assistant-panel-interface",
+      "featureTitle": "Remove the custom Q&A tab and management UI from the assistant panel interface",
       "files": [
-        "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        "frontend/src/components/assistant/AssistantPanel.tsx",
+        "frontend/src/components/assistant/CustomQAManager.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -22,10 +23,15 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-detailed-information-about-the-menstrual-cycle-phases-to-the-medical-knowledge-base-covering-follicular-phase-ovulation-luteal-phase-and-menstruation-with-associated-hormonal-changes-and-typical-symptoms",
-      "featureTitle": "Add detailed information about the menstrual cycle phases to the medical knowledge base, covering follicular phase, ovulation, luteal phase, and menstruation with associated hormonal changes and typical symptoms",
+      "featureId": "feature-remove-custom-q-a-matching-logic-from-the-assistant-brain-command-interpreter",
+      "featureTitle": "Remove custom Q&A matching logic from the assistant brain command interpreter",
       "files": [
-        "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        "frontend/src/components/assistant/AssistantWidget.tsx",
+        "frontend/src/components/assistant/assistantBrain.ts",
+        "frontend/src/components/assistant/customQAStorage.ts",
+        "frontend/src/components/assistant/customQATypes.ts",
+        "frontend/src/components/assistant/fuzzyQAMatcher.ts",
+        "frontend/src/components/assistant/useCustomQA.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -42,30 +48,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-comprehensive-pregnancy-information-to-the-medical-knowledge-base-including-early-signs-trimesters-overview-common-symptoms-prenatal-care-guidance-warning-signs-and-when-to-seek-immediate-medical-attention",
-      "featureTitle": "Add comprehensive pregnancy information to the medical knowledge base including early signs, trimesters overview, common symptoms, prenatal care guidance, warning signs, and when to seek immediate medical attention",
+      "featureId": "feature-improve-the-assistant-s-pattern-matching-to-handle-diverse-health-related-queries-with-better-fuzzy-matching-and-synonym-recognition",
+      "featureTitle": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
       "files": [
-        "frontend/src/components/assistant/medicalKnowledgeBase.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-information-about-common-women-s-health-conditions-to-the-medical-knowledge-base-including-pcos-polycystic-ovary-syndrome-endometriosis-pms-premenstrual-syndrome-and-menopause-with-symptoms-management-approaches-and-when-to-consult-a-healthcare-provider",
-      "featureTitle": "Add information about common women's health conditions to the medical knowledge base including PCOS (Polycystic Ovary Syndrome), endometriosis, PMS (Premenstrual Syndrome), and menopause with symptoms, management approaches, and when to consult a healthcare provider",
-      "files": [
-        "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+        "frontend/src/components/assistant/assistantBrain.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -78,6 +64,26 @@
       ],
       "testIds": [
         "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-general-health-question-handler-that-provides-helpful-responses-when-no-specific-medical-topic-is-matched",
+      "featureTitle": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
+      "files": [
+        "frontend/src/components/assistant/assistantBrain.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
       ],
       "confidence": "high"
     }

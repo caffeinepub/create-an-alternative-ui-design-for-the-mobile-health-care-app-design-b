@@ -1,95 +1,110 @@
 {
   "kind": "build_request",
-  "title": "Add women's health topics to medical knowledge base",
-  "projectName": "Medical Assistant",
+  "title": "Remove custom Q&A feature and enable general health question answering",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Expand the medical knowledge base in frontend/src/components/assistant/medicalKnowledgeBase.ts to include comprehensive information about menstrual periods, including normal cycle characteristics, common symptoms, when periods are irregular, and when to seek medical care",
+      "text": "Remove the custom Q&A tab and management UI from the assistant panel interface",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-last"
         ],
         "quotes": [
-          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
+          "remove custom Q&A option"
         ]
       },
       "acceptanceCriteria": [
-        "Knowledge base includes a 'Menstrual Periods' entry with symptoms, normal ranges, common concerns, precautions, and emergency indicators",
-        "Information covers typical cycle length (21-35 days), flow duration, and what constitutes heavy bleeding",
-        "Guidance on when to consult a healthcare provider is clearly stated"
+        "The 'Custom Q&A' tab is no longer visible in the assistant panel",
+        "CustomQAManager component is not rendered",
+        "Users cannot add, edit, or delete custom Q&A pairs through the UI"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add detailed information about the menstrual cycle phases to the medical knowledge base, covering follicular phase, ovulation, luteal phase, and menstruation with associated hormonal changes and typical symptoms",
+      "text": "Remove custom Q&A matching logic from the assistant brain command interpreter",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-last"
         ],
         "quotes": [
-          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
+          "remove custom Q&A option"
         ]
       },
       "acceptanceCriteria": [
-        "Knowledge base includes 'Menstrual Cycle' entry explaining all four phases",
-        "Each phase description includes typical duration, hormonal changes, and common physical/emotional symptoms",
-        "Information about tracking cycles and identifying fertility windows is included"
+        "Custom Q&A pairs are not checked or matched during user input processing",
+        "Fuzzy matching for custom Q&A is removed from the command flow",
+        "The assistant no longer returns custom Q&A pair responses"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Add comprehensive pregnancy information to the medical knowledge base including early signs, trimesters overview, common symptoms, prenatal care guidance, warning signs, and when to seek immediate medical attention",
+      "text": "Expand the medical knowledge base to cover a comprehensive range of general health topics beyond the current curated list",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-last"
         ],
         "quotes": [
-          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
+          "make the chat can literally answer any question about health issues"
         ]
       },
       "acceptanceCriteria": [
-        "Knowledge base includes 'Pregnancy' entry with early signs (missed period, nausea, breast tenderness, fatigue)",
-        "Information covers all three trimesters with typical developments and symptoms",
-        "Emergency warning signs are clearly identified (severe bleeding, severe abdominal pain, vision changes, severe headaches, reduced fetal movement)",
-        "Guidance on prenatal care importance and regular check-ups is included"
+        "The knowledge base includes information on common health conditions, symptoms, preventive care, nutrition, exercise, mental health, medications, and general wellness topics",
+        "The assistant can provide relevant responses to a wide variety of health questions",
+        "Fallback responses are provided for questions outside the knowledge base scope with appropriate disclaimers"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Add information about common women's health conditions to the medical knowledge base including PCOS (Polycystic Ovary Syndrome), endometriosis, PMS (Premenstrual Syndrome), and menopause with symptoms, management approaches, and when to consult a healthcare provider",
+      "text": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-last"
         ],
         "quotes": [
-          "can you add about women problems like periods, mesturation cycle, pegnecy, etc...."
+          "make the chat can literally answer any question about health issues"
         ]
       },
       "acceptanceCriteria": [
-        "Knowledge base includes entries for PCOS, endometriosis, PMS, and menopause",
-        "Each condition entry includes typical symptoms, potential causes or risk factors, and management strategies",
-        "Clear guidance on when to seek medical evaluation is provided for each condition"
+        "The assistant recognizes variations and synonyms of health terms (e.g., 'hypertension' and 'high blood pressure')",
+        "Fuzzy matching threshold is optimized for natural health questions",
+        "Users receive relevant responses even when questions are phrased differently"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "make the chat can literally answer any question about health issues"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When a health question doesn't match any specific topic, the assistant provides a general helpful response",
+        "The fallback response includes a disclaimer about consulting healthcare professionals",
+        "The assistant encourages users to rephrase or provides suggestions for related topics"
       ]
     }
   ],
   "constraints": [
-    "All medical information must be general educational content only, not medical advice",
-    "Maintain the existing knowledge base structure with sections for overview, symptoms, causes, precautions, and emergency indicators",
-    "Follow the same detailed, informative style as existing entries (blood pressure, diabetes)",
-    "Do not modify backend files or authentication logic"
+    "Do not modify the backend Motoko code",
+    "Preserve the existing assistant speech recognition and text-to-speech functionality",
+    "Maintain the report analysis feature",
+    "Keep the Design B theme system intact"
   ],
   "nonGoals": [
-    "Providing personalized medical advice or diagnosis",
-    "Adding cycle tracking functionality or pregnancy calculators",
-    "Integrating external medical APIs or databases",
-    "Modifying the assistant's command interpretation logic",
-    "Adding new UI components or pages"
+    "Integrating external AI/LLM services for question answering",
+    "Adding real-time medical data from external APIs",
+    "Implementing user authentication changes",
+    "Modifying the report upload and management features"
   ],
   "imageRequirements": {
     "required": [],

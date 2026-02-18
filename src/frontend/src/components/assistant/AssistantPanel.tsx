@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -71,7 +71,7 @@ export function AssistantPanel({
     if (speech.isListening && speech.interimTranscript) {
       return `Hearing: "${speech.interimTranscript}"`;
     }
-    return 'Ready to help! Ask me about symptoms, medications, or health questions.';
+    return 'Ready to help! Ask me any health question.';
   };
 
   const getStatusColor = () => {
@@ -181,7 +181,7 @@ export function AssistantPanel({
           {transcript.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
               <p className="mb-2">👋 Hi! I'm your medical assistant.</p>
-              <p className="text-sm">Ask me about symptoms, medications, or general health questions.</p>
+              <p className="text-sm">Ask me any health question - from symptoms to medications, nutrition to mental health.</p>
               <p className="text-xs mt-4 opacity-70">This is for informational purposes only. Always consult a healthcare professional for medical advice.</p>
             </div>
           ) : (
@@ -244,22 +244,22 @@ export function AssistantPanel({
         )}
 
         {/* Voice Input Button */}
-        {speech.isSupported ? (
+        {speech.isSupported && (
           <Button
-            variant={speech.isListening ? 'destructive' : 'outline'}
-            className="w-full"
             onClick={speech.isListening ? speech.stop : speech.start}
             disabled={status === 'processing' || speech.isRetrying}
+            variant={speech.isListening ? 'destructive' : 'outline'}
+            className="w-full"
           >
-            {speech.isListening ? (
-              <>
-                <MicOff className="mr-2 h-4 w-4" />
-                Stop Listening
-              </>
-            ) : speech.isRetrying ? (
+            {speech.isRetrying ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Retrying...
+              </>
+            ) : speech.isListening ? (
+              <>
+                <MicOff className="mr-2 h-4 w-4" />
+                Stop Listening
               </>
             ) : (
               <>
@@ -268,16 +268,12 @@ export function AssistantPanel({
               </>
             )}
           </Button>
-        ) : (
-          <div className="text-center text-sm text-muted-foreground p-2 bg-muted rounded">
-            Voice input is not available in this browser. Please use the text input below.
-          </div>
         )}
 
         {/* Text Input */}
         <div className="flex gap-2">
           <Input
-            placeholder="Ask about symptoms, medications..."
+            placeholder="Type your health question..."
             value={inputValue}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyPress={handleKeyPress}

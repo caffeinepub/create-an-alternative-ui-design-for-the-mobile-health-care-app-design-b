@@ -1,25 +1,20 @@
-import { PageTitle } from '../designB/components/DesignBTypography';
-import { AssistantPanel } from '../components/assistant/AssistantPanel';
-import { useAssistantTranscript } from '../components/assistant/useAssistantTranscript';
-import { useRequireAuth } from '../hooks/useRequireAuth';
-import { useCallback, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { interpretCommand } from '../components/assistant/assistantBrain';
+import { AssistantPanel } from '../components/assistant/AssistantPanel';
 import { AssistantStatus, ReportAnalysisContext, ConfidenceLevel } from '../components/assistant/assistantTypes';
+import { interpretCommand } from '../components/assistant/assistantBrain';
+import { useAssistantTranscript } from '../components/assistant/useAssistantTranscript';
 import { getErrorFallbackResponse } from '../components/assistant/medicalKnowledgeBase';
 import { useMedicalFiles, MedicalFileMetadata } from '../hooks/useMedicalFiles';
 import { extractTextFromBytes } from '../components/assistant/reportTextExtraction';
 import { analyzeReportText, formatAnalysisMessage } from '../components/assistant/reportAnalysis';
 
 export default function Chatbot() {
-  // Protect this route - redirect to signin if not authenticated
-  useRequireAuth();
-
   const navigate = useNavigate();
-  const { transcript, addMessage, clearTranscript } = useAssistantTranscript();
   const [status, setStatus] = useState<AssistantStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>();
   const [inputValue, setInputValue] = useState('');
+  const { transcript, addMessage, clearTranscript } = useAssistantTranscript();
   const { files, getFileBytes } = useMedicalFiles();
   const [reportContext, setReportContext] = useState<ReportAnalysisContext>({ state: 'idle' });
 
@@ -126,94 +121,75 @@ export default function Chatbot() {
       // Handle report listing request
       if (result.type === 'report-list') {
         if (files.length === 0) {
-          addMessage('assistant', `You don't have any saved medical reports yet.\n\nTo analyze a report:\n1. Go to the Reports page\n2. Upload your medical report\n3. Come back and ask me to analyze it\n\nYou can also paste report text directly into this chat for analysis.`);
+          addMessage('assistant', `You don't have any medical reports uploaded yet.\n\nTo analyze a report:\n1. Go to the Reports page\n2. Upload your medical report\n3. Come back and ask me to analyze it`);
           setStatus('idle');
           return;
         }
 
         // List available reports
-        let listMessage = `I found ${files.length} saved report${files.length === 1 ? '' : 's'}:\n\n`;
+        let reportList = `I found ${files.length} medical report${files.length > 1 ? 's' : ''}:\n\n`;
         files.forEach((file, index) => {
-          listMessage += `${index + 1}. ${file.filename}\n`;
+          const uploadDate = new Date(Number(file.uploadedAt) / 1000000).toLocaleDateString();
+          reportList += `${index + 1}. ${file.filename} (uploaded ${uploadDate})\n`;
         });
-        listMessage += `\nWhich report would you like me to analyze? Enter the number (1-${files.length}) or part of the filename.`;
-
-        addMessage('assistant', listMessage);
+        reportList += `\nWhich report would you like me to analyze? Enter the number (1-${files.length}) or part of the filename.`;
+        
+        addMessage('assistant', reportList);
         setReportContext({ state: 'awaiting-selection' });
         setStatus('idle');
         return;
       }
 
-      // Handle navigation - execute immediately
+      // Handle navigation
       if (result.type === 'navigation' && result.navigationTarget) {
         addMessage('assistant', result.message);
         setStatus('idle');
-        
-        // Navigate immediately
         setTimeout(() => {
-          navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' });
-        }, 100);
-      } else if (result.type === 'medical') {
-        // Add medical response
-        addMessage('assistant', result.message);
-        setStatus('idle');
-      } else {
-        // Add assistant response
-        addMessage('assistant', result.message);
-        setStatus('idle');
+          navigate({ to: result.navigationTarget as any });
+        }, 500);
+        return;
       }
+
+      // Handle all other responses
+      addMessage('assistant', result.message);
+      setStatus('idle');
     } catch (error) {
-      // On error, add a fallback assistant message and return to idle
       console.error('Error processing command:', error);
+      setErrorMessage('An error occurred. Please try again.');
       addMessage('assistant', getErrorFallbackResponse());
-      setReportContext({ state: 'idle' });
       setStatus('idle');
     }
   }, [addMessage, navigate, transcript, files, getFileBytes, reportContext]);
 
   const handleSendMessage = useCallback(() => {
-    handleCommand(inputValue);
+    if (inputValue.trim()) {
+      handleCommand(inputValue);
+    }
   }, [inputValue, handleCommand]);
 
   const handleVoiceInput = useCallback((text: string, confidence?: ConfidenceLevel) => {
-    if (text.trim()) {
-      handleCommand(text, confidence);
-    }
+    handleCommand(text, confidence);
   }, [handleCommand]);
 
   const handleClearConversation = useCallback(() => {
     clearTranscript();
+    setReportContext({ state: 'idle' });
     setStatus('idle');
     setErrorMessage(undefined);
-    setInputValue('');
-    setReportContext({ state: 'idle' });
   }, [clearTranscript]);
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Header Section - Fixed */}
-      <div className="flex-shrink-0 container max-w-4xl mx-auto px-4 pt-8 pb-4">
-        <PageTitle>Medical Assistant</PageTitle>
-        <p className="text-muted-foreground mt-2">
-          Ask me about symptoms, medications, or general health questions. I can also analyze your medical reports.
-        </p>
-      </div>
-
-      {/* Chat Panel - Flexible, Scrollable */}
-      <div className="flex-1 min-h-0 container max-w-4xl mx-auto px-4 pb-8">
-        <div className="h-full border border-border rounded-lg overflow-hidden bg-card">
-          <AssistantPanel
-            transcript={transcript}
-            status={status}
-            errorMessage={errorMessage}
-            inputValue={inputValue}
-            onInputChange={setInputValue}
-            onSendMessage={handleSendMessage}
-            onVoiceInput={handleVoiceInput}
-            onClearConversation={handleClearConversation}
-          />
-        </div>
-      </div>
+    <div className="h-screen flex flex-col">
+      <AssistantPanel
+        transcript={transcript}
+        status={status}
+        errorMessage={errorMessage}
+        inputValue={inputValue}
+        onInputChange={setInputValue}
+        onSendMessage={handleSendMessage}
+        onVoiceInput={handleVoiceInput}
+        onClearConversation={handleClearConversation}
+      />
     </div>
   );
 }

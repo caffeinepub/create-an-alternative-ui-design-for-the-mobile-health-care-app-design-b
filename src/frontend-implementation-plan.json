@@ -1,70 +1,120 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add women's health topics to medical knowledge base",
+  "title": "Remove custom Q&A feature and enable general health question answering",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Expand medical knowledge base with comprehensive information about menstrual periods including cycle characteristics, symptoms, irregularities, and when to seek care",
+      "summary": "Remove the custom Q&A tab and management UI from the assistant panel interface",
       "acceptanceCriteria": [
-        "Knowledge base includes a 'Menstrual Periods' entry with symptoms, normal ranges, common concerns, precautions, and emergency indicators",
-        "Information covers typical cycle length (21-35 days), flow duration, and what constitutes heavy bleeding",
-        "Guidance on when to consult a healthcare provider is clearly stated"
+        "The 'Custom Q&A' tab is no longer visible in the assistant panel",
+        "CustomQAManager component is not rendered",
+        "Users cannot add, edit, or delete custom Q&A pairs through the UI"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
+          "path": "frontend/src/components/assistant/AssistantPanel.tsx",
           "operation": "modify",
-          "description": "Add a new 'Menstrual Periods' entry to the medicalKnowledgeBase object following the existing structure. Include sections for overview (definition and normal cycle characteristics), symptoms (typical menstrual symptoms and what's normal), causes (hormonal regulation), precautions (tracking cycles, managing symptoms, lifestyle factors), and emergencyIndicators (severe bleeding, severe pain, prolonged bleeding, signs of infection). Cover normal cycle length (21-35 days), flow duration (3-7 days), and definitions of heavy bleeding (soaking through products every 1-2 hours, passing large clots). Maintain the same detailed, educational style as existing entries for blood pressure and diabetes."
+          "description": "Remove the 'Custom Q&A' tab from the Tabs component. Remove the TabsContent section that renders the CustomQAManager component. Remove the CustomQAManager import statement. Keep only the 'Chat' tab visible and active."
+        },
+        {
+          "path": "frontend/src/components/assistant/CustomQAManager.tsx",
+          "operation": "delete",
+          "description": "Delete the CustomQAManager component file as it is no longer used in the application."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add detailed menstrual cycle phase information covering follicular phase, ovulation, luteal phase, and menstruation with hormonal changes and symptoms",
+      "summary": "Remove custom Q&A matching logic from the assistant brain command interpreter",
       "acceptanceCriteria": [
-        "Knowledge base includes 'Menstrual Cycle' entry explaining all four phases",
-        "Each phase description includes typical duration, hormonal changes, and common physical/emotional symptoms",
-        "Information about tracking cycles and identifying fertility windows is included"
+        "Custom Q&A pairs are not checked or matched during user input processing",
+        "Fuzzy matching for custom Q&A is removed from the command flow",
+        "The assistant no longer returns custom Q&A pair responses"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
+          "path": "frontend/src/components/assistant/AssistantWidget.tsx",
           "operation": "modify",
-          "description": "Add a new 'Menstrual Cycle' entry to the medicalKnowledgeBase object. Include an overview section explaining the four phases of the menstrual cycle. In the symptoms section, detail each phase: follicular phase (days 1-13, rising estrogen, energy increase), ovulation (day 14, LH surge, fertile window), luteal phase (days 15-28, progesterone dominance, PMS symptoms possible), and menstruation (days 1-5, hormone drop, cramping and bleeding). Cover typical durations, hormonal changes (FSH, LH, estrogen, progesterone), and associated physical and emotional symptoms for each phase. Include information about cycle tracking methods and identifying the fertile window around ovulation. Follow the existing knowledge base structure with overview, symptoms, causes (hormonal regulation), precautions (tracking benefits, when cycle changes warrant attention), and emergencyIndicators (if cycle irregularities suggest underlying conditions)."
+          "description": "Remove the customQAPairs prop passed to the interpretCommand function. Remove the useCustomQA hook import and usage. Remove all custom Q&A related state management from the component."
+        },
+        {
+          "path": "frontend/src/components/assistant/assistantBrain.ts",
+          "operation": "modify",
+          "description": "Remove the customQAPairs parameter from the interpretCommand function signature. Remove the custom Q&A matching logic that uses findBestQAMatch. Remove the CustomQAMatch and CustomQAPair type imports. Remove the fuzzyQAMatcher import. Ensure the function only processes navigation commands, medical knowledge base queries, and report analysis requests."
+        },
+        {
+          "path": "frontend/src/components/assistant/useCustomQA.ts",
+          "operation": "delete",
+          "description": "Delete the useCustomQA hook file as custom Q&A functionality is being removed from the application."
+        },
+        {
+          "path": "frontend/src/components/assistant/customQAStorage.ts",
+          "operation": "delete",
+          "description": "Delete the custom Q&A storage utility file as the feature is no longer needed."
+        },
+        {
+          "path": "frontend/src/components/assistant/customQATypes.ts",
+          "operation": "delete",
+          "description": "Delete the custom Q&A types definition file as these types are no longer used."
+        },
+        {
+          "path": "frontend/src/components/assistant/fuzzyQAMatcher.ts",
+          "operation": "delete",
+          "description": "Delete the fuzzy Q&A matcher utility file as custom Q&A matching is no longer needed."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Add comprehensive pregnancy information including early signs, trimester overview, symptoms, prenatal care, warning signs, and emergency guidance",
+      "summary": "Expand the medical knowledge base to cover a comprehensive range of general health topics beyond the current curated list",
       "acceptanceCriteria": [
-        "Knowledge base includes 'Pregnancy' entry with early signs (missed period, nausea, breast tenderness, fatigue)",
-        "Information covers all three trimesters with typical developments and symptoms",
-        "Emergency warning signs are clearly identified (severe bleeding, severe abdominal pain, vision changes, severe headaches, reduced fetal movement)",
-        "Guidance on prenatal care importance and regular check-ups is included"
+        "The knowledge base includes information on common health conditions, symptoms, preventive care, nutrition, exercise, mental health, medications, and general wellness topics",
+        "The assistant can provide relevant responses to a wide variety of health questions",
+        "Fallback responses are provided for questions outside the knowledge base scope with appropriate disclaimers"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
           "operation": "modify",
-          "description": "Add a new 'Pregnancy' entry to the medicalKnowledgeBase object. Include an overview section covering the three trimesters (first: weeks 1-12, second: weeks 13-26, third: weeks 27-40). In the symptoms section, detail early signs (missed period, nausea/morning sickness, breast tenderness, fatigue, frequent urination, food aversions/cravings) and common symptoms by trimester (first: nausea, fatigue, mood changes; second: fetal movement, back pain, skin changes; third: increased discomfort, Braxton Hicks contractions, nesting instinct). Cover typical fetal development milestones for each trimester. In precautions, emphasize the importance of prenatal care, regular check-ups, proper nutrition, avoiding harmful substances, taking prenatal vitamins, and staying active as recommended. In emergencyIndicators, clearly list warning signs requiring immediate medical attention: severe bleeding, severe abdominal or pelvic pain, vision changes or severe headaches, high fever, severe swelling of face/hands, reduced or absent fetal movement after 20 weeks, fluid leakage, and severe persistent vomiting. Maintain the educational tone and structure consistent with other knowledge base entries."
+          "description": "Expand the medicalTopics array to include additional comprehensive health topics. Add topics for: common cold and flu, headaches and migraines, allergies, asthma, arthritis, back pain, mental health (anxiety, depression, stress management), nutrition and diet, exercise and fitness, sleep disorders, skin conditions, digestive health, respiratory health, cardiovascular wellness, preventive care, medication management, women's health, men's health, child health, elderly care, and general wellness. For each topic, include patterns, symptoms, causes, precautions, and emergency indicators. Ensure each topic follows the existing MedicalTopic interface structure with comprehensive pattern matching keywords."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Add information about common women's health conditions (PCOS, endometriosis, PMS, menopause) with symptoms, management, and consultation guidance",
+      "summary": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
       "acceptanceCriteria": [
-        "Knowledge base includes entries for PCOS, endometriosis, PMS, and menopause",
-        "Each condition entry includes typical symptoms, potential causes or risk factors, and management strategies",
-        "Clear guidance on when to seek medical evaluation is provided for each condition"
+        "The assistant recognizes variations and synonyms of health terms (e.g., 'hypertension' and 'high blood pressure')",
+        "Fuzzy matching threshold is optimized for natural health questions",
+        "Users receive relevant responses even when questions are phrased differently"
       ],
       "file_operations": [
         {
+          "path": "frontend/src/components/assistant/assistantBrain.ts",
+          "operation": "modify",
+          "description": "Enhance the matchMedicalTopic function to improve fuzzy matching for health queries. Lower the similarity threshold from 0.6 to 0.5 to be more lenient with variations. Expand the pattern matching to check against multiple fields (patterns, symptoms, causes) instead of just patterns. Add synonym normalization before matching (e.g., map 'hypertension' to 'high blood pressure', 'diabetes' to 'blood sugar'). Improve the scoring algorithm to weight exact word matches higher than partial matches. Ensure the function returns the best matching topic even with varied phrasing."
+        },
+        {
           "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
           "operation": "modify",
-          "description": "Add four new entries to the medicalKnowledgeBase object: 'PCOS (Polycystic Ovary Syndrome)', 'Endometriosis', 'PMS (Premenstrual Syndrome)', and 'Menopause'. For PCOS: include symptoms (irregular periods, excess androgen signs like acne/hirsutism, polycystic ovaries, weight gain, difficulty conceiving), causes (hormonal imbalance, insulin resistance, genetics), precautions (lifestyle modifications, weight management, regular monitoring), and emergencyIndicators (severe symptoms affecting quality of life). For Endometriosis: include symptoms (severe pelvic pain, painful periods, pain during intercourse, heavy bleeding, infertility), causes (retrograde menstruation theory, immune factors, genetics), precautions (pain management, hormonal therapies, surgical options), and emergencyIndicators (severe debilitating pain, severe bleeding). For PMS: include symptoms (mood changes, irritability, bloating, breast tenderness, fatigue, food cravings occurring 1-2 weeks before period), causes (hormonal fluctuations, neurotransmitter changes), precautions (lifestyle modifications, stress management, dietary changes, exercise), and when to seek help (symptoms severely impacting daily life, PMDD possibility). For Menopause: include symptoms (irregular periods leading to cessation, hot flashes, night sweats, mood changes, vaginal dryness, sleep disturbances, typically ages 45-55), causes (natural decline in reproductive hormones, ovarian function cessation), precautions (hormone replacement therapy options, bone health monitoring, heart health, managing symptoms), and emergencyIndicators (severe symptoms affecting quality of life, unexpected bleeding after menopause). Ensure each entry follows the standard knowledge base structure and maintains the educational, general information tone."
+          "description": "Add comprehensive synonym lists and alternative phrasings to each topic's patterns array. For example, blood pressure topic should include: 'hypertension', 'high blood pressure', 'BP', 'blood pressure high', etc. Diabetes topic should include: 'blood sugar', 'glucose', 'diabetic', 'sugar levels', etc. Ensure each topic has at least 8-12 pattern variations covering medical terms, common names, abbreviations, and colloquial phrases."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
+      "acceptanceCriteria": [
+        "When a health question doesn't match any specific topic, the assistant provides a general helpful response",
+        "The fallback response includes a disclaimer about consulting healthcare professionals",
+        "The assistant encourages users to rephrase or provides suggestions for related topics"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/assistant/assistantBrain.ts",
+          "operation": "modify",
+          "description": "Add a fallback handler in the interpretCommand function for health-related queries that don't match any specific medical topic. After attempting to match medical topics, if confidence is low (below 0.4) or no match is found, check if the input contains health-related keywords (e.g., 'health', 'medical', 'symptom', 'pain', 'disease', 'condition', 'treatment', 'doctor', 'medicine'). If health-related, return a helpful fallback response that acknowledges the question, provides general health guidance, includes a disclaimer about consulting healthcare professionals, and suggests rephrasing or exploring related topics. Include a list of available topic categories the user can ask about. Set confidence to 'medium' for these fallback responses."
         }
       ]
     }

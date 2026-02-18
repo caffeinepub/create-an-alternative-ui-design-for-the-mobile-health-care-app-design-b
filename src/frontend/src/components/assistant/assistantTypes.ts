@@ -22,12 +22,15 @@ export interface AssistantState {
 }
 
 export interface CommandResult {
-  type: 'navigation' | 'help' | 'unknown' | 'medical' | 'report-list' | 'report-analysis' | 'report-paste-request';
+  type: 'navigation' | 'help' | 'unknown' | 'medical' | 'report-list' | 'report-analysis' | 'report-paste-request' | 'custom-qa';
   message: string;
   navigationTarget?: string;
   reportList?: Array<{ id: string; filename: string }>;
   awaitingReportSelection?: boolean;
   awaitingReportText?: boolean;
+  matchType?: 'exact' | 'fuzzy' | 'none';
+  similarityScore?: number;
+  customQAUsed?: boolean;
 }
 
 export interface ReportAnalysisContext {

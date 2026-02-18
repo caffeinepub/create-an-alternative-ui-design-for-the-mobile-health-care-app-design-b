@@ -46,7 +46,10 @@ function normalizeInput(input: string): string {
 }
 
 // Local deterministic command interpreter with medical knowledge
-export function interpretCommand(userInput: string, conversationHistory: any[] = []): CommandResult {
+export function interpretCommand(
+  userInput: string, 
+  conversationHistory: any[] = []
+): CommandResult {
   const normalized = normalizeInput(userInput);
 
   // Report analysis patterns (high priority - check early)
@@ -275,6 +278,8 @@ I can help you with:
 • Immune system health
 • Nutrition and exercise
 • Medication safety
+• Women's health topics
+• Common illnesses and conditions
 
 **Report Analysis:**
 • Analyze your medical reports
@@ -293,39 +298,69 @@ I can help you with:
 • "Go to profile"
 • "What are the precautions for asthma?"
 
-Just ask me anything about your health or medical topics!`,
+Just ask me any health question!`,
       };
     }
   }
 
-  // If no match found, try to provide helpful suggestions
-  const hasMedicalTerms = /\b(pain|ache|symptom|sick|ill|disease|condition|treatment|cure|doctor|hospital|clinic|medicine|drug|test|result|level|high|low|normal)\b/i.test(normalized);
+  // Check if input contains health-related keywords for fallback
+  const healthKeywords = [
+    'health', 'medical', 'symptom', 'pain', 'ache', 'sick', 'ill', 'disease', 
+    'condition', 'treatment', 'cure', 'doctor', 'hospital', 'clinic', 'medicine', 
+    'drug', 'medication', 'test', 'result', 'level', 'high', 'low', 'normal',
+    'fever', 'cough', 'cold', 'flu', 'infection', 'virus', 'bacteria',
+    'injury', 'wound', 'bleeding', 'swelling', 'inflammation', 'rash',
+    'nausea', 'vomiting', 'diarrhea', 'constipation', 'headache', 'migraine',
+    'fatigue', 'tired', 'weakness', 'dizzy', 'faint', 'breathe', 'breathing'
+  ];
   
-  if (hasMedicalTerms) {
+  const hasHealthKeywords = healthKeywords.some(keyword => 
+    normalized.includes(keyword)
+  );
+  
+  if (hasHealthKeywords) {
     return {
       type: 'medical',
-      message: `I'm not sure I understood your question completely, but I'm here to help with medical information.
+      message: `I understand you're asking about a health topic, but I need a bit more clarity to provide the best information.
 
-**I can provide information about:**
-• Blood pressure and heart health
+**I can provide detailed information about:**
+
+**Common Conditions:**
+• Blood pressure and hypertension
 • Diabetes and blood sugar
-• Cholesterol
-• Asthma and allergies
-• Arthritis and pain
-• Mental health and stress
-• Sleep and fatigue
-• Immune system
+• Cholesterol and heart health
+• Asthma and respiratory issues
+• Allergies and immune system
+• Arthritis and joint pain
+
+**Health Topics:**
 • Nutrition and diet
 • Exercise and fitness
-• Medication safety
+• Sleep and rest
+• Mental health and stress
+• Medications and supplements
+• Preventive care
 
-Could you rephrase your question or ask about one of these topics? For example:
-• "Tell me about blood pressure"
-• "What is diabetes?"
-• "How to lower cholesterol?"
+**Women's Health:**
+• Menstrual health and periods
+• Pregnancy and prenatal care
+• Menopause and hormonal changes
+• PCOS and endometriosis
+
+**General Wellness:**
+• Cold and flu prevention
+• Headaches and migraines
+• Digestive health
+• Skin conditions
+• Pain management
+
+Could you rephrase your question or ask about one of these specific topics? For example:
+• "Tell me about diabetes"
+• "How to lower blood pressure?"
 • "What are asthma precautions?"
+• "Help with stress management"
 
-Or type "help" to see all available commands.`,
+*Remember: This is educational information. Always consult a healthcare professional for medical advice.*`,
     };
   }
 

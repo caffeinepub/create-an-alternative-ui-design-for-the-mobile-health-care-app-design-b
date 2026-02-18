@@ -1,12 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Expand the medical knowledge base to include comprehensive women's health information covering menstrual periods, menstrual cycle phases, pregnancy, and common women's health conditions.
+**Goal:** Remove the custom Q&A management feature and expand the healthcare assistant to answer a comprehensive range of general health questions.
 
 **Planned changes:**
-- Add "Menstrual Periods" entry with normal cycle characteristics, symptoms, and when to seek medical care
-- Add "Menstrual Cycle" entry explaining the four phases (follicular, ovulation, luteal, menstruation) with hormonal changes and symptoms
-- Add "Pregnancy" entry covering early signs, trimester overview, common symptoms, prenatal care, and warning signs
-- Add entries for common women's health conditions: PCOS, endometriosis, PMS, and menopause with symptoms and management guidance
+- Remove the Custom Q&A tab and management UI from the assistant panel
+- Remove custom Q&A matching logic from the assistant command interpreter
+- Expand the medical knowledge base to cover general health topics including common conditions, symptoms, preventive care, nutrition, exercise, mental health, medications, and wellness
+- Improve pattern matching with better fuzzy matching and synonym recognition for health terms
+- Add a general health question handler with helpful fallback responses and medical disclaimers
 
-**User-visible outcome:** Users can ask the medical assistant about women's health topics including periods, menstrual cycles, pregnancy, PCOS, endometriosis, PMS, and menopause, and receive comprehensive educational information following the same detailed format as existing medical topics.
+**User-visible outcome:** Users can ask the healthcare assistant a wide variety of health-related questions and receive informative responses, while the custom Q&A management interface is no longer available.

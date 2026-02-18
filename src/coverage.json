@@ -1,57 +1,79 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-18T20:20:48.896Z",
+  "generatedAt": "2026-02-18T20:42:29.431Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
+    "total": 5,
     "implemented": 4,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Expand the medical knowledge base in frontend/src/components/assistant/medicalKnowledgeBase.ts to include comprehensive information about menstrual periods, including normal cycle characteristics, common symptoms, when periods are irregular, and when to seek medical care",
+        "summary": "Remove the custom Q&A tab and management UI from the assistant panel interface",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+          "frontend/src/components/assistant/AssistantPanel.tsx",
+          "frontend/src/components/assistant/CustomQAManager.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+          "frontend/src/components/assistant/AssistantPanel.tsx",
+          "frontend/src/components/assistant/CustomQAManager.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Add detailed information about the menstrual cycle phases to the medical knowledge base, covering follicular phase, ovulation, luteal phase, and menstruation with associated hormonal changes and typical symptoms",
+        "summary": "Remove custom Q&A matching logic from the assistant brain command interpreter",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+          "frontend/src/components/assistant/AssistantWidget.tsx",
+          "frontend/src/components/assistant/assistantBrain.ts",
+          "frontend/src/components/assistant/useCustomQA.ts",
+          "frontend/src/components/assistant/customQAStorage.ts",
+          "frontend/src/components/assistant/customQATypes.ts",
+          "frontend/src/components/assistant/fuzzyQAMatcher.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+          "frontend/src/components/assistant/AssistantWidget.tsx",
+          "frontend/src/components/assistant/assistantBrain.ts",
+          "frontend/src/components/assistant/useCustomQA.ts",
+          "frontend/src/components/assistant/customQAStorage.ts",
+          "frontend/src/components/assistant/customQATypes.ts",
+          "frontend/src/components/assistant/fuzzyQAMatcher.ts"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Add comprehensive pregnancy information to the medical knowledge base including early signs, trimesters overview, common symptoms, prenatal care guidance, warning signs, and when to seek immediate medical attention",
-        "status": "implemented",
+        "summary": "Expand the medical knowledge base to cover a comprehensive range of general health topics beyond the current curated list",
+        "status": "missing",
         "plannedFiles": [
           "frontend/src/components/assistant/medicalKnowledgeBase.ts"
         ],
-        "matchedFiles": [
-          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
-        ]
+        "matchedFiles": []
       },
       {
         "id": "REQ-4",
-        "summary": "Add information about common women's health conditions to the medical knowledge base including PCOS (Polycystic Ovary Syndrome), endometriosis, PMS (Premenstrual Syndrome), and menopause with symptoms, management approaches, and when to consult a healthcare provider",
+        "summary": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
         "status": "implemented",
         "plannedFiles": [
+          "frontend/src/components/assistant/assistantBrain.ts",
           "frontend/src/components/assistant/medicalKnowledgeBase.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+          "frontend/src/components/assistant/assistantBrain.ts"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/assistant/assistantBrain.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/assistant/assistantBrain.ts"
         ]
       }
     ]
@@ -61,7 +83,15 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/assistant/medicalKnowledgeBase.ts",
+    "frontend/src/components/assistant/AssistantPanel.tsx",
+    "frontend/src/components/assistant/AssistantWidget.tsx",
+    "frontend/src/components/assistant/CustomQAManager.tsx",
+    "frontend/src/components/assistant/assistantBrain.ts",
+    "frontend/src/components/assistant/customQAStorage.ts",
+    "frontend/src/components/assistant/customQATypes.ts",
+    "frontend/src/components/assistant/fuzzyQAMatcher.ts",
+    "frontend/src/components/assistant/useCustomQA.ts",
+    "frontend/src/pages/Chatbot.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

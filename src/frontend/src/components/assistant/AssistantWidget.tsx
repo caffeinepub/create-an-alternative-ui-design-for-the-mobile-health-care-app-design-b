@@ -126,71 +126,65 @@ export function AssistantWidget() {
       // Handle report listing request
       if (result.type === 'report-list') {
         if (files.length === 0) {
-          addMessage('assistant', `You don't have any saved medical reports yet.\n\nTo analyze a report:\n1. Go to the Reports page\n2. Upload your medical report\n3. Come back and ask me to analyze it\n\nYou can also paste report text directly into this chat for analysis.`);
+          addMessage('assistant', `You don't have any medical reports uploaded yet.\n\nTo analyze a report:\n1. Go to the Reports page\n2. Upload your medical report\n3. Come back and ask me to analyze it`);
           setStatus('idle');
           return;
         }
 
         // List available reports
-        let listMessage = `I found ${files.length} saved report${files.length === 1 ? '' : 's'}:\n\n`;
+        let reportList = `I found ${files.length} medical report${files.length > 1 ? 's' : ''}:\n\n`;
         files.forEach((file, index) => {
-          listMessage += `${index + 1}. ${file.filename}\n`;
+          const uploadDate = new Date(Number(file.uploadedAt) / 1000000).toLocaleDateString();
+          reportList += `${index + 1}. ${file.filename} (uploaded ${uploadDate})\n`;
         });
-        listMessage += `\nWhich report would you like me to analyze? Enter the number (1-${files.length}) or part of the filename.`;
-
-        addMessage('assistant', listMessage);
+        reportList += `\nWhich report would you like me to analyze? Enter the number (1-${files.length}) or part of the filename.`;
+        
+        addMessage('assistant', reportList);
         setReportContext({ state: 'awaiting-selection' });
         setStatus('idle');
         return;
       }
 
-      // Handle navigation - execute immediately
+      // Handle navigation
       if (result.type === 'navigation' && result.navigationTarget) {
         addMessage('assistant', result.message);
         setStatus('idle');
-        
-        // Navigate immediately
         setTimeout(() => {
-          navigate({ to: result.navigationTarget as '/' | '/signin' | '/home' | '/profile' | '/chat' | '/report' });
+          navigate({ to: result.navigationTarget as any });
           setIsOpen(false);
-        }, 100);
-      } else if (result.type === 'medical') {
-        // Add medical response with formatted structure
-        addMessage('assistant', result.message);
-        setStatus('idle');
-      } else {
-        // Add assistant response
-        addMessage('assistant', result.message);
-        setStatus('idle');
+        }, 500);
+        return;
       }
+
+      // Handle all other responses
+      addMessage('assistant', result.message);
+      setStatus('idle');
     } catch (error) {
-      // On error, add a fallback assistant message and return to idle
       console.error('Error processing command:', error);
+      setErrorMessage('An error occurred. Please try again.');
       addMessage('assistant', getErrorFallbackResponse());
-      setReportContext({ state: 'idle' });
       setStatus('idle');
     }
   }, [addMessage, navigate, transcript, files, getFileBytes, reportContext]);
 
   const handleSendMessage = useCallback(() => {
-    handleCommand(inputValue);
+    if (inputValue.trim()) {
+      handleCommand(inputValue);
+    }
   }, [inputValue, handleCommand]);
 
   const handleVoiceInput = useCallback((text: string, confidence?: ConfidenceLevel) => {
-    if (text.trim()) {
-      handleCommand(text, confidence);
-    }
+    handleCommand(text, confidence);
   }, [handleCommand]);
 
   const handleClearConversation = useCallback(() => {
     clearTranscript();
+    setReportContext({ state: 'idle' });
     setStatus('idle');
     setErrorMessage(undefined);
-    setInputValue('');
-    setReportContext({ state: 'idle' });
   }, [clearTranscript]);
 
-  // Don't show widget on /chat page
+  // Don't render on /chat page (full-screen chatbot handles it)
   if (location.pathname === '/chat') {
     return null;
   }
@@ -200,13 +194,13 @@ export function AssistantWidget() {
       <SheetTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-24 right-4 h-14 w-14 rounded-full shadow-lg z-50"
-          aria-label="Open voice assistant"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
+          aria-label="Open Medical Assistant"
         >
           <MessageSquare className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col">
+      <SheetContent side="right" className="w-full sm:w-[500px] p-0 flex flex-col">
         <AssistantPanel
           transcript={transcript}
           status={status}
