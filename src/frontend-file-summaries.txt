@@ -1,5 +1,5 @@
 {
-  "frontend/src/App.tsx": "Main application component with router configuration for all routes, now importing Home and Chat components with their original names, wrapping all providers in correct composition order.",
+  "frontend/src/App.tsx": "Main application component with router configuration for all routes including the new /medications route, wrapping all providers in correct composition order.",
   "frontend/src/designB/themeContext.tsx": "React context provider for managing Design B theme state, persisting user preference to localStorage, and applying theme data attributes to the document root.",
   "frontend/src/designB/storage/themePreference.ts": "Utility functions for saving and loading the user's theme preference (default or Design B) from localStorage.",
   "frontend/src/designB/theme.ts": "Design B theme configuration object defining the warm green color palette, typography (Plus Jakarta Sans + Inter), spacing scale, and border radius values.",
@@ -67,6 +67,7 @@
   "frontend/src/components/assistant/CustomQAManager.tsx": "React component for managing custom Q&A pairs with list view, add/edit forms using Dialog, delete confirmation using AlertDialog, and empty state, all styled with shadcn/ui components.",
   "frontend/src/components/CloseButton.tsx": "Reusable close button component that renders a fixed-position X icon button in the top-right corner, navigating to /home by default or accepting a custom onClick handler.",
   "frontend/src/hooks/useBackendCredentials.ts": "React hook providing backend credential operations including checking if credentials exist, adding credentials, and verifying credentials using React Query mutations with proper actor dependency handling.",
-  "frontend/src/pages/Home.tsx": "Health dashboard with Today's Metrics, Quick Actions section with active state management and close buttons on tiles, ML Health Insights categories (Mental Health, Fitness, Nutrition, Sleep, Medications) with proper DashboardTile props, and page-level close button - checkups tile removed.",
-  "frontend/src/pages/Chat.tsx": "Full-screen medical chatbot page with complete assistant state management using interpretCommand from assistantBrain and addMessage from useAssistantTranscript hook, including transcript display, status handling, input processing, voice input, and close button."
+  "frontend/src/pages/Home.tsx": "Health dashboard with Today's Metrics, Quick Actions section with active state management and close buttons on tiles, ML Health Insights categories including clickable Medications tile that navigates to /medications page.",
+  "frontend/src/pages/Chat.tsx": "Full-screen medical chatbot page with complete assistant state management using interpretCommand from assistantBrain and addMessage from useAssistantTranscript hook, including transcript display, status handling, input processing, voice input, and close button.",
+  "frontend/src/pages/Medications.tsx": "Centered medications management page displaying today's medication schedule, reminders, and adherence statistics with responsive layout using flexbox centering and max-width constraints."
 }

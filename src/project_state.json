@@ -1,47 +1,30 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
+  "summary": "Medical/healthcare application with medications page",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-remove-all-checkup-related-ui-elements-from-the-home-dashboard-page-frontend-src-pages-home-tsx-including-any-tiles-sections-or-references-to-checkups",
-      "title": "Remove all checkup-related UI elements from the Home dashboard page (frontend/src/pages/Home.tsx), including any tiles, sections, or references to checkups",
+      "id": "feature-center-align-the-medications-page-content-horizontally-within-the-viewport",
+      "title": "Center-align the medications page content horizontally within the viewport",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-checkup-related-references-from-the-assistant-brain-command-interpreter-frontend-src-components-assistant-assistantbrain-ts-if-any-exist",
-      "title": "Remove checkup-related references from the assistant brain command interpreter (frontend/src/components/assistant/assistantBrain.ts) if any exist",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
   ],
   "new_feature_requests": [
     {
-      "id": "AR-2",
-      "summary": "Remove checkup-related backend endpoints, data types, and state from the main actor (backend/main.mo) if any exist",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Remove any checkup-related routes, pages, or components from the frontend application",
-      "reqIds": [
-        "REQ-3"
-      ],
+      "id": "AR-1",
+      "summary": "Center-align medications page layout",
+      "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Remove checkups feature",
+  "gameProjectType": "none",
+  "projectName": "Center-align medications page layout",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

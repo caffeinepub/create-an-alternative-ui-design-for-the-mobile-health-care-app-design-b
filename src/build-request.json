@@ -1,77 +1,36 @@
 {
   "kind": "build_request",
-  "title": "Remove checkups feature",
+  "title": "Center-align medications page layout",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove all checkup-related UI elements from the Home dashboard page (frontend/src/pages/Home.tsx), including any tiles, sections, or references to checkups",
+      "text": "Center-align the medications page content horizontally within the viewport",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-remove-checkups"
+          "msg-4"
+        ],
+        "quotes": [
+          "can you move medications page in centre"
         ]
       },
       "acceptanceCriteria": [
-        "The Home dashboard no longer displays checkup-related tiles or sections",
-        "All checkup navigation elements are removed",
-        "The dashboard layout remains functional after removal"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Remove checkup-related backend endpoints, data types, and state from the main actor (backend/main.mo) if any exist",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-user-remove-checkups"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All checkup-related types are removed from the backend",
-        "All checkup-related query and update functions are removed",
-        "No orphaned state variables or data structures remain"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Remove any checkup-related routes, pages, or components from the frontend application",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-remove-checkups"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All checkup-related routes are removed from the router configuration",
-        "All checkup page components are deleted",
-        "No broken navigation links remain"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Remove checkup-related references from the assistant brain command interpreter (frontend/src/components/assistant/assistantBrain.ts) if any exist",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-remove-checkups"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Assistant no longer recognizes or responds to checkup-related commands",
-        "Medical knowledge base does not reference checkups"
+        "The medications page content is horizontally centered on the screen",
+        "The layout maintains responsiveness across different screen sizes",
+        "The centering works consistently with the existing Design B theme styling"
       ]
     }
   ],
   "constraints": [
-    "Preserve all other health dashboard features (heart rate, steps, hydration, calories)",
-    "Maintain existing navigation structure for remaining features",
-    "Do not modify authentication or profile management functionality"
+    "Do not modify the existing Design B theme system or color palette",
+    "Preserve the current DesignBAppShell layout structure",
+    "Maintain mobile-first responsive design approach"
   ],
   "nonGoals": [
-    "Adding new features to replace checkups",
-    "Redesigning the dashboard layout",
-    "Modifying the medical reports functionality"
+    "Creating a new medications page if one doesn't exist",
+    "Changing the functionality or data of the medications feature",
+    "Modifying the navigation or routing structure"
   ],
   "imageRequirements": {
     "required": [],

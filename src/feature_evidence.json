@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-all-checkup-related-ui-elements-from-the-home-dashboard-page-frontend-src-pages-home-tsx-including-any-tiles-sections-or-references-to-checkups",
-      "featureTitle": "Remove all checkup-related UI elements from the Home dashboard page (frontend/src/pages/Home.tsx), including any tiles, sections, or references to checkups",
+      "featureId": "feature-center-align-the-medications-page-content-horizontally-within-the-viewport",
+      "featureTitle": "Center-align the medications page content horizontally within the viewport",
       "files": [
-        "frontend/src/pages/Home.tsx"
+        "frontend/src/pages/Medications.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -18,26 +18,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-remove-checkup-related-references-from-the-assistant-brain-command-interpreter-frontend-src-components-assistant-assistantbrain-ts-if-any-exist",
-      "featureTitle": "Remove checkup-related references from the assistant brain command interpreter (frontend/src/components/assistant/assistantBrain.ts) if any exist",
-      "files": [
-        "frontend/src/components/assistant/assistantBrain.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

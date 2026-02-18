@@ -15,6 +15,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Chat from './pages/Chat';
 import Report from './pages/Report';
+import Medications from './pages/Medications';
 import NotFoundRedirect from './pages/NotFoundRedirect';
 
 // Create a client
@@ -75,6 +76,12 @@ const reportRoute = createRoute({
   component: Report,
 });
 
+const medicationsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/medications',
+  component: Medications,
+});
+
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '*',
@@ -90,6 +97,7 @@ const routeTree = rootRoute.addChildren([
   profileRoute,
   chatbotRoute,
   reportRoute,
+  medicationsRoute,
   notFoundRoute,
 ]);
 

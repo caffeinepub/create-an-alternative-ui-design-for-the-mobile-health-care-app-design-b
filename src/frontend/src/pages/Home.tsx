@@ -173,6 +173,9 @@ export default function Home() {
             label="Medications"
             caption="Prescription reminders"
             colorAccent="accent"
+            onClick={() => handleTileClick('medications', '/medications')}
+            isActive={activeTile === 'medications'}
+            onClose={() => handleTileClose('medications')}
           />
         </div>
       </section>

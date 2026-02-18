@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Remove all checkup-related functionality from the healthcare dashboard application.
+**Goal:** Center-align the medications page content horizontally within the viewport.
 
 **Planned changes:**
-- Remove checkup UI elements from the Home dashboard page
-- Delete checkup-related backend endpoints, data types, and state
-- Remove checkup routes, pages, and components from the frontend
-- Remove checkup references from the assistant brain command interpreter
+- Apply horizontal centering to the medications page layout
+- Ensure responsive centering works across all screen sizes
+- Maintain compatibility with existing Design B theme styling
 
-**User-visible outcome:** Users will see a streamlined dashboard without checkup features, retaining heart rate, steps, hydration, calories, and medical reports functionality.
+**User-visible outcome:** The medications page content will be centered on the screen, providing a more balanced and visually appealing layout that works consistently across desktop and mobile devices.
