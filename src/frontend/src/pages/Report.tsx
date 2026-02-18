@@ -1,229 +1,195 @@
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { PageTitle, BodyText } from '../designB/components/DesignBTypography';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useMedicalFiles } from '../hooks/useMedicalFiles';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Loader2, Upload, Download, Trash2, FileText } from 'lucide-react';
-import { toast } from 'sonner';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { CloseButton } from '../components/CloseButton';
+import { Upload, FileText, Trash2, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { format } from 'date-fns';
 
 export default function Report() {
   useRequireAuth();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileToDelete, setFileToDelete] = useState<string | null>(null);
-  const { files, isLoading, isFetching, uploadFile, deleteFile, downloadFile } = useMedicalFiles();
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
+  const { files, isLoading, isFetching, uploadFile, deleteFile } = useMedicalFiles();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      setUploadError(null);
+      setUploadSuccess(false);
     }
   };
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      toast.error('Please select a file to upload');
+      setUploadError('Please select a file first.');
       return;
     }
 
+    setUploadError(null);
+    setUploadSuccess(false);
+
     try {
       await uploadFile(selectedFile);
-      toast.success('Medical report uploaded successfully');
+      setUploadSuccess(true);
       setSelectedFile(null);
       // Reset file input
-      const fileInput = document.getElementById('file-input') as HTMLInputElement;
+      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast.error('Failed to upload medical report');
+    } catch (error: any) {
+      setUploadError(error.message || 'Failed to upload file. Please try again.');
     }
   };
 
-  const handleDelete = async (fileId: string) => {
-    try {
-      await deleteFile(fileId);
-      toast.success('Medical report deleted successfully');
-      setFileToDelete(null);
-    } catch (error) {
-      console.error('Delete error:', error);
-      toast.error('Failed to delete medical report');
-    }
-  };
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this report?')) return;
 
-  const handleDownload = async (fileId: string, filename: string) => {
     try {
-      await downloadFile(fileId, filename);
-      toast.success('Medical report downloaded successfully');
-    } catch (error) {
-      console.error('Download error:', error);
-      toast.error('Failed to download medical report');
+      await deleteFile(id);
+    } catch (error: any) {
+      console.error('Failed to delete file:', error);
     }
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-  };
-
-  const formatDate = (timestamp: number): string => {
-    return new Date(timestamp).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
-    <div className="container max-w-4xl py-8 pb-24">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Medical Reports</h1>
-        <p className="text-muted-foreground">
-          Save and manage your medical reports securely. Ask the Medical Assistant to analyze them!
-        </p>
+    <div className="space-y-8 pb-24">
+      <CloseButton />
+      
+      {/* Header */}
+      <div className="space-y-2">
+        <PageTitle>Medical Reports</PageTitle>
+        <BodyText className="text-muted-foreground">
+          Upload and manage your medical documents. Use the Medical Assistant to analyze your reports.
+        </BodyText>
       </div>
 
       {/* Upload Section */}
-      <Card className="mb-8">
+      <Card>
         <CardHeader>
-          <CardTitle>Save Medical Report</CardTitle>
+          <CardTitle>Upload New Report</CardTitle>
           <CardDescription>
-            Upload your medical reports, test results, and health documents
+            Select a medical report or document to upload
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="file-input">Select Report</Label>
-              <Input
-                id="file-input"
-                type="file"
-                onChange={handleFileSelect}
-                accept="*/*"
-              />
-              {selectedFile && (
-                <p className="text-sm text-muted-foreground">
-                  Selected: {selectedFile.name} ({formatFileSize(selectedFile.size)})
-                </p>
-              )}
-            </div>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-4">
+            <input
+              id="file-upload"
+              type="file"
+              onChange={handleFileSelect}
+              className="hidden"
+              accept=".pdf,.jpg,.jpeg,.png,.txt,.doc,.docx"
+            />
+            <Button
+              variant="outline"
+              onClick={() => document.getElementById('file-upload')?.click()}
+              className="flex-1"
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              {selectedFile ? selectedFile.name : 'Choose File'}
+            </Button>
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || isLoading}
-              className="w-full sm:w-auto"
+              className="min-w-32"
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  Uploading...
                 </>
               ) : (
                 <>
                   <Upload className="mr-2 h-4 w-4" />
-                  Save Report
+                  Upload
                 </>
               )}
             </Button>
           </div>
+
+          {uploadError && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{uploadError}</AlertDescription>
+            </Alert>
+          )}
+
+          {uploadSuccess && (
+            <Alert>
+              <CheckCircle className="h-4 w-4" />
+              <AlertDescription>File uploaded successfully!</AlertDescription>
+            </Alert>
+          )}
         </CardContent>
       </Card>
 
-      {/* Files List Section */}
+      {/* Reports List */}
       <Card>
         <CardHeader>
-          <CardTitle>Saved Medical Reports</CardTitle>
+          <CardTitle>Your Reports</CardTitle>
           <CardDescription>
-            {files.length === 0
-              ? 'No reports saved yet'
-              : `${files.length} report${files.length === 1 ? '' : 's'} saved`}
+            {files.length === 0 ? 'No reports uploaded yet' : `${files.length} report${files.length !== 1 ? 's' : ''} stored`}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isFetching && files.length === 0 ? (
+          {isFetching ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           ) : files.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No medical reports saved yet</p>
-              <p className="text-sm mt-2">Upload your first report above to get started</p>
+              <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
+              <p>No medical reports uploaded yet.</p>
+              <p className="text-sm">Upload your first report to get started.</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {files.map((file) => (
                 <div
                   key={file.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                  className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <FileText className="h-5 w-5 text-primary flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{file.filename}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
+                        {formatFileSize(file.size)} • {format(new Date(file.uploadedAt), 'MMM d, yyyy')}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDownload(file.id, file.filename)}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setFileToDelete(file.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(file.id)}
+                    disabled={isLoading}
+                    className="flex-shrink-0"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    )}
+                  </Button>
                 </div>
               ))}
             </div>
           )}
         </CardContent>
       </Card>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!fileToDelete} onOpenChange={() => setFileToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Medical Report</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this medical report? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => fileToDelete && handleDelete(fileToDelete)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

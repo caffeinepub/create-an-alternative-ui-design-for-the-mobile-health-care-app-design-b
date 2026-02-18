@@ -83,6 +83,7 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    addCredentials(phoneNumber: string, hashedPassword: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     deleteMedicalFile(id: string): Promise<boolean>;
     getAllPredictions(): Promise<Array<[Principal, MLPrediction]>>;
@@ -97,6 +98,7 @@ export interface backendInterface {
     getMedicalReportsSummary(): Promise<Array<[string, MedicalFileMetadata]>>;
     getUserMLPrediction(user: Principal): Promise<MLPrediction | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    hasCredentials(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     listMedicalFiles(): Promise<Array<[string, ExternalBlob]>>;
     listMedicalFilesMetadata(): Promise<Array<MedicalFileMetadata>>;
@@ -104,4 +106,5 @@ export interface backendInterface {
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     updateLocation(location: string): Promise<void>;
     uploadMedicalFile(id: string, file: ExternalBlob, filename: string, size: bigint, contentType: string | null): Promise<string>;
+    verifyCredentials(phoneNumber: string, hashedPassword: string): Promise<boolean>;
 }

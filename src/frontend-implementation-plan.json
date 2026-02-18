@@ -1,120 +1,67 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove custom Q&A feature and enable general health question answering",
+  "title": "Remove checkups feature",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove the custom Q&A tab and management UI from the assistant panel interface",
+      "summary": "Remove all checkup-related UI elements from the Home dashboard page",
       "acceptanceCriteria": [
-        "The 'Custom Q&A' tab is no longer visible in the assistant panel",
-        "CustomQAManager component is not rendered",
-        "Users cannot add, edit, or delete custom Q&A pairs through the UI"
+        "The Home dashboard no longer displays checkup-related tiles or sections",
+        "All checkup navigation elements are removed",
+        "The dashboard layout remains functional after removal"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/assistant/AssistantPanel.tsx",
+          "path": "frontend/src/pages/Home.tsx",
           "operation": "modify",
-          "description": "Remove the 'Custom Q&A' tab from the Tabs component. Remove the TabsContent section that renders the CustomQAManager component. Remove the CustomQAManager import statement. Keep only the 'Chat' tab visible and active."
-        },
-        {
-          "path": "frontend/src/components/assistant/CustomQAManager.tsx",
-          "operation": "delete",
-          "description": "Delete the CustomQAManager component file as it is no longer used in the application."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Remove custom Q&A matching logic from the assistant brain command interpreter",
-      "acceptanceCriteria": [
-        "Custom Q&A pairs are not checked or matched during user input processing",
-        "Fuzzy matching for custom Q&A is removed from the command flow",
-        "The assistant no longer returns custom Q&A pair responses"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/assistant/AssistantWidget.tsx",
-          "operation": "modify",
-          "description": "Remove the customQAPairs prop passed to the interpretCommand function. Remove the useCustomQA hook import and usage. Remove all custom Q&A related state management from the component."
-        },
-        {
-          "path": "frontend/src/components/assistant/assistantBrain.ts",
-          "operation": "modify",
-          "description": "Remove the customQAPairs parameter from the interpretCommand function signature. Remove the custom Q&A matching logic that uses findBestQAMatch. Remove the CustomQAMatch and CustomQAPair type imports. Remove the fuzzyQAMatcher import. Ensure the function only processes navigation commands, medical knowledge base queries, and report analysis requests."
-        },
-        {
-          "path": "frontend/src/components/assistant/useCustomQA.ts",
-          "operation": "delete",
-          "description": "Delete the useCustomQA hook file as custom Q&A functionality is being removed from the application."
-        },
-        {
-          "path": "frontend/src/components/assistant/customQAStorage.ts",
-          "operation": "delete",
-          "description": "Delete the custom Q&A storage utility file as the feature is no longer needed."
-        },
-        {
-          "path": "frontend/src/components/assistant/customQATypes.ts",
-          "operation": "delete",
-          "description": "Delete the custom Q&A types definition file as these types are no longer used."
-        },
-        {
-          "path": "frontend/src/components/assistant/fuzzyQAMatcher.ts",
-          "operation": "delete",
-          "description": "Delete the fuzzy Q&A matcher utility file as custom Q&A matching is no longer needed."
+          "description": "Remove checkup-related tiles, sections, and navigation elements from the Home dashboard. Preserve existing health metrics tiles (heart rate, steps, hydration, calories) and other quick action tiles. Ensure the dashboard layout remains clean and functional after removal."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Expand the medical knowledge base to cover a comprehensive range of general health topics beyond the current curated list",
+      "summary": "Remove any checkup-related routes, pages, or components from the frontend application",
       "acceptanceCriteria": [
-        "The knowledge base includes information on common health conditions, symptoms, preventive care, nutrition, exercise, mental health, medications, and general wellness topics",
-        "The assistant can provide relevant responses to a wide variety of health questions",
-        "Fallback responses are provided for questions outside the knowledge base scope with appropriate disclaimers"
+        "All checkup-related routes are removed from the router configuration",
+        "All checkup page components are deleted",
+        "No broken navigation links remain"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Expand the medicalTopics array to include additional comprehensive health topics. Add topics for: common cold and flu, headaches and migraines, allergies, asthma, arthritis, back pain, mental health (anxiety, depression, stress management), nutrition and diet, exercise and fitness, sleep disorders, skin conditions, digestive health, respiratory health, cardiovascular wellness, preventive care, medication management, women's health, men's health, child health, elderly care, and general wellness. For each topic, include patterns, symptoms, causes, precautions, and emergency indicators. Ensure each topic follows the existing MedicalTopic interface structure with comprehensive pattern matching keywords."
+          "description": "Remove checkup-related route definitions from the TanStack Router configuration. Ensure all remaining routes (Welcome, SignIn, SignUp, Home, Profile, Chat, Report) continue to work correctly."
+        },
+        {
+          "path": "frontend/src/pages/CheckupPage.tsx",
+          "operation": "delete",
+          "description": "Delete the checkup page component if it exists. This file may not exist if checkups were never fully implemented."
+        },
+        {
+          "path": "frontend/src/components/checkup",
+          "operation": "delete",
+          "description": "Delete the checkup components directory and all contained components if they exist. This directory may not exist if checkups were never fully implemented."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
+      "summary": "Remove checkup-related references from the assistant brain command interpreter",
       "acceptanceCriteria": [
-        "The assistant recognizes variations and synonyms of health terms (e.g., 'hypertension' and 'high blood pressure')",
-        "Fuzzy matching threshold is optimized for natural health questions",
-        "Users receive relevant responses even when questions are phrased differently"
+        "Assistant no longer recognizes or responds to checkup-related commands",
+        "Medical knowledge base does not reference checkups"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/assistant/assistantBrain.ts",
           "operation": "modify",
-          "description": "Enhance the matchMedicalTopic function to improve fuzzy matching for health queries. Lower the similarity threshold from 0.6 to 0.5 to be more lenient with variations. Expand the pattern matching to check against multiple fields (patterns, symptoms, causes) instead of just patterns. Add synonym normalization before matching (e.g., map 'hypertension' to 'high blood pressure', 'diabetes' to 'blood sugar'). Improve the scoring algorithm to weight exact word matches higher than partial matches. Ensure the function returns the best matching topic even with varied phrasing."
+          "description": "Remove checkup-related command patterns, route targets, and navigation logic from the command interpreter. Preserve all other command patterns for navigation, medical knowledge lookup, report analysis, and help responses."
         },
         {
           "path": "frontend/src/components/assistant/medicalKnowledgeBase.ts",
           "operation": "modify",
-          "description": "Add comprehensive synonym lists and alternative phrasings to each topic's patterns array. For example, blood pressure topic should include: 'hypertension', 'high blood pressure', 'BP', 'blood pressure high', etc. Diabetes topic should include: 'blood sugar', 'glucose', 'diabetic', 'sugar levels', etc. Ensure each topic has at least 8-12 pattern variations covering medical terms, common names, abbreviations, and colloquial phrases."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
-      "acceptanceCriteria": [
-        "When a health question doesn't match any specific topic, the assistant provides a general helpful response",
-        "The fallback response includes a disclaimer about consulting healthcare professionals",
-        "The assistant encourages users to rephrase or provides suggestions for related topics"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/assistant/assistantBrain.ts",
-          "operation": "modify",
-          "description": "Add a fallback handler in the interpretCommand function for health-related queries that don't match any specific medical topic. After attempting to match medical topics, if confidence is low (below 0.4) or no match is found, check if the input contains health-related keywords (e.g., 'health', 'medical', 'symptom', 'pain', 'disease', 'condition', 'treatment', 'doctor', 'medicine'). If health-related, return a helpful fallback response that acknowledges the question, provides general health guidance, includes a disclaimer about consulting healthcare professionals, and suggests rephrasing or exploring related topics. Include a list of available topic categories the user can ask about. Set confidence to 'medium' for these fallback responses."
+          "description": "Remove checkup-related entries from the medical knowledge base if they exist. Preserve all other medical topics (blood pressure, diabetes, etc.) and their associated information."
         }
       ]
     }

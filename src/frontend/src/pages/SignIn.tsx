@@ -15,6 +15,8 @@ import { useAuthSession } from '../hooks/useAuthSession';
 import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated';
 import { verifyCredentials } from '../auth/demoCredentialStore';
 import { initializeLocalProfileFromAuth } from '../profile/profileLocalStore';
+import { useBackendCredentials } from '../hooks/useBackendCredentials';
+import { CloseButton } from '../components/CloseButton';
 import { Loader2, Phone, AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -25,6 +27,7 @@ export default function SignIn() {
   const { login, isLoggingIn, identity, loginStatus } = useInternetIdentity();
   const { generateOtp, verifyOtp, currentOtp, canResend, resendCooldown, resetSession } = useDemoOtp();
   const { signInAsOtp, signInAsPassword, continueAsGuest } = useAuthSession();
+  const { verifyCredentials: verifyBackendCredentials } = useBackendCredentials();
 
   // Redirect if already authenticated
   useRedirectIfAuthenticated();
@@ -120,7 +123,7 @@ export default function SignIn() {
   };
 
   // Password Flow Handler
-  const handlePasswordSignIn = (e: React.FormEvent) => {
+  const handlePasswordSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordError(null);
 
@@ -136,11 +139,26 @@ export default function SignIn() {
 
     setIsPasswordProcessing(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const fullPhone = `${passwordCountryCode}${passwordPhoneNumber}`;
       const result = verifyCredentials(fullPhone, password);
 
-      if (result.success && result.account) {
+      if (result.success && result.account && result.passwordHash) {
+        // Verify with backend if available
+        try {
+          const backendVerified = await verifyBackendCredentials({
+            phoneNumber: fullPhone,
+            hashedPassword: result.passwordHash,
+          });
+
+          if (!backendVerified) {
+            console.warn('Backend verification failed, but localStorage succeeded. Allowing sign-in.');
+          }
+        } catch (error) {
+          console.warn('Backend verification error:', error);
+          // Continue with sign-in even if backend verification fails
+        }
+
         signInAsPassword(fullPhone, result.account.fullName);
         
         // Initialize profile with full name and phone from password sign-in
@@ -168,6 +186,7 @@ export default function SignIn() {
 
   return (
     <div className="container max-w-md mx-auto px-4 py-12">
+      <CloseButton />
       <div className="space-y-8">
         <div className="text-center space-y-2">
           <img 
@@ -401,22 +420,26 @@ export default function SignIn() {
                       </Button>
                     </div>
 
-                    <div className="text-center">
+                    {canResend ? (
                       <Button
                         type="button"
                         variant="link"
                         onClick={handleResendOtp}
-                        disabled={!canResend}
-                        className="text-sm"
+                        className="w-full"
                       >
-                        {canResend ? 'Resend Code' : `Resend in ${resendCooldown}s`}
+                        Resend Code
                       </Button>
-                    </div>
+                    ) : (
+                      <p className="text-sm text-center text-muted-foreground">
+                        Resend code in {resendCooldown}s
+                      </p>
+                    )}
                   </form>
                 )}
               </TabsContent>
             </Tabs>
 
+            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -428,41 +451,42 @@ export default function SignIn() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={handleInternetIdentityLogin}
-                disabled={isLoggingIn}
-              >
-                {isLoggingIn ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Connecting...
-                  </>
-                ) : (
-                  'Internet Identity'
-                )}
-              </Button>
+            {/* Internet Identity */}
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleInternetIdentityLogin}
+              disabled={isLoggingIn}
+            >
+              {isLoggingIn ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                'Internet Identity'
+              )}
+            </Button>
 
-              <Button
-                variant="ghost"
-                className="w-full"
-                onClick={handleContinueAsGuest}
-              >
-                Continue as Guest
-              </Button>
-            </div>
+            {/* Guest Access */}
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={handleContinueAsGuest}
+            >
+              Continue as Guest
+            </Button>
 
+            {/* Sign Up Link */}
             <div className="text-center text-sm">
               <span className="text-muted-foreground">Don't have an account? </span>
-              <button
-                type="button"
-                className="text-primary hover:underline font-medium"
+              <Button
+                variant="link"
+                className="p-0 h-auto font-normal"
                 onClick={() => navigate({ to: '/signup' })}
               >
                 Sign Up
-              </button>
+              </Button>
             </div>
           </CardContent>
         </Card>

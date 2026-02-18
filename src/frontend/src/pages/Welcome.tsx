@@ -4,6 +4,7 @@ import { PageTitle, BodyText } from '../designB/components/DesignBTypography';
 import { ArrowRight } from 'lucide-react';
 import { useAuthSession } from '../hooks/useAuthSession';
 import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated';
+import { CloseButton } from '../components/CloseButton';
 
 export default function Welcome() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function Welcome() {
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-12">
+      <CloseButton />
       <div className="flex flex-col items-center text-center space-y-8">
         {/* Logo */}
         <img 

@@ -287,100 +287,31 @@ I can help you with:
 • Provide educational context
 
 **Navigation:**
-• Go to different pages (home, profile, reports)
-• Access your medical files
+• Go to different pages (home, profile, reports, chat)
+• Access health tools and features
 
 **Examples:**
-• "Tell me about blood pressure"
-• "What is diabetes?"
-• "How to manage stress?"
+• "What is high blood pressure?"
+• "Tell me about diabetes management"
 • "Analyze my report"
-• "Go to profile"
-• "What are the precautions for asthma?"
+• "Go to my profile"
+• "What are the symptoms of asthma?"
 
-Just ask me any health question!`,
+*For emergencies, always call 911 immediately.*`,
       };
     }
   }
 
-  // Check if input contains health-related keywords for fallback
-  const healthKeywords = [
-    'health', 'medical', 'symptom', 'pain', 'ache', 'sick', 'ill', 'disease', 
-    'condition', 'treatment', 'cure', 'doctor', 'hospital', 'clinic', 'medicine', 
-    'drug', 'medication', 'test', 'result', 'level', 'high', 'low', 'normal',
-    'fever', 'cough', 'cold', 'flu', 'infection', 'virus', 'bacteria',
-    'injury', 'wound', 'bleeding', 'swelling', 'inflammation', 'rash',
-    'nausea', 'vomiting', 'diarrhea', 'constipation', 'headache', 'migraine',
-    'fatigue', 'tired', 'weakness', 'dizzy', 'faint', 'breathe', 'breathing'
-  ];
-  
-  const hasHealthKeywords = healthKeywords.some(keyword => 
-    normalized.includes(keyword)
-  );
-  
-  if (hasHealthKeywords) {
-    return {
-      type: 'medical',
-      message: `I understand you're asking about a health topic, but I need a bit more clarity to provide the best information.
-
-**I can provide detailed information about:**
-
-**Common Conditions:**
-• Blood pressure and hypertension
-• Diabetes and blood sugar
-• Cholesterol and heart health
-• Asthma and respiratory issues
-• Allergies and immune system
-• Arthritis and joint pain
-
-**Health Topics:**
-• Nutrition and diet
-• Exercise and fitness
-• Sleep and rest
-• Mental health and stress
-• Medications and supplements
-• Preventive care
-
-**Women's Health:**
-• Menstrual health and periods
-• Pregnancy and prenatal care
-• Menopause and hormonal changes
-• PCOS and endometriosis
-
-**General Wellness:**
-• Cold and flu prevention
-• Headaches and migraines
-• Digestive health
-• Skin conditions
-• Pain management
-
-Could you rephrase your question or ask about one of these specific topics? For example:
-• "Tell me about diabetes"
-• "How to lower blood pressure?"
-• "What are asthma precautions?"
-• "Help with stress management"
-
-*Remember: This is educational information. Always consult a healthcare professional for medical advice.*`,
-    };
-  }
-
-  // Default unknown command response
+  // Default fallback
   return {
     type: 'unknown',
-    message: `I'm not sure how to help with that. I'm a medical assistant focused on health information.
+    message: `I'm not sure how to help with that. I can assist you with:
 
-**I can help you with:**
-• Medical topics (blood pressure, diabetes, cholesterol, asthma, etc.)
-• Health precautions and preventive measures
-• Analyzing medical reports
-• Navigating to different pages
-• General health and wellness information
+• **Medical information** - Ask about conditions like diabetes, blood pressure, heart health, asthma, etc.
+• **Report analysis** - Say "analyze my report" to review medical documents
+• **Navigation** - Say "go to [page]" to navigate (home, profile, reports, chat)
+• **Women's health** - Ask about periods, pregnancy, menopause, PCOS, etc.
 
-Try asking:
-• "Tell me about [medical topic]"
-• "What precautions should I take for [condition]?"
-• "Analyze my report"
-• "Go to [page name]"
-• "Help" for more options`,
+Try asking a specific health question or say "help" to see all my capabilities.`,
   };
 }

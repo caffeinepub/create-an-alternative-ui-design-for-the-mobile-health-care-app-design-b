@@ -9,62 +9,70 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { PageTitle } from '../designB/components/DesignBTypography';
 import { createAccount } from '../auth/demoCredentialStore';
 import { useAuthSession } from '../hooks/useAuthSession';
+import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated';
 import { initializeLocalProfileFromAuth } from '../profile/profileLocalStore';
-import { Loader2, UserPlus, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { useBackendCredentials } from '../hooks/useBackendCredentials';
+import { CloseButton } from '../components/CloseButton';
+import { Loader2, AlertCircle, Eye, EyeOff, UserPlus } from 'lucide-react';
 
 export default function SignUp() {
   const navigate = useNavigate();
   const { signInAsPassword } = useAuthSession();
+  const { addCredentials } = useBackendCredentials();
+
+  // Redirect if already authenticated
+  useRedirectIfAuthenticated();
 
   const [fullName, setFullName] = useState('');
   const [countryCode, setCountryCode] = useState('+1');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     // Validation
-    if (!fullName.trim()) {
-      setError('Please enter your full name.');
-      return;
-    }
-
-    if (!phoneNumber || phoneNumber.length < 10) {
-      setError('Please enter a valid phone number.');
-      return;
-    }
-
-    if (!password || password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
       return;
     }
 
     setIsProcessing(true);
 
-    // Simulate network delay
-    setTimeout(() => {
+    setTimeout(async () => {
       const fullPhone = `${countryCode}${phoneNumber}`;
       const result = createAccount(fullName, fullPhone, password);
 
-      if (result.success && result.account) {
-        // Create authenticated session
+      if (result.success && result.account && result.passwordHash) {
+        // Store credentials in backend
+        try {
+          await addCredentials({
+            phoneNumber: fullPhone,
+            hashedPassword: result.passwordHash,
+          });
+        } catch (backendError) {
+          console.warn('Failed to store credentials in backend:', backendError);
+          // Continue with sign-up even if backend storage fails
+        }
+
+        // Sign in with password session
         signInAsPassword(fullPhone, result.account.fullName);
-        
-        // Initialize profile with sign-up details
+
+        // Initialize profile with captured details
         initializeLocalProfileFromAuth({
-          fullName: fullName.trim(),
+          fullName: result.account.fullName,
           phone: fullPhone,
         });
-        
-        // Navigate to home
+
         navigate({ to: '/home' });
       } else {
-        setError(result.error || 'Failed to create account. Please try again.');
+        setError(result.error || 'Account creation failed. Please try again.');
         setIsProcessing(false);
       }
     }, 500);
@@ -72,6 +80,7 @@ export default function SignUp() {
 
   return (
     <div className="container max-w-md mx-auto px-4 py-12">
+      <CloseButton />
       <div className="space-y-8">
         <div className="text-center space-y-2">
           <img 
@@ -81,7 +90,7 @@ export default function SignUp() {
           />
           <PageTitle>Create Account</PageTitle>
           <p className="text-muted-foreground">
-            Join us to access your health dashboard
+            Join HealthCare to start your wellness journey
           </p>
         </div>
 
@@ -89,7 +98,7 @@ export default function SignUp() {
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
             <CardDescription>
-              Enter your details to create a new account
+              Create your account with phone and password
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -164,6 +173,32 @@ export default function SignUp() {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    placeholder="Re-enter your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
               {error && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
@@ -184,18 +219,18 @@ export default function SignUp() {
                   </>
                 )}
               </Button>
-
-              <div className="text-center text-sm">
-                <span className="text-muted-foreground">Already have an account? </span>
-                <button
-                  type="button"
-                  className="text-primary hover:underline font-medium"
-                  onClick={() => navigate({ to: '/signin' })}
-                >
-                  Sign In
-                </button>
-              </div>
             </form>
+
+            <div className="mt-6 text-center text-sm">
+              <span className="text-muted-foreground">Already have an account? </span>
+              <Button
+                variant="link"
+                className="p-0 h-auto font-normal"
+                onClick={() => navigate({ to: '/signin' })}
+              >
+                Sign In
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -2,11 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-custom-q-a-tab-and-management-ui-from-the-assistant-panel-interface",
-      "featureTitle": "Remove the custom Q&A tab and management UI from the assistant panel interface",
+      "featureId": "feature-remove-all-checkup-related-ui-elements-from-the-home-dashboard-page-frontend-src-pages-home-tsx-including-any-tiles-sections-or-references-to-checkups",
+      "featureTitle": "Remove all checkup-related UI elements from the Home dashboard page (frontend/src/pages/Home.tsx), including any tiles, sections, or references to checkups",
       "files": [
-        "frontend/src/components/assistant/AssistantPanel.tsx",
-        "frontend/src/components/assistant/CustomQAManager.tsx"
+        "frontend/src/pages/Home.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -23,33 +22,8 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-remove-custom-q-a-matching-logic-from-the-assistant-brain-command-interpreter",
-      "featureTitle": "Remove custom Q&A matching logic from the assistant brain command interpreter",
-      "files": [
-        "frontend/src/components/assistant/AssistantWidget.tsx",
-        "frontend/src/components/assistant/assistantBrain.ts",
-        "frontend/src/components/assistant/customQAStorage.ts",
-        "frontend/src/components/assistant/customQATypes.ts",
-        "frontend/src/components/assistant/fuzzyQAMatcher.ts",
-        "frontend/src/components/assistant/useCustomQA.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-improve-the-assistant-s-pattern-matching-to-handle-diverse-health-related-queries-with-better-fuzzy-matching-and-synonym-recognition",
-      "featureTitle": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
+      "featureId": "feature-remove-checkup-related-references-from-the-assistant-brain-command-interpreter-frontend-src-components-assistant-assistantbrain-ts-if-any-exist",
+      "featureTitle": "Remove checkup-related references from the assistant brain command interpreter (frontend/src/components/assistant/assistantBrain.ts) if any exist",
       "files": [
         "frontend/src/components/assistant/assistantBrain.ts"
       ],
@@ -64,26 +38,6 @@
       ],
       "testIds": [
         "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-general-health-question-handler-that-provides-helpful-responses-when-no-specific-medical-topic-is-matched",
-      "featureTitle": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
-      "files": [
-        "frontend/src/components/assistant/assistantBrain.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
       ],
       "confidence": "high"
     }

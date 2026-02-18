@@ -1,110 +1,77 @@
 {
   "kind": "build_request",
-  "title": "Remove custom Q&A feature and enable general health question answering",
+  "title": "Remove checkups feature",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the custom Q&A tab and management UI from the assistant panel interface",
+      "text": "Remove all checkup-related UI elements from the Home dashboard page (frontend/src/pages/Home.tsx), including any tiles, sections, or references to checkups",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "remove custom Q&A option"
+          "msg-user-remove-checkups"
         ]
       },
       "acceptanceCriteria": [
-        "The 'Custom Q&A' tab is no longer visible in the assistant panel",
-        "CustomQAManager component is not rendered",
-        "Users cannot add, edit, or delete custom Q&A pairs through the UI"
+        "The Home dashboard no longer displays checkup-related tiles or sections",
+        "All checkup navigation elements are removed",
+        "The dashboard layout remains functional after removal"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Remove custom Q&A matching logic from the assistant brain command interpreter",
-      "target": "frontend",
+      "text": "Remove checkup-related backend endpoints, data types, and state from the main actor (backend/main.mo) if any exist",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "remove custom Q&A option"
+          "msg-user-remove-checkups"
         ]
       },
       "acceptanceCriteria": [
-        "Custom Q&A pairs are not checked or matched during user input processing",
-        "Fuzzy matching for custom Q&A is removed from the command flow",
-        "The assistant no longer returns custom Q&A pair responses"
+        "All checkup-related types are removed from the backend",
+        "All checkup-related query and update functions are removed",
+        "No orphaned state variables or data structures remain"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Expand the medical knowledge base to cover a comprehensive range of general health topics beyond the current curated list",
+      "text": "Remove any checkup-related routes, pages, or components from the frontend application",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "make the chat can literally answer any question about health issues"
+          "msg-user-remove-checkups"
         ]
       },
       "acceptanceCriteria": [
-        "The knowledge base includes information on common health conditions, symptoms, preventive care, nutrition, exercise, mental health, medications, and general wellness topics",
-        "The assistant can provide relevant responses to a wide variety of health questions",
-        "Fallback responses are provided for questions outside the knowledge base scope with appropriate disclaimers"
+        "All checkup-related routes are removed from the router configuration",
+        "All checkup page components are deleted",
+        "No broken navigation links remain"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
+      "text": "Remove checkup-related references from the assistant brain command interpreter (frontend/src/components/assistant/assistantBrain.ts) if any exist",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "make the chat can literally answer any question about health issues"
+          "msg-user-remove-checkups"
         ]
       },
       "acceptanceCriteria": [
-        "The assistant recognizes variations and synonyms of health terms (e.g., 'hypertension' and 'high blood pressure')",
-        "Fuzzy matching threshold is optimized for natural health questions",
-        "Users receive relevant responses even when questions are phrased differently"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "make the chat can literally answer any question about health issues"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When a health question doesn't match any specific topic, the assistant provides a general helpful response",
-        "The fallback response includes a disclaimer about consulting healthcare professionals",
-        "The assistant encourages users to rephrase or provides suggestions for related topics"
+        "Assistant no longer recognizes or responds to checkup-related commands",
+        "Medical knowledge base does not reference checkups"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the backend Motoko code",
-    "Preserve the existing assistant speech recognition and text-to-speech functionality",
-    "Maintain the report analysis feature",
-    "Keep the Design B theme system intact"
+    "Preserve all other health dashboard features (heart rate, steps, hydration, calories)",
+    "Maintain existing navigation structure for remaining features",
+    "Do not modify authentication or profile management functionality"
   ],
   "nonGoals": [
-    "Integrating external AI/LLM services for question answering",
-    "Adding real-time medical data from external APIs",
-    "Implementing user authentication changes",
-    "Modifying the report upload and management features"
+    "Adding new features to replace checkups",
+    "Redesigning the dashboard layout",
+    "Modifying the medical reports functionality"
   ],
   "imageRequirements": {
     "required": [],

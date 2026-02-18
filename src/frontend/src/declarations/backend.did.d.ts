@@ -103,6 +103,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addCredentials' : ActorMethod<[string, string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'deleteMedicalFile' : ActorMethod<[string], boolean>,
   'getAllPredictions' : ActorMethod<[], Array<[Principal, MLPrediction]>>,
@@ -123,6 +124,7 @@ export interface _SERVICE {
   >,
   'getUserMLPrediction' : ActorMethod<[Principal], [] | [MLPrediction]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'hasCredentials' : ActorMethod<[], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'listMedicalFiles' : ActorMethod<[], Array<[string, ExternalBlob]>>,
   'listMedicalFilesMetadata' : ActorMethod<[], Array<MedicalFileMetadata>>,
@@ -133,6 +135,7 @@ export interface _SERVICE {
     [string, ExternalBlob, string, bigint, [] | [string]],
     string
   >,
+  'verifyCredentials' : ActorMethod<[string, string], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

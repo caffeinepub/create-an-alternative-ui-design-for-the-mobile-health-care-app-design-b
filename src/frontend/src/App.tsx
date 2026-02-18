@@ -11,9 +11,9 @@ import { Toaster } from './components/ui/sonner';
 import Welcome from './pages/Welcome';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-import HomeDashboard from './pages/HomeDashboard';
+import Home from './pages/Home';
 import Profile from './pages/Profile';
-import Chatbot from './pages/Chatbot';
+import Chat from './pages/Chat';
 import Report from './pages/Report';
 import NotFoundRedirect from './pages/NotFoundRedirect';
 
@@ -54,7 +54,7 @@ const signUpRoute = createRoute({
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/home',
-  component: HomeDashboard,
+  component: Home,
 });
 
 const profileRoute = createRoute({
@@ -66,7 +66,7 @@ const profileRoute = createRoute({
 const chatbotRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/chat',
-  component: Chatbot,
+  component: Chat,
 });
 
 const reportRoute = createRoute({

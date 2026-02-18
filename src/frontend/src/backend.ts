@@ -176,6 +176,7 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    addCredentials(phoneNumber: string, hashedPassword: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     deleteMedicalFile(id: string): Promise<boolean>;
     getAllPredictions(): Promise<Array<[Principal, MLPrediction]>>;
@@ -190,6 +191,7 @@ export interface backendInterface {
     getMedicalReportsSummary(): Promise<Array<[string, MedicalFileMetadata]>>;
     getUserMLPrediction(user: Principal): Promise<MLPrediction | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    hasCredentials(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     listMedicalFiles(): Promise<Array<[string, ExternalBlob]>>;
     listMedicalFilesMetadata(): Promise<Array<MedicalFileMetadata>>;
@@ -197,6 +199,7 @@ export interface backendInterface {
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     updateLocation(location: string): Promise<void>;
     uploadMedicalFile(id: string, file: ExternalBlob, filename: string, size: bigint, contentType: string | null): Promise<string>;
+    verifyCredentials(phoneNumber: string, hashedPassword: string): Promise<boolean>;
 }
 import type { Allergy as _Allergy, BloodType as _BloodType, EmergencyContact as _EmergencyContact, ExternalBlob as _ExternalBlob, MLPrediction as _MLPrediction, MedicalFileMetadata as _MedicalFileMetadata, Time as _Time, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -296,6 +299,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor._initializeAccessControlWithSecret(arg0);
+            return result;
+        }
+    }
+    async addCredentials(arg0: string, arg1: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addCredentials(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addCredentials(arg0, arg1);
             return result;
         }
     }
@@ -495,6 +512,20 @@ export class Backend implements backendInterface {
             return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
         }
     }
+    async hasCredentials(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.hasCredentials();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.hasCredentials();
+            return result;
+        }
+    }
     async isCallerAdmin(): Promise<boolean> {
         if (this.processError) {
             try {
@@ -590,6 +621,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.uploadMedicalFile(arg0, await to_candid_ExternalBlob_n36(this._uploadFile, this._downloadFile, arg1), arg2, arg3, to_candid_opt_n37(this._uploadFile, this._downloadFile, arg4));
+            return result;
+        }
+    }
+    async verifyCredentials(arg0: string, arg1: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.verifyCredentials(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.verifyCredentials(arg0, arg1);
             return result;
         }
     }

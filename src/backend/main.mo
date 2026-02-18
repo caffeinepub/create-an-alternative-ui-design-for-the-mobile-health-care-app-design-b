@@ -10,11 +10,18 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
   include MixinStorage();
+
+  public type Credentials = {
+    phoneNumber : Text;
+    hashedPassword : Text;
+  };
 
   public type BloodType = {
     #aPositive;
@@ -85,6 +92,7 @@ actor {
     contentType : ?Text;
   };
 
+  let credentials = Map.empty<Principal, Credentials>();
   let userProfiles = Map.empty<Principal, UserProfile>();
   let mlPredictions = Map.empty<Principal, MLPrediction>();
 
@@ -106,7 +114,41 @@ actor {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can save profiles");
     };
+
     userProfiles.add(caller, profile);
+  };
+
+  public shared ({ caller }) func addCredentials(phoneNumber : Text, hashedPassword : Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can add credentials");
+    };
+    credentials.add(caller, { phoneNumber; hashedPassword });
+  };
+
+  // REMOVED: getCredentials function - credentials should never be retrievable
+
+  public query ({ caller }) func verifyCredentials(phoneNumber : Text, hashedPassword : Text) : async Bool {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can verify credentials");
+    };
+
+    switch (credentials.get(caller)) {
+      case (null) { false };
+      case (?creds) {
+        creds.phoneNumber == phoneNumber and creds.hashedPassword == hashedPassword;
+      };
+    };
+  };
+
+  public query ({ caller }) func hasCredentials() : async Bool {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can check credentials");
+    };
+
+    switch (credentials.get(caller)) {
+      case (null) { false };
+      case (?_) { true };
+    };
   };
 
   public shared ({ caller }) func runMLPrediction(input : MLInput) : async MLPrediction {
@@ -419,4 +461,3 @@ actor {
     };
   };
 };
-

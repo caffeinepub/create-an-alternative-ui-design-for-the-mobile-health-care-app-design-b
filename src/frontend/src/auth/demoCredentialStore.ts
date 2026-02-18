@@ -2,6 +2,7 @@
  * Local demo account persistence and verification using localStorage.
  * Implements create account with fullName + phoneNumber + password-derived value,
  * enforces phone-number uniqueness, and provides verifyCredentials for UI.
+ * Now also syncs credentials to backend canister for cloud storage.
  */
 
 import type { DemoAccount, VerifyCredentialsResult, CreateAccountResult } from './demoCredentialTypes';
@@ -49,6 +50,7 @@ function saveAccounts(accounts: Record<string, DemoAccount>): void {
 /**
  * Create a new account with fullName, phoneNumber, and password
  * Enforces phone number uniqueness
+ * Note: Backend sync is handled by the calling component using useBackendCredentials hook
  */
 export function createAccount(
   fullName: string,
@@ -88,10 +90,11 @@ export function createAccount(
   }
 
   // Create new account
+  const passwordHash = simpleHash(password);
   const account: DemoAccount = {
     fullName: fullName.trim(),
     phoneNumber,
-    passwordHash: simpleHash(password),
+    passwordHash,
     createdAt: Date.now(),
   };
 
@@ -101,6 +104,7 @@ export function createAccount(
   return {
     success: true,
     account,
+    passwordHash, // Return hash for backend sync
   };
 }
 
@@ -139,6 +143,7 @@ export function verifyCredentials(
   return {
     success: true,
     account,
+    passwordHash, // Return hash for backend verification
   };
 }
 

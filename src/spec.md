@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Remove the custom Q&A management feature and expand the healthcare assistant to answer a comprehensive range of general health questions.
+**Goal:** Remove all checkup-related functionality from the healthcare dashboard application.
 
 **Planned changes:**
-- Remove the Custom Q&A tab and management UI from the assistant panel
-- Remove custom Q&A matching logic from the assistant command interpreter
-- Expand the medical knowledge base to cover general health topics including common conditions, symptoms, preventive care, nutrition, exercise, mental health, medications, and wellness
-- Improve pattern matching with better fuzzy matching and synonym recognition for health terms
-- Add a general health question handler with helpful fallback responses and medical disclaimers
+- Remove checkup UI elements from the Home dashboard page
+- Delete checkup-related backend endpoints, data types, and state
+- Remove checkup routes, pages, and components from the frontend
+- Remove checkup references from the assistant brain command interpreter
 
-**User-visible outcome:** Users can ask the healthcare assistant a wide variety of health-related questions and receive informative responses, while the custom Q&A management interface is no longer available.
+**User-visible outcome:** Users will see a streamlined dashboard without checkup features, retaining heart rate, steps, hydration, calories, and medical reports functionality.

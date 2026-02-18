@@ -1,23 +1,24 @@
 /**
- * TypeScript types for locally persisted demo accounts and verification results
- * used by Sign In/Sign Up with phone + password authentication.
+ * Type definitions for demo credential store
  */
 
 export interface DemoAccount {
   fullName: string;
   phoneNumber: string;
-  passwordHash: string; // Simple hash for demo purposes
-  createdAt: number;
+  passwordHash: string;
+  createdAt?: number;
 }
 
 export interface VerifyCredentialsResult {
   success: boolean;
   error?: string;
   account?: DemoAccount;
+  passwordHash?: string; // Added for backend sync
 }
 
 export interface CreateAccountResult {
   success: boolean;
   error?: string;
   account?: DemoAccount;
+  passwordHash?: string; // Added for backend sync
 }

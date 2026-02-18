@@ -1,67 +1,47 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Health chatbot that can answer any health-related questions",
+  "summary": "New project",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-remove-the-custom-q-a-tab-and-management-ui-from-the-assistant-panel-interface",
-      "title": "Remove the custom Q&A tab and management UI from the assistant panel interface",
+      "id": "feature-remove-all-checkup-related-ui-elements-from-the-home-dashboard-page-frontend-src-pages-home-tsx-including-any-tiles-sections-or-references-to-checkups",
+      "title": "Remove all checkup-related UI elements from the Home dashboard page (frontend/src/pages/Home.tsx), including any tiles, sections, or references to checkups",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-remove-custom-q-a-matching-logic-from-the-assistant-brain-command-interpreter",
-      "title": "Remove custom Q&A matching logic from the assistant brain command interpreter",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-improve-the-assistant-s-pattern-matching-to-handle-diverse-health-related-queries-with-better-fuzzy-matching-and-synonym-recognition",
-      "title": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
+      "id": "feature-remove-checkup-related-references-from-the-assistant-brain-command-interpreter-frontend-src-components-assistant-assistantbrain-ts-if-any-exist",
+      "title": "Remove checkup-related references from the assistant brain command interpreter (frontend/src/components/assistant/assistantBrain.ts) if any exist",
       "reqIds": [
         "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-general-health-question-handler-that-provides-helpful-responses-when-no-specific-medical-topic-is-matched",
-      "title": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
-      "reqIds": [
-        "REQ-5"
       ],
       "version": 1
     }
   ],
   "new_feature_requests": [
     {
-      "id": "AR-1",
-      "summary": "Remove custom Q&A option from chat interface",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
       "id": "AR-2",
-      "summary": "Enable chat to answer any health-related questions",
-      "reqIds": [],
+      "summary": "Remove checkup-related backend endpoints, data types, and state from the main actor (backend/main.mo) if any exist",
+      "reqIds": [
+        "REQ-2"
+      ],
       "status": "pending"
     },
     {
-      "id": "AR-5",
-      "summary": "Expand the medical knowledge base to cover a comprehensive range of general health topics beyond the current curated list",
+      "id": "AR-3",
+      "summary": "Remove any checkup-related routes, pages, or components from the frontend application",
       "reqIds": [
         "REQ-3"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "Remove custom Q&A feature and enable general health question answering",
+  "projectName": "Remove checkups feature",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

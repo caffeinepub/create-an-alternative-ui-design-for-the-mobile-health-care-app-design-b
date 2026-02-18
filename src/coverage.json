@@ -1,76 +1,51 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-18T20:42:29.431Z",
+  "generatedAt": "2026-02-18T21:12:54.629Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 5,
-    "implemented": 4,
+    "total": 4,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Remove the custom Q&A tab and management UI from the assistant panel interface",
+        "summary": "Remove all checkup-related UI elements from the Home dashboard page (frontend/src/pages/Home.tsx), including any tiles, sections, or references to checkups",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/assistant/AssistantPanel.tsx",
-          "frontend/src/components/assistant/CustomQAManager.tsx"
+          "frontend/src/pages/Home.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/assistant/AssistantPanel.tsx",
-          "frontend/src/components/assistant/CustomQAManager.tsx"
+          "frontend/src/pages/Home.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Remove custom Q&A matching logic from the assistant brain command interpreter",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/assistant/AssistantWidget.tsx",
-          "frontend/src/components/assistant/assistantBrain.ts",
-          "frontend/src/components/assistant/useCustomQA.ts",
-          "frontend/src/components/assistant/customQAStorage.ts",
-          "frontend/src/components/assistant/customQATypes.ts",
-          "frontend/src/components/assistant/fuzzyQAMatcher.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/assistant/AssistantWidget.tsx",
-          "frontend/src/components/assistant/assistantBrain.ts",
-          "frontend/src/components/assistant/useCustomQA.ts",
-          "frontend/src/components/assistant/customQAStorage.ts",
-          "frontend/src/components/assistant/customQATypes.ts",
-          "frontend/src/components/assistant/fuzzyQAMatcher.ts"
-        ]
+        "summary": "Remove checkup-related backend endpoints, data types, and state from the main actor (backend/main.mo) if any exist",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
         "id": "REQ-3",
-        "summary": "Expand the medical knowledge base to cover a comprehensive range of general health topics beyond the current curated list",
+        "summary": "Remove any checkup-related routes, pages, or components from the frontend application",
         "status": "missing",
         "plannedFiles": [
-          "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+          "frontend/src/App.tsx",
+          "frontend/src/pages/CheckupPage.tsx",
+          "frontend/src/components/checkup"
         ],
         "matchedFiles": []
       },
       {
         "id": "REQ-4",
-        "summary": "Improve the assistant's pattern matching to handle diverse health-related queries with better fuzzy matching and synonym recognition",
+        "summary": "Remove checkup-related references from the assistant brain command interpreter (frontend/src/components/assistant/assistantBrain.ts) if any exist",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/assistant/assistantBrain.ts",
           "frontend/src/components/assistant/medicalKnowledgeBase.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/assistant/assistantBrain.ts"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Add a general health question handler that provides helpful responses when no specific medical topic is matched",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/assistant/assistantBrain.ts"
         ],
         "matchedFiles": [
           "frontend/src/components/assistant/assistantBrain.ts"
@@ -79,19 +54,14 @@
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/assistant/AssistantPanel.tsx",
-    "frontend/src/components/assistant/AssistantWidget.tsx",
-    "frontend/src/components/assistant/CustomQAManager.tsx",
     "frontend/src/components/assistant/assistantBrain.ts",
-    "frontend/src/components/assistant/customQAStorage.ts",
-    "frontend/src/components/assistant/customQATypes.ts",
-    "frontend/src/components/assistant/fuzzyQAMatcher.ts",
-    "frontend/src/components/assistant/useCustomQA.ts",
-    "frontend/src/pages/Chatbot.tsx",
+    "frontend/src/pages/Home.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
