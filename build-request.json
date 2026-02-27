@@ -1,0 +1,147 @@
+{
+  "kind": "build_request",
+  "title": "Expand health assistant with full multi-specialty medical knowledge and summarized responses",
+  "projectName": "Health Assistant Pro",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Expand the specialty knowledge base in `specialtyKnowledgeBase.ts` to include comprehensive, detailed entries for all 10 medical specialties: cardiologists, dermatologists, pediatricians, surgeons, neurologists, general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists. Each specialty entry must include keywords, common conditions, symptoms, diagnostic tools, treatments, red flags, and a formatted content string covering diagnosis, treatment, and prevention.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "cardiologists, dermatologists, pediatricians, surgeons, and neurologists, Major types include general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists. They diagnose, treat, and prevent illnesses across various fields"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All 10 specialties (cardiologist, dermatologist, pediatrician, surgeon, neurologist, general practitioner, anesthesiologist, oncologist, gynecologist, radiologist) have dedicated entries in specialtyKnowledgeBase.ts",
+        "Each entry covers diagnosis, treatment, and prevention aspects",
+        "Each entry includes at least 10 keywords for routing",
+        "Each entry includes red flags / emergency indicators"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Expand `medicalKnowledgeBase.ts` to include a broad set of conditions and topics across all 10 specialties — including but not limited to: heart disease, arrhythmia, hypertension (cardiology); acne, eczema, psoriasis, skin cancer (dermatology); childhood illnesses, vaccinations, developmental milestones (pediatrics); pre/post-operative care, wound management (surgery); migraines, epilepsy, stroke, Parkinson's (neurology); common colds, chronic disease management, preventive care (general practice); anesthesia types, pain management, sedation (anesthesiology); cancer types, chemotherapy, immunotherapy (oncology); menstrual disorders, pregnancy, menopause (gynecology); imaging modalities, X-ray, MRI, CT scan interpretation (radiology).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "diagnose, treat, and prevent illnesses across various fields with all issues & problem solving"
+        ]
+      },
+      "acceptanceCriteria": [
+        "medicalKnowledgeBase.ts contains entries for major conditions across all 10 specialties",
+        "Each topic entry has relevant keywords and detailed markdown response content",
+        "Topics cover diagnosis, treatment options, and preventive measures"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update the assistant routing logic in `assistantBrain.ts` to correctly identify and route user queries to the appropriate specialty handler for all 10 specialties. Ensure the router can handle overlapping symptoms by returning the most relevant specialty match, falling back to general practitioner knowledge when no specific specialty is matched.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "cardiologists, dermatologists, pediatricians, surgeons, and neurologists, Major types include general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Queries mentioning heart, chest pain, arrhythmia route to cardiology",
+        "Queries mentioning skin, rash, acne route to dermatology",
+        "Queries mentioning child, infant, vaccination route to pediatrics",
+        "Queries mentioning surgery, operation, wound route to surgery",
+        "Queries mentioning brain, nerve, seizure route to neurology",
+        "Queries mentioning cancer, tumor, chemotherapy route to oncology",
+        "Queries mentioning anesthesia, sedation, pain management route to anesthesiology",
+        "Queries mentioning pregnancy, menstruation, gynecology route to gynecology",
+        "Queries mentioning X-ray, MRI, scan, imaging route to radiology",
+        "Unmatched queries fall back to general practitioner responses"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Update `messageSummarizer.ts` and `responseFormatter.ts` to ensure all assistant responses are presented in a concise, summarized format. Responses must use bullet points and short paragraphs to summarize: (1) likely diagnosis / what the condition is, (2) treatment options, (3) preventive measures, and (4) when to see a doctor. Avoid overly long prose; prioritize scannable, structured summaries.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "all issues & problem solving in summarized matter"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Assistant responses are structured with clear sections: Diagnosis, Treatment, Prevention, When to See a Doctor",
+        "Responses use bullet points and/or short paragraphs",
+        "Responses are concise and scannable, not long blocks of prose",
+        "Medical disclaimer is preserved in the formatted output"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Update the Chat page (`Chat.tsx`) and `AssistantPanel.tsx` to display the active specialty context when responding. Show a small specialty badge or label (e.g., '🫀 Cardiology', '🧠 Neurology') above or beside the assistant's response message when a specific specialty knowledge base was used to generate the answer.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "cardiologists, dermatologists, pediatricians, surgeons, and neurologists, Major types include general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A specialty badge/label appears on assistant messages that were generated from specialty knowledge",
+        "The badge reflects the correct specialty (e.g., Cardiology for heart-related queries)",
+        "General practitioner responses show a 'General Practice' badge",
+        "Badge is visually distinct and non-intrusive"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Add a specialty selector UI element on the Chat page that allows users to optionally filter or direct their question to a specific medical specialty from the list of 10. When a specialty is selected, the assistant should prioritize that specialty's knowledge base when generating a response. Include an 'Auto-detect' default option.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "cardiologists, dermatologists, pediatricians, surgeons, and neurologists, Major types include general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A specialty dropdown or chip selector is visible on the Chat page",
+        "The selector lists all 10 specialties plus an 'Auto-detect' option",
+        "Selecting a specialty causes the assistant to use that specialty's knowledge base for the next response",
+        "The selected specialty is visually highlighted",
+        "'Auto-detect' is the default selection"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify any files under frontend/src/hooks/ that are listed as immutable (useInternetIdentity.ts, useActor.ts)",
+    "All assistant logic must remain client-side; do not route medical knowledge through the backend",
+    "Preserve existing medical disclaimer text in all formatted responses",
+    "Do not remove or break existing emergency detection and routing logic in assistantBrain.ts"
+  ],
+  "nonGoals": [
+    "Real-time AI/LLM integration for medical responses",
+    "Backend storage of medical knowledge base content",
+    "Actual clinical diagnosis or medical advice (app is informational only)",
+    "Integration with external medical APIs or databases",
+    "Multi-language expansion of the new specialty content (existing multilingual support is sufficient)"
+  ],
+  "imageRequirements": {
+    "required": [
+      "Set of 10 medical specialty icon illustrations in a clean, flat style: cardiology heart icon, dermatology skin/magnifier icon, pediatrics child/stethoscope icon, surgery scalpel icon, neurology brain icon, general practice cross/stethoscope icon, anesthesiology mask icon, oncology ribbon/cell icon, gynecology flower icon, radiology X-ray/scan icon (specialty-icons-set.dim_512x512.png)"
+    ],
+    "edits": []
+  }
+}

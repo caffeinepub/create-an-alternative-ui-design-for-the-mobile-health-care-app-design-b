@@ -1,0 +1,111 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-expand-the-specialty-knowledge-base-in-specialtyknowledgebase-ts-to-include-comprehensive-detailed-entries-for-all-10-medical-specialties-cardiologists-dermatologists-pediatricians-surgeons-neurologists-general-practitioners-anesthesiologists-oncologists-gynecologists-and-radiologists-each-specialty-entry-must-include-keywords-common-conditions-symptoms-diagnostic-tools-treatments-red-flags-and-a-formatted-content-string-covering-diagnosis-treatment-and-prevention",
+      "featureTitle": "Expand the specialty knowledge base in `specialtyKnowledgeBase.ts` to include comprehensive, detailed entries for all 10 medical specialties: cardiologists, dermatologists, pediatricians, surgeons, neurologists, general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists. Each specialty entry must include keywords, common conditions, symptoms, diagnostic tools, treatments, red flags, and a formatted content string covering diagnosis, treatment, and prevention.",
+      "files": [
+        "frontend/src/components/assistant/specialtyKnowledgeBase.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-expand-medicalknowledgebase-ts-to-include-a-broad-set-of-conditions-and-topics-across-all-10-specialties-including-but-not-limited-to-heart-disease-arrhythmia-hypertension-cardiology-acne-eczema-psoriasis-skin-cancer-dermatology-childhood-illnesses-vaccinations-developmental-milestones-pediatrics-pre-post-operative-care-wound-management-surgery-migraines-epilepsy-stroke-parkinson-s-neurology-common-colds-chronic-disease-management-preventive-care-general-practice-anesthesia-types-pain-management-sedation-anesthesiology-cancer-types-chemotherapy-immunotherapy-oncology-menstrual-disorders-pregnancy-menopause-gynecology-imaging-modalities-x-ray-mri-ct-scan-interpretation-radiology",
+      "featureTitle": "Expand `medicalKnowledgeBase.ts` to include a broad set of conditions and topics across all 10 specialties — including but not limited to: heart disease, arrhythmia, hypertension (cardiology); acne, eczema, psoriasis, skin cancer (dermatology); childhood illnesses, vaccinations, developmental milestones (pediatrics); pre/post-operative care, wound management (surgery); migraines, epilepsy, stroke, Parkinson's (neurology); common colds, chronic disease management, preventive care (general practice); anesthesia types, pain management, sedation (anesthesiology); cancer types, chemotherapy, immunotherapy (oncology); menstrual disorders, pregnancy, menopause (gynecology); imaging modalities, X-ray, MRI, CT scan interpretation (radiology).",
+      "files": [
+        "frontend/src/components/assistant/medicalKnowledgeBase.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-assistant-routing-logic-in-assistantbrain-ts-to-correctly-identify-and-route-user-queries-to-the-appropriate-specialty-handler-for-all-10-specialties-ensure-the-router-can-handle-overlapping-symptoms-by-returning-the-most-relevant-specialty-match-falling-back-to-general-practitioner-knowledge-when-no-specific-specialty-is-matched",
+      "featureTitle": "Update the assistant routing logic in `assistantBrain.ts` to correctly identify and route user queries to the appropriate specialty handler for all 10 specialties. Ensure the router can handle overlapping symptoms by returning the most relevant specialty match, falling back to general practitioner knowledge when no specific specialty is matched.",
+      "files": [
+        "frontend/src/components/assistant/assistantBrain.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-chat-page-chat-tsx-and-assistantpanel-tsx-to-display-the-active-specialty-context-when-responding-show-a-small-specialty-badge-or-label-e-g-cardiology-neurology-above-or-beside-the-assistant-s-response-message-when-a-specific-specialty-knowledge-base-was-used-to-generate-the-answer",
+      "featureTitle": "Update the Chat page (`Chat.tsx`) and `AssistantPanel.tsx` to display the active specialty context when responding. Show a small specialty badge or label (e.g., '🫀 Cardiology', '🧠 Neurology') above or beside the assistant's response message when a specific specialty knowledge base was used to generate the answer.",
+      "files": [
+        "frontend/src/components/assistant/AssistantPanel.tsx",
+        "frontend/src/components/assistant/assistantBrain.ts",
+        "frontend/src/components/assistant/assistantTypes.ts",
+        "frontend/src/pages/Chat.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-specialty-selector-ui-element-on-the-chat-page-that-allows-users-to-optionally-filter-or-direct-their-question-to-a-specific-medical-specialty-from-the-list-of-10-when-a-specialty-is-selected-the-assistant-should-prioritize-that-specialty-s-knowledge-base-when-generating-a-response-include-an-auto-detect-default-option",
+      "featureTitle": "Add a specialty selector UI element on the Chat page that allows users to optionally filter or direct their question to a specific medical specialty from the list of 10. When a specialty is selected, the assistant should prioritize that specialty's knowledge base when generating a response. Include an 'Auto-detect' default option.",
+      "files": [
+        "frontend/src/components/assistant/AssistantWidget.tsx",
+        "frontend/src/components/assistant/assistantBrain.ts",
+        "frontend/src/components/assistant/assistantTypes.ts",
+        "frontend/src/pages/Chat.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
