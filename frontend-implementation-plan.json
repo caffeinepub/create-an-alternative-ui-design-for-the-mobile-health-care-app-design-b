@@ -1,6 +1,99 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Reject Firebase integration — unsupported platform",
-  "requirements": []
+  "title": "Remove empty and unused files",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Delete all confirmed empty frontend source files that serve no active purpose in the application",
+      "acceptanceCriteria": [
+        "All listed empty files are deleted from the project.",
+        "No import references to the deleted files remain in any active source file.",
+        "The application builds without errors after deletions.",
+        "All existing routes and features (Home, Reports, Profile, Chat, SignIn, SignUp, Welcome, Medications) continue to work correctly."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/AppointmentDetails.tsx",
+          "operation": "delete",
+          "description": "Remove empty AppointmentDetails page component that has no content or exports and is not referenced by any route or component."
+        },
+        {
+          "path": "frontend/src/pages/Chatbot.tsx",
+          "operation": "delete",
+          "description": "Remove empty Chatbot page file that has no implementation and is superseded by the active Chat.tsx page."
+        },
+        {
+          "path": "frontend/src/pages/DoctorList.tsx",
+          "operation": "delete",
+          "description": "Remove empty DoctorList page component that has no content and is not part of the current application routes."
+        },
+        {
+          "path": "frontend/src/pages/HomeDashboard.tsx",
+          "operation": "delete",
+          "description": "Remove empty HomeDashboard page file that has no implementation and is superseded by the active Home.tsx page."
+        },
+        {
+          "path": "frontend/src/pages/Locate.tsx",
+          "operation": "delete",
+          "description": "Remove empty Locate page component that has no content. The /locate route is already handled by NotFoundRedirect.tsx which redirects to /home."
+        },
+        {
+          "path": "frontend/src/components/assistant/CustomQAManager.tsx",
+          "operation": "delete",
+          "description": "Remove empty CustomQAManager component file that has no implementation and is not imported by any active assistant components."
+        },
+        {
+          "path": "frontend/src/components/assistant/customQAStorage.ts",
+          "operation": "delete",
+          "description": "Remove empty customQAStorage utility module that has no content or exports and is not used by the assistant feature."
+        },
+        {
+          "path": "frontend/src/components/assistant/customQATypes.ts",
+          "operation": "delete",
+          "description": "Remove empty customQATypes type definition file that has no content and is not referenced by any assistant components or utilities."
+        },
+        {
+          "path": "frontend/src/components/assistant/fuzzyQAMatcher.ts",
+          "operation": "delete",
+          "description": "Remove empty fuzzyQAMatcher utility module that has no implementation and is not used by the assistant brain or knowledge base modules."
+        },
+        {
+          "path": "frontend/src/components/assistant/useCustomQA.ts",
+          "operation": "delete",
+          "description": "Remove empty useCustomQA hook file that has no content or exports and is not imported by AssistantWidget or any assistant components."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Remove the deprecated report metadata localStorage store if it is no longer imported or used by any active component",
+      "acceptanceCriteria": [
+        "File is deleted if and only if no active file imports from it.",
+        "Report upload, view, and delete functionality in Report.tsx remains fully functional after removal."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/report/reportMetadataStore.ts",
+          "operation": "delete",
+          "description": "Remove the deprecated reportMetadataStore utility after confirming Report.tsx and useMedicalFiles hook do not import or reference it. The backend API via useMedicalFiles hook now handles all report listing functionality, making this localStorage-based store obsolete."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Remove the empty feature_evidence.json file from the project root",
+      "acceptanceCriteria": [
+        "feature_evidence.json is deleted from the project root.",
+        "No build or runtime errors are introduced."
+      ],
+      "file_operations": [
+        {
+          "path": "feature_evidence.json",
+          "operation": "delete",
+          "description": "Remove the empty feature_evidence.json file from the project root. This file contains no features and serves no runtime or build purpose."
+        }
+      ]
+    }
+  ]
 }

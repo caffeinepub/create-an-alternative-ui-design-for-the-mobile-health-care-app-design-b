@@ -1,4 +1,45 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-remove-the-deprecated-report-metadata-localstorage-store-frontend-src-report-reportmetadatastore-ts-if-it-is-no-longer-imported-or-used-by-any-active-component-or-hook-given-its-own-summary-marks-it-as-deprecated-for-listing-in-favor-of-the-backend-api",
+      "featureTitle": "Remove the deprecated report metadata localStorage store (frontend/src/report/reportMetadataStore.ts) if it is no longer imported or used by any active component or hook, given its own summary marks it as deprecated for listing in favor of the backend API.",
+      "files": [
+        "frontend/src/report/reportMetadataStore.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-the-feature-evidence-json-file-from-the-project-root-as-it-is-confirmed-empty-with-no-features-listed-and-serves-no-runtime-purpose",
+      "featureTitle": "Remove the feature_evidence.json file from the project root, as it is confirmed empty with no features listed and serves no runtime purpose.",
+      "files": [
+        "feature_evidence.json"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

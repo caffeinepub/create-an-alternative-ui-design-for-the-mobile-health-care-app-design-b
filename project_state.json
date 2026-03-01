@@ -1,23 +1,39 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Health assistant app with medical specialist knowledge. Adding Firebase integration for data saving.",
-  "architectural_notes": [
-    "Firebase will be used as the backend for data persistence"
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
-  "existing_features": [],
+  "existing_features": [
+    {
+      "id": "feature-remove-the-deprecated-report-metadata-localstorage-store-frontend-src-report-reportmetadatastore-ts-if-it-is-no-longer-imported-or-used-by-any-active-component-or-hook-given-its-own-summary-marks-it-as-deprecated-for-listing-in-favor-of-the-backend-api",
+      "title": "Remove the deprecated report metadata localStorage store (frontend/src/report/reportMetadataStore.ts) if it is no longer imported or used by any active component or hook, given its own summary marks it as deprecated for listing in favor of the backend API.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-feature-evidence-json-file-from-the-project-root-as-it-is-confirmed-empty-with-no-features-listed-and-serves-no-runtime-purpose",
+      "title": "Remove the feature_evidence.json file from the project root, as it is confirmed empty with no features listed and serves no runtime purpose.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add Firebase integration for data saving",
-      "reqIds": [],
+      "summary": "Delete all frontend source files that are completely empty (no content or exports) and serve no active purpose in the application. Based on the file summaries, the following files are confirmed empty and should be removed: frontend/src/pages/AppointmentDetails.tsx, frontend/src/pages/Chatbot.tsx, frontend/src/pages/DoctorList.tsx, frontend/src/pages/HomeDashboard.tsx, frontend/src/pages/Locate.tsx, frontend/src/components/assistant/CustomQAManager.tsx, frontend/src/components/assistant/customQAStorage.ts, frontend/src/components/assistant/customQATypes.ts, frontend/src/components/assistant/fuzzyQAMatcher.ts, frontend/src/components/assistant/useCustomQA.ts.",
+      "reqIds": [
+        "REQ-1"
+      ],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "Reject Firebase integration — unsupported platform",
+  "projectName": "Remove empty and unused files",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

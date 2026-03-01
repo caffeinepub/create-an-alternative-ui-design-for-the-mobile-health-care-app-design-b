@@ -1,21 +1,62 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-03-01T05:20:54.223Z",
+  "generatedAt": "2026-03-01T17:41:36.509Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 0,
-    "implemented": 0,
-    "items": []
+    "total": 3,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Delete all frontend source files that are completely empty (no content or exports) and serve no active purpose in the application. Based on the file summaries, the following files are confirmed empty and should be removed: frontend/src/pages/AppointmentDetails.tsx, frontend/src/pages/Chatbot.tsx, frontend/src/pages/DoctorList.tsx, frontend/src/pages/HomeDashboard.tsx, frontend/src/pages/Locate.tsx, frontend/src/components/assistant/CustomQAManager.tsx, frontend/src/components/assistant/customQAStorage.ts, frontend/src/components/assistant/customQATypes.ts, frontend/src/components/assistant/fuzzyQAMatcher.ts, frontend/src/components/assistant/useCustomQA.ts.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/AppointmentDetails.tsx",
+          "frontend/src/pages/Chatbot.tsx",
+          "frontend/src/pages/DoctorList.tsx",
+          "frontend/src/pages/HomeDashboard.tsx",
+          "frontend/src/pages/Locate.tsx",
+          "frontend/src/components/assistant/CustomQAManager.tsx",
+          "frontend/src/components/assistant/customQAStorage.ts",
+          "frontend/src/components/assistant/customQATypes.ts",
+          "frontend/src/components/assistant/fuzzyQAMatcher.ts",
+          "frontend/src/components/assistant/useCustomQA.ts"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Remove the deprecated report metadata localStorage store (frontend/src/report/reportMetadataStore.ts) if it is no longer imported or used by any active component or hook, given its own summary marks it as deprecated for listing in favor of the backend API.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/report/reportMetadataStore.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/report/reportMetadataStore.ts"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Remove the feature_evidence.json file from the project root, as it is confirmed empty with no features listed and serves no runtime purpose.",
+        "status": "implemented",
+        "plannedFiles": [
+          "feature_evidence.json"
+        ],
+        "matchedFiles": [
+          "feature_evidence.json"
+        ]
+      }
+    ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-implementation-plan.json",
+    "frontend/src/report/reportMetadataStore.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

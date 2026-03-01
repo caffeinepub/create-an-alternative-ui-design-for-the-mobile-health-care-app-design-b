@@ -1,15 +1,71 @@
 {
   "kind": "build_request",
-  "title": "Reject Firebase integration — unsupported platform",
+  "title": "Remove empty and unused files",
   "priority": "normal",
-  "requirements": [],
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Delete all frontend source files that are completely empty (no content or exports) and serve no active purpose in the application. Based on the file summaries, the following files are confirmed empty and should be removed: frontend/src/pages/AppointmentDetails.tsx, frontend/src/pages/Chatbot.tsx, frontend/src/pages/DoctorList.tsx, frontend/src/pages/HomeDashboard.tsx, frontend/src/pages/Locate.tsx, frontend/src/components/assistant/CustomQAManager.tsx, frontend/src/components/assistant/customQAStorage.ts, frontend/src/components/assistant/customQATypes.ts, frontend/src/components/assistant/fuzzyQAMatcher.ts, frontend/src/components/assistant/useCustomQA.ts.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "can you remve all unnessary files"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All listed empty files are deleted from the project.",
+        "No import references to the deleted files remain in any active source file.",
+        "The application builds without errors after deletions.",
+        "All existing routes and features (Home, Reports, Profile, Chat, SignIn, SignUp, Welcome, Medications) continue to work correctly."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Remove the deprecated report metadata localStorage store (frontend/src/report/reportMetadataStore.ts) if it is no longer imported or used by any active component or hook, given its own summary marks it as deprecated for listing in favor of the backend API.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "can you remve all unnessary files"
+        ]
+      },
+      "acceptanceCriteria": [
+        "File is deleted if and only if no active file imports from it.",
+        "Report upload, view, and delete functionality in Report.tsx remains fully functional after removal."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Remove the feature_evidence.json file from the project root, as it is confirmed empty with no features listed and serves no runtime purpose.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "can you remve all unnessary files"
+        ]
+      },
+      "acceptanceCriteria": [
+        "feature_evidence.json is deleted from the project root.",
+        "No build or runtime errors are introduced."
+      ]
+    }
+  ],
   "constraints": [
-    "Firebase and all external cloud databases (AWS, GCP, Azure, etc.) are not supported on this platform.",
-    "All data persistence must use the ICP backend (Motoko actor) or localStorage — no third-party database services."
+    "Do not delete any file that is actively imported or referenced by another source file.",
+    "Do not modify any files listed in frontend.immutablePaths.",
+    "Do not alter any backend files unless a deleted frontend file had a corresponding unused backend function."
   ],
   "nonGoals": [
-    "Firebase Firestore, Firebase Realtime Database, or any Firebase SDK integration",
-    "Any external cloud database integration"
+    "Refactoring or rewriting any existing active components.",
+    "Adding new features or pages.",
+    "Removing backend logic from main.mo."
   ],
   "imageRequirements": {
     "required": [],
