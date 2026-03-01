@@ -1,79 +1,23 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "A health assistant app with specialist medical knowledge across cardiologists, dermatologists, pediatricians, surgeons, neurologists, general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists. The assistant diagnoses, treats, and prevents illnesses across various fields, providing summarized problem-solving responses.",
+  "summary": "Health assistant app with medical specialist knowledge. Adding Firebase integration for data saving.",
   "architectural_notes": [
-    "App is a medical health assistant — responses should be summarized, specialty-aware, and cover diagnosis, treatment, and prevention"
+    "Firebase will be used as the backend for data persistence"
   ],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Set of 10 medical specialty icon illustrations in a clean, flat style: cardiology heart icon, dermatology skin/magnifier icon, pediatrics child/stethoscope icon, surgery scalpel icon, neurology brain icon, general practice cross/stethoscope icon, anesthesiology mask icon, oncology ribbon/cell icon, gynecology flower icon, radiology X-ray/scan icon (specialty-icons-set.dim_512x512.png)",
-  "existing_features": [
-    {
-      "id": "feature-expand-the-specialty-knowledge-base-in-specialtyknowledgebase-ts-to-include-comprehensive-detailed-entries-for-all-10-medical-specialties-cardiologists-dermatologists-pediatricians-surgeons-neurologists-general-practitioners-anesthesiologists-oncologists-gynecologists-and-radiologists-each-specialty-entry-must-include-keywords-common-conditions-symptoms-diagnostic-tools-treatments-red-flags-and-a-formatted-content-string-covering-diagnosis-treatment-and-prevention",
-      "title": "Expand the specialty knowledge base in `specialtyKnowledgeBase.ts` to include comprehensive, detailed entries for all 10 medical specialties: cardiologists, dermatologists, pediatricians, surgeons, neurologists, general practitioners, anesthesiologists, oncologists, gynecologists, and radiologists. Each specialty entry must include keywords, common conditions, symptoms, diagnostic tools, treatments, red flags, and a formatted content string covering diagnosis, treatment, and prevention.",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-expand-medicalknowledgebase-ts-to-include-a-broad-set-of-conditions-and-topics-across-all-10-specialties-including-but-not-limited-to-heart-disease-arrhythmia-hypertension-cardiology-acne-eczema-psoriasis-skin-cancer-dermatology-childhood-illnesses-vaccinations-developmental-milestones-pediatrics-pre-post-operative-care-wound-management-surgery-migraines-epilepsy-stroke-parkinson-s-neurology-common-colds-chronic-disease-management-preventive-care-general-practice-anesthesia-types-pain-management-sedation-anesthesiology-cancer-types-chemotherapy-immunotherapy-oncology-menstrual-disorders-pregnancy-menopause-gynecology-imaging-modalities-x-ray-mri-ct-scan-interpretation-radiology",
-      "title": "Expand `medicalKnowledgeBase.ts` to include a broad set of conditions and topics across all 10 specialties — including but not limited to: heart disease, arrhythmia, hypertension (cardiology); acne, eczema, psoriasis, skin cancer (dermatology); childhood illnesses, vaccinations, developmental milestones (pediatrics); pre/post-operative care, wound management (surgery); migraines, epilepsy, stroke, Parkinson's (neurology); common colds, chronic disease management, preventive care (general practice); anesthesia types, pain management, sedation (anesthesiology); cancer types, chemotherapy, immunotherapy (oncology); menstrual disorders, pregnancy, menopause (gynecology); imaging modalities, X-ray, MRI, CT scan interpretation (radiology).",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-assistant-routing-logic-in-assistantbrain-ts-to-correctly-identify-and-route-user-queries-to-the-appropriate-specialty-handler-for-all-10-specialties-ensure-the-router-can-handle-overlapping-symptoms-by-returning-the-most-relevant-specialty-match-falling-back-to-general-practitioner-knowledge-when-no-specific-specialty-is-matched",
-      "title": "Update the assistant routing logic in `assistantBrain.ts` to correctly identify and route user queries to the appropriate specialty handler for all 10 specialties. Ensure the router can handle overlapping symptoms by returning the most relevant specialty match, falling back to general practitioner knowledge when no specific specialty is matched.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-chat-page-chat-tsx-and-assistantpanel-tsx-to-display-the-active-specialty-context-when-responding-show-a-small-specialty-badge-or-label-e-g-cardiology-neurology-above-or-beside-the-assistant-s-response-message-when-a-specific-specialty-knowledge-base-was-used-to-generate-the-answer",
-      "title": "Update the Chat page (`Chat.tsx`) and `AssistantPanel.tsx` to display the active specialty context when responding. Show a small specialty badge or label (e.g., '🫀 Cardiology', '🧠 Neurology') above or beside the assistant's response message when a specific specialty knowledge base was used to generate the answer.",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-specialty-selector-ui-element-on-the-chat-page-that-allows-users-to-optionally-filter-or-direct-their-question-to-a-specific-medical-specialty-from-the-list-of-10-when-a-specialty-is-selected-the-assistant-should-prioritize-that-specialty-s-knowledge-base-when-generating-a-response-include-an-auto-detect-default-option",
-      "title": "Add a specialty selector UI element on the Chat page that allows users to optionally filter or direct their question to a specific medical specialty from the list of 10. When a specialty is selected, the assistant should prioritize that specialty's knowledge base when generating a response. Include an 'Auto-detect' default option.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    }
-  ],
+  "existing_features": [],
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Health assistant with multi-specialty medical knowledge (cardiology, dermatology, pediatrics, surgery, neurology, general practice, anesthesiology, oncology, gynecology, radiology)",
+      "summary": "Add Firebase integration for data saving",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Summarized diagnosis, treatment, and prevention responses across all medical specialties",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Update `messageSummarizer.ts` and `responseFormatter.ts` to ensure all assistant responses are presented in a concise, summarized format. Responses must use bullet points and short paragraphs to summarize: (1) likely diagnosis / what the condition is, (2) treatment options, (3) preventive measures, and (4) when to see a doctor. Avoid overly long prose; prioritize scannable, structured summaries.",
-      "reqIds": [
-        "REQ-4"
-      ],
       "status": "pending"
     }
   ],
   "gameProjectType": "none",
-  "projectName": "Health Assistant",
+  "projectName": "Reject Firebase integration — unsupported platform",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

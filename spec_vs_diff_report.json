@@ -1,36 +1,21 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T18:59:01.613Z",
-  "summary": "The diff implements most requirements well. REQ-1 (specialtyKnowledgeBase.ts), REQ-2 (medicalKnowledgeBase.ts), REQ-3 (assistantBrain.ts routing), REQ-5 (specialty badges in AssistantPanel.tsx and Chat.tsx), and REQ-6 (specialty selector in Chat.tsx and AssistantWidget.tsx) are all visibly addressed. REQ-4 is partially addressed — the knowledge base entries use structured bullet-point format, but there is no evidence of changes to messageSummarizer.ts or responseFormatter.ts specifically. The required images (specialty-icons-set) are also not present in the diff.",
-  "missing_requirements": [
-    {
-      "id": "REQ-4",
-      "requirement": "Update messageSummarizer.ts and responseFormatter.ts to ensure all assistant responses are presented in a concise, summarized format with bullet points, short paragraphs, and four sections: Diagnosis, Treatment, Prevention, When to See a Doctor.",
-      "reason": "Neither messageSummarizer.ts nor responseFormatter.ts appear in the list of modified files. The diff shows no changes to these specific files, so the requirement to update them is not fulfilled even if the knowledge base entries themselves use structured formatting.",
-      "evidence": []
-    }
-  ],
+  "generatedAt": "2026-03-01T05:20:54.220Z",
+  "summary": "The build request explicitly rejects Firebase integration as a non-goal and constrains all data persistence to the ICP backend (Motoko actor) or localStorage. The diff shows the backend/main.mo file uses a proper ICP Motoko actor with no Firebase SDK, which aligns with the constraints. However, project_state.json still describes Firebase integration as a pending feature request and an architectural note, which directly contradicts the build request's non-goals and constraints.",
+  "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Specialty selector added to AssistantWidget.tsx (the floating widget) in addition to Chat.tsx",
-      "reason": "REQ-6 specifies adding the specialty selector to the Chat page only. The diff shows AssistantWidget.tsx was also modified to include SPECIALTY_OPTIONS and a selectedSpecialty state, which was not explicitly requested.",
+      "description": "project_state.json retains a pending feature request (AR-1) to 'Add Firebase integration for data saving' and an architectural note stating 'Firebase will be used as the backend for data persistence'.",
+      "reason": "The build request explicitly rejects Firebase integration as a non-goal and forbids any external cloud database services. The project state should reflect the rejection of Firebase, not its pending adoption.",
       "evidence": [
-        "frontend/src/components/assistant/AssistantWidget.tsx"
+        "project_state.json"
       ]
     }
   ],
-  "confidence": 0.78,
+  "confidence": 0.9,
   "changed_files": [
-    "frontend-file-summaries.txt",
-    "frontend/src/components/assistant/AssistantPanel.tsx",
-    "frontend/src/components/assistant/AssistantWidget.tsx",
-    "frontend/src/components/assistant/assistantBrain.ts",
-    "frontend/src/components/assistant/assistantTypes.ts",
-    "frontend/src/components/assistant/medicalKnowledgeBase.ts",
-    "frontend/src/components/assistant/specialtyKnowledgeBase.ts",
-    "frontend/src/components/assistant/useAssistantTranscript.ts",
-    "frontend/src/pages/Chat.tsx",
+    "backend/main.mo",
     "project_state.json"
   ]
 }
